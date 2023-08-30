@@ -5,7 +5,7 @@ import { UTCTimestamp } from 'lightweight-charts';
 
 const useTSFinanceAPI = (
     symbol: string,
-    interval: string = '1h',
+    interval: string = '1d',
     range: string = '1mo'
 ): {
     loading: boolean;
@@ -29,22 +29,23 @@ const useTSFinanceAPI = (
             const raw_data: StockData[] = result.timestamp.map(
                 (timestamp: number, index: number) => {
                     return {
+                        symbol: symbol,
                         date: (timestamp +
                             result.meta.gmtoffset) as UTCTimestamp,
-                        open: result.indicators.quote[0].open[index],
-                        high: result.indicators.quote[0].high[index],
-                        low: result.indicators.quote[0].low[index],
-                        close: result.indicators.quote[0].close[index],
+                        open: result.indicators.quote[0].open[index] ?? 0,
+                        high: result.indicators.quote[0].high[index] ?? 0,
+                        low: result.indicators.quote[0].low[index] ?? 0,
+                        close: result.indicators.quote[0].close[index] ?? 0,
                         // adjClose: result.indicators.adjclose[0].adjclose[index],
-                        adjClose: result.indicators.quote[0].close[index],
-                        volume: result.indicators.quote[0].volume[index]
+                        adjClose: result.indicators.quote[0].close[index] ?? 0,
+                        volume: result.indicators.quote[0].volume[index] ?? 0
                     };
                 }
             );
 
-            console.log(raw_data);
             setData(raw_data);
             setLoading(false);
+            console.log(raw_data);
         } catch (error) {
             console.error('Error fetching stock data:', error);
             setError(error);

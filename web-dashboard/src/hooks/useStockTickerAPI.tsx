@@ -32,8 +32,8 @@ const useStockTickerAPI = (letter: string = ''): Ticker[] => {
     }, []);
 
     useEffect(() => {
-        const filteredTickerSymbol = tickers.filter((symbol) =>
-            symbol.symbol.startsWith(letter)
+        const filteredTickerSymbol = tickers.filter((ticker) =>
+            ticker.symbol.startsWith(letter)
         );
         setFilteredTicker(filteredTickerSymbol);
 

@@ -59,11 +59,18 @@ const Searchbar: React.FC = () => {
                         placeholder="Search..."
                         className="search-bar-input w-full h-[48px] p-4 pl-[56px] bg-slate-800 rounded-full"
                         onClick={(e) => {
+                            console.log('hellp');
                             handleChange(e.target.value.toUpperCase());
                         }}
                         value={inputVal}
                         onChange={(e) => {
                             handleChange(e.target.value.toUpperCase());
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                e.preventDefault();
+                                handleClickValue(e.target.value.toUpperCase());
+                            }
                         }}
                     />
                 </div>

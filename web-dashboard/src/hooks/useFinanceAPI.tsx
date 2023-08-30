@@ -30,6 +30,7 @@ const useFinanceAPI = (
             const unixTimestamp = (date.getTime() / 1000) as UTCTimestamp;
 
             setData({
+                symbol: symbol,
                 date: unixTimestamp,
                 open: parseFloat(raw_data[7]),
                 high: parseFloat(raw_data[8]),

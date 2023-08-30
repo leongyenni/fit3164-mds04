@@ -1,4 +1,5 @@
 export type StockData = {
+    symbol: string;
     date: UTCTimestamp;
     open: number;
     high: number;
