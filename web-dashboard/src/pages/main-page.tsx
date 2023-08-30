@@ -42,6 +42,8 @@ export const MainPage: React.FC = () => {
     } else {
         return (
             <div className="relative">
+                <div className="text-5xl my-6">{tickerSymbol}</div>
+                <hr className="max-w-7xl" />
                 <div className="py-5" id="chart-div">
                     <Chart
                         data={tickerData.data!}
