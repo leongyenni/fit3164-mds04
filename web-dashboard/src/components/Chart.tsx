@@ -1,10 +1,4 @@
-import {
-    createChart,
-    ColorType,
-    AreaData,
-    UTCTimestamp,
-    CrosshairMode
-} from 'lightweight-charts';
+import { createChart, ColorType } from 'lightweight-charts';
 import React, { use, useEffect, useState } from 'react';
 import { StockData } from '../DataType';
 import useTSFinanceAPI from '../hooks/useTSFinanceAPI';
@@ -38,13 +32,6 @@ export const Chart: React.FC<Props> = ({ data, timeInterval }) => {
     }).format;
 
     useEffect(() => {
-        // handleRangeButton;
-        // setStockData(use);
-        console.log('data change');
-        console.log(data);
-    }, [timeInterval]);
-
-    useEffect(() => {
         const handleResize = () => {
             if (chart) {
                 chart.applyOptions({
@@ -62,15 +49,13 @@ export const Chart: React.FC<Props> = ({ data, timeInterval }) => {
                 textColor: color.textColor
             },
             width: document.getElementById('chart-div')!.clientWidth,
-            height: 400,
+            height: 410,
             timeScale: {
                 timeVisible: timeInterval === '1d' ? false : true,
                 secondsVisible: false,
-                // borderColor: 'rgba(255, 255, 255, 0.8)',
                 borderVisible: false
             },
             rightPriceScale: {
-                // borderColor: 'rgba(255, 255, 255, 0.8)',
                 borderVisible: false
             },
             localization: {
@@ -119,8 +104,6 @@ export const Chart: React.FC<Props> = ({ data, timeInterval }) => {
         //     })
         // );
 
-        console.log(data);
-
         lineSeries.setData(
             data.map((d) => {
                 return {
@@ -157,11 +140,6 @@ export const Chart: React.FC<Props> = ({ data, timeInterval }) => {
                 };
             })
         );
-
-        // chart.timeScale().setVisibleRange({
-        //     from: handleClickButton(timeRange, data[data.length - 1].date)!,
-        //     to: data[data.length - 1].date
-        // });
 
         chart.priceScale('').applyOptions({
             scaleMargins: {

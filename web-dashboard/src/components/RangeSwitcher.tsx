@@ -9,7 +9,7 @@ const RangeSwitcher: React.FC<Props> = ({ range, onClick }) => {
     return (
         <div>
             <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+                className="border hover:bg-slate-900 text-white hover:font-bold text-base py-1 px-6 rounded-md transition duration-300 ease-in-out transform hover:scale-105"
                 onClick={onClick}
             >
                 {range}
