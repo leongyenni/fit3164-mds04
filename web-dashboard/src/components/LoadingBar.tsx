@@ -1,6 +1,6 @@
 import React from 'react';
 
-const LoadingBar = () => {
+const LoadingBar: React.FC = () => {
     return (
         <div
             role="status"

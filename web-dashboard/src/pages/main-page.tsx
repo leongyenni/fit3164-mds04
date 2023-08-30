@@ -7,6 +7,7 @@ import useTSFinanceAPI from '../hooks/useTSFinanceAPI';
 import { useRouter } from 'next/router';
 import LoadingBar from '../components/LoadingBar';
 import '../styles/globals.css';
+import RangeSwitcher from '../components/RangeSwitcher';
 
 export const MainPage: React.FC = () => {
     const router = useRouter();
@@ -18,7 +19,7 @@ export const MainPage: React.FC = () => {
 
     console.log(tickerData);
 
-    const handleClick = (newTimeRange: string) => {
+    const handleClick = (newTimeRange: string): void => {
         setTimeRange(newTimeRange);
 
         switch (newTimeRange) {
@@ -28,13 +29,9 @@ export const MainPage: React.FC = () => {
             case '1wk':
                 setTimeInterval('1h');
                 break;
-            // console.log('1h');
             default:
                 setTimeInterval('1d');
         }
-
-        // console.log(timeRange);
-        // console.log(timeInterval);
     };
 
     if (tickerData.loading) {
@@ -50,43 +47,31 @@ export const MainPage: React.FC = () => {
                         timeInterval={timeInterval}
                     />
                 </div>
-                <div className="py-1 absolute ">
-                    <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+                <div className="py-1 flex space-x-2">
+                    <RangeSwitcher
+                        range="1 day"
                         onClick={() => handleClick('1d')}
-                    >
-                        1 day
-                    </button>
-                    <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+                    />
+                    <RangeSwitcher
+                        range="1 week"
                         onClick={() => handleClick('1wk')}
-                    >
-                        1 week
-                    </button>
-                    <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+                    />
+                    <RangeSwitcher
+                        range="1 month"
                         onClick={() => handleClick('1mo')}
-                    >
-                        1 month
-                    </button>
-                    <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+                    />
+                    <RangeSwitcher
+                        range="3 months"
                         onClick={() => handleClick('3mo')}
-                    >
-                        3 months
-                    </button>
-                    <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+                    />
+                    <RangeSwitcher
+                        range="6 months"
                         onClick={() => handleClick('6mo')}
-                    >
-                        6 months
-                    </button>
-                    <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+                    />
+                    <RangeSwitcher
+                        range="1 year"
                         onClick={() => handleClick('1y')}
-                    >
-                        1 year
-                    </button>
+                    />
                 </div>
             </div>
         );

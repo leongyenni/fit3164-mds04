@@ -9,12 +9,12 @@ import React, { use, useEffect, useState } from 'react';
 import { StockData } from '../DataType';
 import useTSFinanceAPI from '../hooks/useTSFinanceAPI';
 
-interface ChartProps {
+interface Props {
     data: StockData[];
     timeInterval: string;
 }
 
-export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
+export const Chart: React.FC<Props> = ({ data, timeInterval }) => {
     // stockData = useTSFinanceAPI()
     // const [stockData, setStockData] = useState(data);
 

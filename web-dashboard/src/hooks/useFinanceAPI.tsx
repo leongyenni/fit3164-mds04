@@ -3,6 +3,7 @@ import axios from 'axios';
 import { StockData } from '../DataType';
 import { UTCTimestamp } from 'lightweight-charts';
 
+
 const useFinanceAPI = (
     symbol: string
 ): {
