@@ -26,7 +26,7 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
         downColor: 'rgba(239, 83, 80, 1)',
         upColorLight: 'rgba(38, 166, 154, 0.5)',
         downColorLight: 'rgba(239, 83, 80, 0.5)',
-        toolTipColor: 'rgba(255, 255, 255, 0.25)'
+        toolTipColor: 'rgba(255, 255, 255, 0.5)'
     };
 
     const formatters = Intl.NumberFormat('en-US', {
@@ -90,15 +90,13 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
             },
             crosshair: {
                 horzLine: {
-                    visible: false,
-                    labelVisible: false
+                    width: 2,
+                    style: 2
                 },
                 vertLine: {
-                    visible: true,
-                    width: 1.5,
-                    style: 3,
-                    color: color.toolTipColor,
-                    labelVisible: true
+                    width: 2,
+                    style: 2,
+                    color: color.toolTipColor
                 }
             }
         });

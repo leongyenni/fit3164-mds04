@@ -49,19 +49,31 @@ const Tooltip: React.FC<TooltipProps> = ({ content, posX }) => {
 
     return (
         <div
-            className="w-40 h-3/4 absolute p-4  box-border text-base text-left z-10 pointer-events-none rounded-tl-4 
+            className="w-36 h-3/4 absolute p-4  box-border text-base text-left z-10 pointer-events-none rounded-tl-4 
             rounded-tr-4 border-b-0 shadow-md antialiased bg-opacity-25 text-white bg-white text-md "
-            style={{ left: posX }}
+            style={{ left: posX - 30 }}
         >
             <p className="text-md tracking-wide">{date}</p>
 
-            <p className="text-slate-300 text-sm mt-3 tracking-wider">Close:</p>
-            <p className="text-3xl tracking-wider font-black">{close}</p>
+            {/* <p className="text-slate-300 text-sm mt-3 tracking-wider">Close:</p> */}
+            <p className="text-4xl tracking-wider font-black">{close}</p>
 
-            <p className="text-slate-300 text-sm mt-4 tracking-wider">
+            {/* <p className="text-slate-300 text-sm mt-3 tracking-wider">Open:</p>
+            <p className="text-2xl tracking-wider font-black">{open}</p>
+
+            <p className="text-slate-300 text-sm mt-3 tracking-wider">High:</p>
+            <p className="text-2xl tracking-wider font-black">{high}</p>
+
+            <p className="text-slate-300 text-sm mt-3 tracking-wider">Low:</p>
+            <p className="text-2xl tracking-wider font-black">{low}</p> */}
+            {/* 
+            <p className="text-slate-300 text-sm mt-3 tracking-wider">Close:</p>
+            <p className="text-2xl tracking-wider font-black">{close}</p> */}
+
+            {/* <p className="text-slate-300 text-sm mt-4 tracking-wider">
                 Volume:
             </p>
-            <p className="text-3xl tracking-wider font-black">{volume}</p>
+            <p className="text-3xl tracking-wider font-black">{volume}</p> */}
 
             {/* <div className="flex flex-col">
                 <div className="flex justify-between">
