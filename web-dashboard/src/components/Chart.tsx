@@ -7,13 +7,32 @@ import {
 import React, { useEffect, useState } from 'react';
 import { StockData } from '../DataType';
 import Tooltip from './Tooltip';
+import { useDispatch, useSelector } from 'react-redux';
+import { setStockData } from '../redux/stockDataSlice';
+import { AppState } from '../redux/store';
 
 interface ChartProps {
     data: StockData[];
     timeInterval: string;
 }
 
+const currencyFormatter = Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD'
+}).format;
+
+const OHLCFormatter = (price: number) => {
+    return price.toFixed(2);
+};
+
+const volumeFormatter = (volume: number) => {
+    const volume_str = volume.toFixed(2);
+    return volume_str.substring(0, volume_str.length - 3) + 'K';
+};
+
 export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
+    const dispatch = useDispatch();
+
     const color = {
         backgroundColor: 'rgba(1, 10, 38, 1)',
         lineColor: '#2962FF',
@@ -29,22 +48,26 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
         toolTipColor: 'rgba(255, 255, 255, 0.5)'
     };
 
-    const formatters = Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD'
-    }).format;
+    const i = data.length - 1;
+    const currentStockData = {
+        timestamp: data[i].date,
+        open: OHLCFormatter(data[i].open),
+        high: OHLCFormatter(data[i].high),
+        low: OHLCFormatter(data[i].low),
+        close: OHLCFormatter(data[i].close),
+        volume: volumeFormatter(data[i].volume),
+        colour: data[i].close > data[i].open ? color.upColor : color.downColor
+    };
 
-    // Tooltip
     const [tooltipVisible, setTooltipVisible] = useState(false);
-    const [tooltipContent, setTooltipContent] = useState(['']);
     const [tooltipX, setTooltipX] = useState(0);
 
     const hideTooltip = () => {
         setTooltipVisible(false);
+        dispatch(setStockData(currentStockData));
     };
 
-    const showTooltip = (content: string[], x: number) => {
-        setTooltipContent(content);
+    const showTooltip = (x: number) => {
         setTooltipX(x);
         setTooltipVisible(true);
     };
@@ -78,7 +101,7 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
                 borderVisible: false
             },
             localization: {
-                priceFormatter: formatters
+                priceFormatter: currencyFormatter
             },
             grid: {
                 horzLines: {
@@ -201,16 +224,32 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
                 ) as HistogramData;
                 const symbol = data[0].symbol;
 
-                const date = OHLCdata.time.toString();
-                const open = OHLCdata.open.toFixed(2);
-                const high = OHLCdata.high.toFixed(2);
-                const low = OHLCdata.low.toFixed(2);
-                const close = OHLCdata.close.toFixed(2);
-                const volume = volumeData.value.toFixed(2);
+                // const date = OHLCdata.time.toString();
+                // const open = OHLCdata.open.toFixed(2);
+                // const high = OHLCdata.high.toFixed(2);
+                // const low = OHLCdata.low.toFixed(2);
+                // const close = OHLCdata.close.toFixed(2);
+                // const volume =
+                //     volumeData.value.toFixed(2).substring(0, 3) + 'K';
 
-                const content = [symbol, date, open, high, low, close, volume];
+                // const content = [symbol, date, open, high, low, close, volume];
 
-                showTooltip(content, param.point.x);
+                // showTooltip(content, param.point.x);
+
+                const tooltipContent = {
+                    timestamp: parseInt(OHLCdata.time.toString()),
+                    open: OHLCFormatter(OHLCdata.open),
+                    high: OHLCFormatter(OHLCdata.high),
+                    low: OHLCFormatter(OHLCdata.low),
+                    close: OHLCFormatter(OHLCdata.close),
+                    volume: volumeFormatter(volumeData.value),
+                    colour:
+                        OHLCdata.close > OHLCdata.open
+                            ? color.upColor
+                            : color.downColor
+                };
+                dispatch(setStockData(tooltipContent));
+                showTooltip(param.point.x);
             }
         });
 
@@ -228,9 +267,7 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
     return (
         <div>
             <div id="chart-div">
-                {tooltipVisible && (
-                    <Tooltip content={tooltipContent} posX={tooltipX} />
-                )}
+                {tooltipVisible && <Tooltip posX={tooltipX} />}
             </div>
         </div>
     );

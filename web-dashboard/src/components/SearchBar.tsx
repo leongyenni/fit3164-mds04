@@ -51,12 +51,7 @@ const Searchbar: React.FC<SearchBarProps> = ({ className }) => {
             <div className={`w-3/5 ${className}`}>
                 <div className="relative">
                     <button className="absolute h-[48px] w-[48px] p-[15px] rounded-full z-50">
-                        <AiOutlineSearch
-                            // className={`text-xl ${
-                            //     open ? 'text-slate-800' : ''
-                            // }`}
-                            className="text-xl text-gray-600"
-                        />
+                        <AiOutlineSearch className="text-xl text-gray-600" />
                     </button>
                     <input
                         type="search"
@@ -80,7 +75,7 @@ const Searchbar: React.FC<SearchBarProps> = ({ className }) => {
                 {open && (
                     <div
                         ref={dropdownRef}
-                        className="absolute top-3 mt-12 w-8/12 max-h-[200px] z-50 bg-white overflow-y-scroll rounded-2xl"
+                        className="absolute top-3 mt-12 w-3/5 max-h-[200px] z-50 bg-white overflow-y-scroll rounded-2xl"
                     >
                         <ul>
                             {tickerSymbols.map((tickerSymbol) => (

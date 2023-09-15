@@ -1,7 +1,5 @@
 'use client';
 import React from 'react';
-import Link from 'next/link';
-import '../styles/globals.css';
 import SearchBar from '../components/SearchBar';
 import StockDataContainer from '../components/StockDataContainer';
 

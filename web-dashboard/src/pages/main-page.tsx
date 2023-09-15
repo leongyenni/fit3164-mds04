@@ -1,12 +1,8 @@
-import { StockData } from '../DataType';
-import useFinanceAPI from '../hooks/useFinanceAPI';
-import { ColorType, UTCTimestamp, createChart } from 'lightweight-charts';
-import { useRef, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Chart } from '../components/Chart';
 import useTSFinanceAPI from '../hooks/useTSFinanceAPI';
 import { useRouter } from 'next/router';
 import LoadingBar from '../components/LoadingBar';
-import '../styles/globals.css';
 import RangeSwitcher from '../components/RangeSwitcher';
 import Searchbar from '../components/SearchBar';
 
@@ -17,8 +13,6 @@ export const MainPage: React.FC = () => {
     const [timeRange, setTimeRange] = useState<string>('1y');
     const [timeInterval, setTimeInterval] = useState<string>('1d');
     const tickerData = useTSFinanceAPI(tickerSymbol, timeInterval, timeRange);
-
-    console.log(tickerData);
 
     const handleClick = (newTimeRange: string): void => {
         setTimeRange(newTimeRange);
