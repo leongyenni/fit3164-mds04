@@ -8,14 +8,15 @@ import StockDataContainer from '../components/StockDataContainer';
 const StartPage: React.FC = () => {
     return (
         <div className="start-page">
-            <h1 className="title"> MDS04 </h1>
+            <h1 className="title mt-4"> MDS04 </h1>
             <h2 className="subtitle glow">TradeTrens $</h2>
             <p className="text">
                 Empowering your investments through data-driven insights
             </p>
             <p className="text">and meta-learning technology</p>
 
-            <SearchBar />
+            <SearchBar className="my-12" />
+
             <p className="text small-text">Popular stocks in the market</p>
             <StockDataContainer />
 

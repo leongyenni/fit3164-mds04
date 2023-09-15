@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import LoadingBar from '../components/LoadingBar';
 import '../styles/globals.css';
 import RangeSwitcher from '../components/RangeSwitcher';
+import Searchbar from '../components/SearchBar';
 
 export const MainPage: React.FC = () => {
     const router = useRouter();
@@ -38,16 +39,26 @@ export const MainPage: React.FC = () => {
         return <LoadingBar />;
     } else {
         return (
-            <div className="relative">
-                <div className="text-5xl my-6">{tickerSymbol}</div>
-                <hr className="max-w-7xl" />
-                <div className="py-5" id="chart-div">
+            <div>
+              
+                <div className="w-full relative">
+                    <div className="grid grid-flow-col-dense auto-cols-max grid-cols-[1fr,auto] my-6">
+                        <Searchbar />
+                        <p className="text-3xl mr-6 glow">
+                            TradeTrens $ | MDS04
+                        </p>
+                    </div>
+                    <hr className="mt-2 mr-6" />
+                </div>
+
+                <div className="text-5xl mt-6">{tickerSymbol}</div>
+                <div className="py-5 mr-6" id="chart-div">
                     <Chart
                         data={tickerData.data!}
                         timeInterval={timeInterval}
                     />
                 </div>
-                <div className="py-1 flex space-x-2">
+                <div className="py-1 flex space-x-2 mb-10">
                     <RangeSwitcher
                         range="1 day"
                         onClick={() => handleClick('1d')}

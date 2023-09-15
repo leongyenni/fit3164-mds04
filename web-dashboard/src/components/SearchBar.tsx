@@ -4,7 +4,11 @@ import useStockTickerAPI from '../hooks/useStockTickerAPI';
 import { Ticker } from '../DataType';
 import { useRouter } from 'next/router';
 
-const Searchbar: React.FC = () => {
+interface SearchBarProps {
+    className?: string;
+}
+
+const Searchbar: React.FC<SearchBarProps> = ({ className }) => {
     const [inputVal, setInputVal] = useState('');
     const [open, setOpen] = useState(false);
     const tickerSymbols: Ticker[] = useStockTickerAPI(inputVal);
@@ -44,14 +48,14 @@ const Searchbar: React.FC = () => {
 
     return (
         <form className="relative">
-            <div className="my-10 w-2/3">
+            <div className={`w-3/5 ${className}`}>
                 <div className="relative">
                     <button className="absolute h-[48px] w-[48px] p-[15px] rounded-full z-50">
                         <AiOutlineSearch
                             // className={`text-xl ${
                             //     open ? 'text-slate-800' : ''
                             // }`}
-                            className="text-xl text-slate-800"
+                            className="text-xl text-gray-600"
                         />
                     </button>
                     <input
@@ -59,7 +63,6 @@ const Searchbar: React.FC = () => {
                         placeholder="Search..."
                         className="search-bar-input w-full h-[48px] p-4 pl-[56px] bg-slate-800 rounded-full"
                         onClick={(e) => {
-                            console.log('hellp');
                             handleChange(e.target.value.toUpperCase());
                         }}
                         value={inputVal}
