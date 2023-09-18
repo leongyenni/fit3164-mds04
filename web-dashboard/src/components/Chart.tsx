@@ -67,7 +67,7 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
                 textColor: color.textColor
             },
             width: document.getElementById('chart-div')!.clientWidth,
-            height: 560,
+            height: 570,
             timeScale: {
                 timeVisible: timeInterval === '1d' ? false : true,
                 secondsVisible: false,
