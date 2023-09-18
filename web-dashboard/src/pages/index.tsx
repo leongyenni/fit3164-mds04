@@ -14,7 +14,7 @@ const StartPage: React.FC = () => {
             </p>
             <p className="text cursor-default">and meta-learning technology</p>
 
-            <SearchBar className="my-12" />
+            <SearchBar className="my-12 " />
 
             <p className="text small-text">Popular stocks in the market</p>
             <StockDataContainer />

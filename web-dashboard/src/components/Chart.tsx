@@ -67,7 +67,7 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
                 textColor: color.textColor
             },
             width: document.getElementById('chart-div')!.clientWidth,
-            height: 410,
+            height: 560,
             timeScale: {
                 timeVisible: timeInterval === '1d' ? false : true,
                 secondsVisible: false,
@@ -88,6 +88,7 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
                 }
             },
             crosshair: {
+                mode: 1,
                 horzLine: {
                     width: 2,
                     style: 2
@@ -100,13 +101,6 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
                 }
             }
         });
-
-        // const newSeries = chart.addAreaSeries({
-        //     lineColor: color.lineColor,
-        //     topColor: color.areaTopColor,
-        //     bottomColor: color.areaBottomColor,
-        //     lineWidth: 3
-        // });
 
         const lineSeries = chart.addLineSeries({
             color: color.lineColor,
@@ -127,12 +121,6 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
             },
             priceScaleId: ''
         });
-
-        // newSeries.setData(
-        //     data.map((d) => {
-        //         return { time: d.date as UTCTimestamp, value: d.close };
-        //     })
-        // );
 
         lineSeries.setData(
             data.map((d) => {

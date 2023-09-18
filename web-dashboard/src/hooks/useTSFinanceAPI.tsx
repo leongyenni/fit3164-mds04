@@ -57,7 +57,6 @@ const useTSFinanceAPI = (
         fetchData();
     }, [symbol, interval, range]);
 
-    console.log(data);
     return { loading, error, data };
 };
 

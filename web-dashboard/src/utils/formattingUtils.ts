@@ -16,3 +16,31 @@ export const volumeFormatter = (volume: number) => {
         return volume.toFixed(2);
     }
 };
+
+export const dateFormatter = (timestamp: number) => {
+    const months = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec'
+    ];
+    const date = new Date(timestamp * 1000);
+    const year = date.getUTCFullYear();
+    const month = months[date.getUTCMonth()];
+    const day = date.getUTCDate();
+    const hour = date.getUTCHours();
+    const min = date.getUTCMinutes().toString().padStart(2, '0');
+
+    const date_str = `${month} ${day}, ${year}`;
+    const time_str = `${hour}:${min} `;
+
+    return [date_str, time_str];
+};

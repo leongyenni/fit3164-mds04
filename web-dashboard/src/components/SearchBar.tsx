@@ -47,13 +47,13 @@ const Searchbar: React.FC<SearchBarProps> = ({ className }) => {
         <form className="relative">
             <div className={`w-3/5 ${className}`}>
                 <div className="relative">
-                    <button className="absolute h-[48px] w-[48px] p-[15px] rounded-full z-50">
+                    <button className="absolute h-[48px] w-[48px] p-[15px] rounded-lg z-50">
                         <AiOutlineSearch className="text-xl text-gray-600" />
                     </button>
                     <input
                         type="search"
                         placeholder="Search..."
-                        className="search-bar-input w-full h-[48px] p-4 pl-[56px] bg-slate-800 rounded-full"
+                        className="search-bar-input w-full h-12 p-3 pl-[56px] bg-slate-800 rounded-lg"
                         onClick={(e) => {
                             handleChange(e.target.value.toUpperCase());
                         }}
@@ -74,7 +74,7 @@ const Searchbar: React.FC<SearchBarProps> = ({ className }) => {
                 {open && (
                     <div
                         ref={dropdownRef}
-                        className="absolute top-3 mt-12 w-3/5 max-h-[200px] z-50 bg-white overflow-y-scroll rounded-2xl"
+                        className="absolute top-3 mt-12 w-3/5 max-h-[200px] z-50 bg-white overflow-y-scroll rounded-lg"
                     >
                         <ul>
                             {tickerSymbols.map((tickerSymbol) => (

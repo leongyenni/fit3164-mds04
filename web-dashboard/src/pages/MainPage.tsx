@@ -6,6 +6,7 @@ import LoadingBar from '../components/LoadingBar';
 import RangeSwitcher from '../components/RangeSwitcher';
 import Searchbar from '../components/SearchBar';
 import Label from '../components/Label';
+import { ForecastChart } from '../components/ForecastChart';
 
 export const MainPage: React.FC = () => {
     const router = useRouter();
@@ -49,21 +50,36 @@ export const MainPage: React.FC = () => {
                             TradeTrens $ | MDS04
                         </p>
                     </div>
-                    <hr className="mt-2 mr-6 text-grey-700 h-0.5" />
+                    <hr className="border-t border-gray-500 my-4" />
                 </div>
 
-                <div className="mt-6 cursor-default">
-                    <span className="text-3xl"> {tickerSymbol} </span>
+                <div className="mt-4 cursor-default">
+                    <span className="text-2xl">{tickerSymbol}</span>
                     <Label />
                 </div>
 
-                <div className="py-5 mr-6" id="chart-div">
+                <div className="py-4 mr-6" id="chart-div">
                     <Chart
                         data={tickerData.data!}
                         timeInterval={timeInterval}
                     />
                 </div>
-                <div className="py-1 flex space-x-2 mb-10">
+
+                <hr className="border-t border-gray-500 mb-2" />
+
+                <div className="inline-flex">
+                    <button className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l">
+                        Prev
+                    </button>
+                    <button className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4">
+                        Prev
+                    </button>
+                    <button className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r">
+                        Next
+                    </button>
+                </div>
+
+                {/* <div className="py-1 flex space-x-3 mb-5">
                     <RangeSwitcher
                         range="1 day"
                         onClick={() => switchTimeRange('1d')}
@@ -88,6 +104,10 @@ export const MainPage: React.FC = () => {
                         range="1 year"
                         onClick={() => switchTimeRange('1y')}
                     />
+                </div> */}
+
+                <div className="my-60 py-5 mr-6" id="forecast-chart-div">
+                    <ForecastChart data={tickerData.data!} />
                 </div>
             </div>
         );

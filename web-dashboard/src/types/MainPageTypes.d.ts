@@ -7,3 +7,8 @@ export type ForecastChartProps = {
     data: StockData[];
 }
 
+
+export type TooltipProps = {
+    posX: number;
+};
+

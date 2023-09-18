@@ -1,8 +1,9 @@
 export const color = {
     backgroundColor: '#02061a',
-    lineColor: '#FFFFFF',
+    lineColor: 'rgba(255, 255, 255, 0.5)',
     textColor: '#FFFFFF',
-    areaTopColor: '#2962FF',
+    areaTopColor: '#4B84ED',
+    areaLineColor: '#1DCBF2',
     areaBottomColor: '#030714',
     gridColor: 'rgba(197, 203, 206, 0.2)',
     borderColor: 'rgba(255, 255, 255, 0.5)',
