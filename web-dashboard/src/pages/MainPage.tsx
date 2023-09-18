@@ -7,6 +7,7 @@ import RangeSwitcher from '../components/RangeSwitcher';
 import Searchbar from '../components/SearchBar';
 import Label from '../components/Label';
 import { ForecastChart } from '../components/ForecastChart';
+import { StockData } from '../types/DataTypes';
 
 export const MainPage: React.FC = () => {
     const router = useRouter();
@@ -16,6 +17,7 @@ export const MainPage: React.FC = () => {
     const [timeInterval, setTimeInterval] = useState<string>('1d');
 
     const tickerData = useTSFinanceAPI(tickerSymbol, timeInterval, timeRange);
+    const forecastData = useTSFinanceAPI(tickerSymbol, '5m', '1d');
 
     const switchTimeRange = (newTimeRange: string): void => {
         setTimeRange(newTimeRange);
@@ -133,8 +135,10 @@ export const MainPage: React.FC = () => {
                     />
                 </div> */}
 
-                <div className="my-60 py-5 mr-6" id="forecast-chart-div">
-                    <ForecastChart data={tickerData.data!} />
+
+
+                <div className="my-20 py-5 mr-6" id="forecast-chart-div">
+                    <ForecastChart data={forecastData.data!} />
                 </div>
             </div>
         );

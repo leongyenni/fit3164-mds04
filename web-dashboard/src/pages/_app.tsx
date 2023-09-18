@@ -5,7 +5,7 @@ import { wrapper } from '../redux/store';
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
     const { store } = wrapper.useWrappedStore(pageProps);
-    
+
     return (
         <Provider store={store}>
             <Component {...pageProps} />
