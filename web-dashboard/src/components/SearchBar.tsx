@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { useRouter } from 'next/router';
 import { AiOutlineSearch } from 'react-icons/ai';
 import useStockTickerAPI from '../hooks/useStockTickerAPI';
 import { Ticker } from '../types/DataTypes';
 import { SearchBarProps } from '../types/LandingPageTypes';
-import { useRouter } from 'next/router';
 
 const Searchbar: React.FC<SearchBarProps> = ({ className }) => {
     const [inputVal, setInputVal] = useState('');
@@ -22,7 +22,7 @@ const Searchbar: React.FC<SearchBarProps> = ({ className }) => {
         setInputVal(tickerSymbol);
 
         router.push({
-            pathname: `/main-page`,
+            pathname: `/MainPage`,
             query: { tickerSymbol: tickerSymbol }
         });
     };

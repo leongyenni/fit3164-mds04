@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
     createChart,
     ColorType,
@@ -13,11 +14,10 @@ import {
     currencyFormatter,
     OHLCFormatter,
     volumeFormatter
-} from '../utils/Formatters';
+} from '../utils/formattingUtils';
 import { color } from '../styles/colors';
 
 export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
-
     const i = data.length - 1;
     const currentStockData = {
         timestamp: data[i].date,

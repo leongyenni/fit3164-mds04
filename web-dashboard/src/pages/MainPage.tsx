@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Chart } from '../components/Chart';
-import useTSFinanceAPI from '../hooks/useTSFinanceAPI';
 import { useRouter } from 'next/router';
+import useTSFinanceAPI from '../hooks/useTSFinanceAPI';
+import { Chart } from '../components/Chart';
 import LoadingBar from '../components/LoadingBar';
 import RangeSwitcher from '../components/RangeSwitcher';
 import Searchbar from '../components/SearchBar';
