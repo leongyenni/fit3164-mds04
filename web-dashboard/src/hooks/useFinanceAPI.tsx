@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { StockData } from '../DataType';
+import { StockData } from '../types/DataTypes';
 import { UTCTimestamp } from 'lightweight-charts';
-
 
 const useFinanceAPI = (
     symbol: string

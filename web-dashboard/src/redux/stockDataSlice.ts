@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AppState } from './store';
 
 interface StockDataState {
     timestamp: number;
+    symbol: string;
     open: string;
     high: string;
     low: string;
@@ -13,6 +13,7 @@ interface StockDataState {
 
 const initialState: StockDataState = {
     timestamp: 0,
+    symbol: '',
     open: '',
     high: '',
     low: '',
@@ -26,8 +27,8 @@ const stockDataSlice = createSlice({
     initialState,
     reducers: {
         setStockData: (state, action: PayloadAction<StockDataState>) => {
-           
             return {
+                ...state,
                 ...action.payload
             };
         }

@@ -1,12 +1,8 @@
 import React from 'react';
 import useFinanceAPI from '../hooks/useFinanceAPI';
-import useTSFinanceAPI from '../hooks/useTSFinanceAPI';
+import { StockDataItemProps } from '../types/LandingPageTypes';
 
-interface Props {
-    symbol: string;
-}
-
-const StockDataItem: React.FC<Props> = ({ symbol }) => {
+const StockDataItem: React.FC<StockDataItemProps> = ({ symbol }) => {
     const { loading, error, data } = useFinanceAPI(symbol);
 
     if (loading) {

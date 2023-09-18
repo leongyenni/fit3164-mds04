@@ -1,12 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
 import useStockTickerAPI from '../hooks/useStockTickerAPI';
-import { Ticker } from '../DataType';
+import { Ticker } from '../types/DataTypes';
+import { SearchBarProps } from '../types/LandingPageTypes';
 import { useRouter } from 'next/router';
-
-interface SearchBarProps {
-    className?: string;
-}
 
 const Searchbar: React.FC<SearchBarProps> = ({ className }) => {
     const [inputVal, setInputVal] = useState('');
@@ -64,7 +61,9 @@ const Searchbar: React.FC<SearchBarProps> = ({ className }) => {
                         onChange={(e) => {
                             handleChange(e.target.value.toUpperCase());
                         }}
-                        onKeyDown={(e) => {
+                        onKeyDown={(
+                            e: React.KeyboardEvent<HTMLInputElement>
+                        ) => {
                             if (e.key === 'Enter') {
                                 e.preventDefault();
                                 handleClickValue(e.target.value.toUpperCase());
@@ -82,12 +81,19 @@ const Searchbar: React.FC<SearchBarProps> = ({ className }) => {
                                 <li
                                     className="search-bar-item text-slate-800 p-2"
                                     key={tickerSymbol.symbol}
+                                    value={tickerSymbol.symbol}
                                     onClick={() => {
                                         handleClickValue(tickerSymbol.symbol);
                                     }}
                                 >
-                                    {tickerSymbol.symbol} (
-                                    {tickerSymbol.company_name})
+                                    <div className="flex items-center">
+                                        <span className="flex-grow font-medium">
+                                            {tickerSymbol.symbol}
+                                        </span>
+                                        <span className="text-slate-500 tracking-wide font-thin text-left cursor-default">
+                                            {tickerSymbol.company_name}
+                                        </span>
+                                    </div>
                                 </li>
                             ))}
                         </ul>

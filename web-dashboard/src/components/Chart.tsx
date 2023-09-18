@@ -5,16 +5,12 @@ import {
     HistogramData
 } from 'lightweight-charts';
 import React, { useEffect, useState } from 'react';
-import { StockData } from '../DataType';
+import { ChartProps } from '../types/MainPageTypes';
 import Tooltip from './Tooltip';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setStockData } from '../redux/stockDataSlice';
-import { AppState } from '../redux/store';
 
-interface ChartProps {
-    data: StockData[];
-    timeInterval: string;
-}
+
 
 const currencyFormatter = Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -26,19 +22,24 @@ const OHLCFormatter = (price: number) => {
 };
 
 const volumeFormatter = (volume: number) => {
-    const volume_str = volume.toFixed(2);
-    return volume_str.substring(0, volume_str.length - 3) + 'K';
+    if (volume >= 1e6) {
+        return (volume / 1e6).toFixed(2) + 'M';
+    } else if (volume >= 1e3) {
+        return (volume / 1e3).toFixed(2) + 'K';
+    } else {
+        return volume.toFixed(2);
+    }
 };
 
 export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
     const dispatch = useDispatch();
 
     const color = {
-        backgroundColor: 'rgba(1, 10, 38, 1)',
+        backgroundColor: '#02061a',
         lineColor: '#2962FF',
         textColor: '#FFFFFF',
         areaTopColor: '#2962FF',
-        areaBottomColor: 'rgb(1, 10, 38)',
+        areaBottomColor: '#030714',
         gridColor: 'rgba(197, 203, 206, 0.2)',
         borderColor: 'rgba(255, 255, 255, 0.5)',
         upColor: 'rgba(38, 166, 154, 1)',
@@ -51,6 +52,7 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
     const i = data.length - 1;
     const currentStockData = {
         timestamp: data[i].date,
+        symbol: data[i].symbol,
         open: OHLCFormatter(data[i].open),
         high: OHLCFormatter(data[i].high),
         low: OHLCFormatter(data[i].low),
@@ -59,6 +61,7 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
         colour: data[i].close > data[i].open ? color.upColor : color.downColor
     };
 
+    // Tooltip
     const [tooltipVisible, setTooltipVisible] = useState(false);
     const [tooltipX, setTooltipX] = useState(0);
 
@@ -74,6 +77,8 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
 
     // Chart component
     useEffect(() => {
+        dispatch(setStockData(currentStockData));
+
         const handleResize = () => {
             if (chart) {
                 chart.applyOptions({
@@ -91,7 +96,7 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
                 textColor: color.textColor
             },
             width: document.getElementById('chart-div')!.clientWidth,
-            height: 490,
+            height: 410,
             timeScale: {
                 timeVisible: timeInterval === '1d' ? false : true,
                 secondsVisible: false,
@@ -117,6 +122,7 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
                     style: 2
                 },
                 vertLine: {
+                    labelVisible: false,
                     width: 2,
                     style: 2,
                     color: color.toolTipColor
@@ -224,20 +230,9 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
                 ) as HistogramData;
                 const symbol = data[0].symbol;
 
-                // const date = OHLCdata.time.toString();
-                // const open = OHLCdata.open.toFixed(2);
-                // const high = OHLCdata.high.toFixed(2);
-                // const low = OHLCdata.low.toFixed(2);
-                // const close = OHLCdata.close.toFixed(2);
-                // const volume =
-                //     volumeData.value.toFixed(2).substring(0, 3) + 'K';
-
-                // const content = [symbol, date, open, high, low, close, volume];
-
-                // showTooltip(content, param.point.x);
-
                 const tooltipContent = {
                     timestamp: parseInt(OHLCdata.time.toString()),
+                    symbol: data[i].symbol,
                     open: OHLCFormatter(OHLCdata.open),
                     high: OHLCFormatter(OHLCdata.high),
                     low: OHLCFormatter(OHLCdata.low),

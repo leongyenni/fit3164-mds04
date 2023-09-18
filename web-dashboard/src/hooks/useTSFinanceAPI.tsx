@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { TimeSeriesStockData, StockData } from '../DataType';
+import { TimeSeriesStockData, StockData } from '../types/DataTypes';
 import { UTCTimestamp } from 'lightweight-charts';
 
 const useTSFinanceAPI = (
@@ -24,7 +24,6 @@ const useTSFinanceAPI = (
 
             console.log(response.data);
             const result = response.data.chart.result[0];
-            const timezone = result.meta.exchangeTimezoneName;
 
             const raw_data: StockData[] = result.timestamp.map(
                 (timestamp: number, index: number) => {
@@ -45,7 +44,6 @@ const useTSFinanceAPI = (
 
             setData(raw_data);
             setLoading(false);
-            console.log(raw_data);
         } catch (error) {
             console.error('Error fetching stock data:', error);
             setError(error);

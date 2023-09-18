@@ -1,9 +1,5 @@
 import React from 'react';
-
-interface RangeSwitcherProps {
-    range: string;
-    onClick: () => void;
-}
+import { RangeSwitcherProps } from '../types/LandingPageTypes';
 
 const RangeSwitcher: React.FC<RangeSwitcherProps> = ({ range, onClick }) => {
     return (

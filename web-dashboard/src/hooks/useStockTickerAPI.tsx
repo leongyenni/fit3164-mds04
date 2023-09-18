@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { Ticker } from '../DataType';
+import { Ticker } from '../types/DataTypes';
 
 const useStockTickerAPI = (letter: string = ''): Ticker[] => {
     const [tickers, setTickers] = useState<Ticker[]>([]);
