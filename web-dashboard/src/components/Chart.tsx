@@ -4,50 +4,19 @@ import {
     BarData,
     HistogramData
 } from 'lightweight-charts';
+import Tooltip from './Tooltip';
 import React, { useEffect, useState } from 'react';
 import { ChartProps } from '../types/MainPageTypes';
-import Tooltip from './Tooltip';
 import { useDispatch } from 'react-redux';
 import { setStockData } from '../redux/stockDataSlice';
-
-
-
-const currencyFormatter = Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD'
-}).format;
-
-const OHLCFormatter = (price: number) => {
-    return price.toFixed(2);
-};
-
-const volumeFormatter = (volume: number) => {
-    if (volume >= 1e6) {
-        return (volume / 1e6).toFixed(2) + 'M';
-    } else if (volume >= 1e3) {
-        return (volume / 1e3).toFixed(2) + 'K';
-    } else {
-        return volume.toFixed(2);
-    }
-};
+import {
+    currencyFormatter,
+    OHLCFormatter,
+    volumeFormatter
+} from '../utils/Formatters';
+import { color } from '../styles/colors';
 
 export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
-    const dispatch = useDispatch();
-
-    const color = {
-        backgroundColor: '#02061a',
-        lineColor: '#2962FF',
-        textColor: '#FFFFFF',
-        areaTopColor: '#2962FF',
-        areaBottomColor: '#030714',
-        gridColor: 'rgba(197, 203, 206, 0.2)',
-        borderColor: 'rgba(255, 255, 255, 0.5)',
-        upColor: 'rgba(38, 166, 154, 1)',
-        downColor: 'rgba(239, 83, 80, 1)',
-        upColorLight: 'rgba(38, 166, 154, 0.5)',
-        downColorLight: 'rgba(239, 83, 80, 0.5)',
-        toolTipColor: 'rgba(255, 255, 255, 0.5)'
-    };
 
     const i = data.length - 1;
     const currentStockData = {
@@ -60,6 +29,8 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
         volume: volumeFormatter(data[i].volume),
         colour: data[i].close > data[i].open ? color.upColor : color.downColor
     };
+
+    const dispatch = useDispatch();
 
     // Tooltip
     const [tooltipVisible, setTooltipVisible] = useState(false);
@@ -138,7 +109,7 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
         // });
 
         const lineSeries = chart.addLineSeries({
-            color: '#4B84ED',
+            color: color.lineColor,
             lineWidth: 1
         });
 
