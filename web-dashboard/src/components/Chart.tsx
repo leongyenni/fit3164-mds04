@@ -104,7 +104,8 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
 
         const lineSeries = chart.addLineSeries({
             color: color.lineColor,
-            lineWidth: 1
+            lineWidth: 1,
+            lastValueVisible: false
         });
 
         const candlestickSeries = chart.addCandlestickSeries({

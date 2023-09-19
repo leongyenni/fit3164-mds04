@@ -5,7 +5,7 @@ import { Chart } from '../components/Chart';
 import LoadingBar from '../components/LoadingBar';
 import RangeSwitcher from '../components/RangeSwitcher';
 import Searchbar from '../components/SearchBar';
-import Label from '../components/Label';
+import Label from '../components/Legend';
 import { ForecastChart } from '../components/ForecastChart';
 import { StockData } from '../types/DataTypes';
 
@@ -134,8 +134,6 @@ export const MainPage: React.FC = () => {
                         onClick={() => switchTimeRange('1y')}
                     />
                 </div> */}
-
-
 
                 <div className="my-20 py-5 mr-6" id="forecast-chart-div">
                     <ForecastChart data={forecastData.data!} />

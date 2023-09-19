@@ -1,7 +1,4 @@
-import {
-    createChart,
-    ColorType
-} from 'lightweight-charts';
+import { createChart, ColorType, Time } from 'lightweight-charts';
 import React, { useEffect, useState } from 'react';
 import { ForecastChartProps } from '../types/MainPageTypes';
 import { color } from '../styles/colors';
@@ -12,68 +9,101 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({ data }) => {
         const handleResize = () => {
             if (chart) {
                 chart.applyOptions({
-                    width: document.getElementById('forecast-chart-div')!.clientWidth
+                    width: document.getElementById('forecast-chart-div')!
+                        .clientWidth
                 });
             }
         };
 
-        const chart = createChart(document.getElementById('forecast-chart-div')!, {
-            layout: {
-                background: {
-                    type: ColorType.Solid,
-                    color: color.backgroundColor
+        const chart = createChart(
+            document.getElementById('forecast-chart-div')!,
+            {
+                layout: {
+                    background: {
+                        type: ColorType.Solid,
+                        color: color.backgroundColor
+                    },
+                    textColor: color.textColor
                 },
-                textColor: color.textColor
-            },
-            width: document.getElementById('forecast-chart-div')!.clientWidth,
-            height: 500,
-            timeScale: {
-                timeVisible: true,
-                secondsVisible: false,
-                borderVisible: false
-            },
-            rightPriceScale: {
-                borderVisible: false
-            },
-            localization: {
-                priceFormatter: currencyFormatter
-            },
-            grid: {
-                horzLines: {
-                    color: color.gridColor
+                width: document.getElementById('forecast-chart-div')!
+                    .clientWidth,
+                height: 500,
+                timeScale: {
+                    timeVisible: true,
+                    secondsVisible: false,
+                    borderVisible: false
                 },
-                vertLines: {
-                    color: color.gridColor
-                }
-            },
-            crosshair: {
-                horzLine: {
-                    width: 2,
-                    style: 2
+                rightPriceScale: {
+                    borderVisible: false
                 },
-                vertLine: {
-                    labelVisible: false,
-                    width: 2,
-                    style: 2,
-                    color: color.toolTipColor
+                localization: {
+                    priceFormatter: currencyFormatter
+                },
+                grid: {
+                    horzLines: {
+                        color: color.gridColor
+                    },
+                    vertLines: {
+                        color: color.gridColor
+                    }
+                },
+                crosshair: {
+                    horzLine: {
+                        width: 2,
+                        style: 2
+                    },
+                    vertLine: {
+                        labelVisible: false,
+                        width: 2,
+                        style: 2,
+                        color: color.toolTipColor
+                    }
                 }
             }
-        });
+        );
 
-        const newSeries = chart.addAreaSeries({
+        const lineSeries = chart.addAreaSeries({
             lineColor: color.areaLineColor,
             topColor: color.areaTopColor,
             bottomColor: color.areaBottomColor,
             lineWidth: 1
         });
 
-        newSeries.setData(
-            data.map((d) => {
-                return { time: d.date, value: d.close };
-            })
-        );
+        
+
+        var currentIndex = 0;
+        const lastIndex = data.length - 1;
+
+        console.log(data);
+        console.log(lastIndex);
+
+        setInterval(function () {
+            if (currentIndex <= lastIndex) {
+                const currentPoint = {
+                    value: data[currentIndex].close,
+                    time: data[currentIndex].date
+                };
+                console.log(data[currentIndex].close);
+                lineSeries.update(currentPoint);
+                currentIndex++;
+            } else {
+                return;
+            }
+        }, 300);
 
         chart.timeScale().fitContent();
+
+        // if (currentIndex < lastIndex) {
+        //     const currentPoint = {
+        //         value: data[currentIndex].close,
+        //         time: data[currentIndex].date
+        //     };
+        //     console.log(data[currentIndex].close);
+        //     lineSeries.update(currentPoint);
+        //     currentIndex++;
+        // } else {
+        //     return;
+        // }
 
         window.addEventListener('resize', handleResize);
 
