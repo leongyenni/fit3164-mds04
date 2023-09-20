@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { AppState } from '../redux/store';
 
-const Label: React.FC = () => {
+const Legend: React.FC = () => {
     const stockData = useSelector((state: AppState) => state.stockData);
 
     return (
@@ -51,4 +51,4 @@ const Label: React.FC = () => {
     );
 };
 
-export default Label;
+export default Legend;

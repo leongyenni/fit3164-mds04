@@ -4,9 +4,10 @@ export type ChartProps = {
 };
 
 export type ForecastChartProps = {
-    data: StockData[];
-}
-
+    historicalData: StockData[];
+    forecastData: StockData[];
+    startForecast: boolean;
+};
 
 export type TooltipProps = {
     posX: number;

@@ -4,7 +4,7 @@ import { ForecastChartProps } from '../types/MainPageTypes';
 import { color } from '../styles/colors';
 import { currencyFormatter } from '../utils/formattingUtils';
 
-export const ForecastChart: React.FC<ForecastChartProps> = ({ data }) => {
+export const ForecastChart: React.FC<ForecastChartProps> = ({ historicalData, forecastData, startForecast }) => {
     useEffect(() => {
         const handleResize = () => {
             if (chart) {
@@ -69,14 +69,28 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({ data }) => {
             lineWidth: 1
         });
 
+
+        // lineSeries.setData(
+        //     historicalData.map((d) => {
+        //         return {
+        //             time: d.date,
+        //             value: d.close
+        //         }
+        //     })
+        // )
+
         let currentIndex = 0;
-        const lastIndex = data.length;
+        const lastIndex = forecastData.length;
+        
+        // lineSeries.applyOptions({
+        //     lineColor: '#ffffff'
+        // })
 
         const updateDataPoint = () => {
-            if (currentIndex < lastIndex) {
+            if (currentIndex < lastIndex && startForecast) {
                 const currentPoint = {
-                    value: data[currentIndex].close,
-                    time: data[currentIndex].date
+                    time: forecastData[currentIndex].date,
+                    value: forecastData[currentIndex].close
                 };
                 chart.timeScale().fitContent();
                 lineSeries.update(currentPoint);
@@ -97,7 +111,7 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({ data }) => {
                 chart.remove();
             }
         };
-    }, [data]);
+    }, [historicalData, forecastData, startForecast]);
 
     return <div></div>;
 };
