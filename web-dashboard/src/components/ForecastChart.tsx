@@ -4,7 +4,11 @@ import { ForecastChartProps } from '../types/MainPageTypes';
 import { color } from '../styles/colors';
 import { currencyFormatter } from '../utils/formattingUtils';
 
-export const ForecastChart: React.FC<ForecastChartProps> = ({ historicalData, forecastData, startForecast }) => {
+export const ForecastChart: React.FC<ForecastChartProps> = ({
+    historicalData,
+    forecastData,
+    startForecast
+}) => {
     useEffect(() => {
         const handleResize = () => {
             if (chart) {
@@ -53,7 +57,6 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({ historicalData, fo
                         style: 2
                     },
                     vertLine: {
-                        labelVisible: false,
                         width: 2,
                         style: 2,
                         color: color.toolTipColor
@@ -62,29 +65,33 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({ historicalData, fo
             }
         );
 
-        const lineSeries = chart.addAreaSeries({
+        const areaSeriesHist = chart.addAreaSeries({
             lineColor: color.areaLineColor,
             topColor: color.areaTopColor,
             bottomColor: color.areaBottomColor,
             lineWidth: 1
         });
 
+        const areaSeriesForecast = chart.addAreaSeries({
+            lineColor: '#ffffff',
+            topColor: 'rgba(255, 255, 255, 0.45)',
+            bottomColor: 'rgba(255, 255, 255, 0.1)',
+            lineWidth: 1
+        });
 
-        // lineSeries.setData(
-        //     historicalData.map((d) => {
-        //         return {
-        //             time: d.date,
-        //             value: d.close
-        //         }
-        //     })
-        // )
+        areaSeriesHist.setData(
+            historicalData.map((d) => {
+                return {
+                    time: d.date,
+                    value: d.close
+                };
+            })
+        );
+
+        chart.timeScale().fitContent();
 
         let currentIndex = 0;
         const lastIndex = forecastData.length;
-        
-        // lineSeries.applyOptions({
-        //     lineColor: '#ffffff'
-        // })
 
         const updateDataPoint = () => {
             if (currentIndex < lastIndex && startForecast) {
@@ -92,11 +99,12 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({ historicalData, fo
                     time: forecastData[currentIndex].date,
                     value: forecastData[currentIndex].close
                 };
+                console.log(forecastData[currentIndex].date);
                 chart.timeScale().fitContent();
-                lineSeries.update(currentPoint);
+                areaSeriesForecast.update(currentPoint);
                 currentIndex++;
             } else {
-                clearInterval(intervalId); 
+                clearInterval(intervalId);
             }
         };
 
@@ -111,7 +119,7 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({ historicalData, fo
                 chart.remove();
             }
         };
-    }, [historicalData, forecastData, startForecast]);
+    }, [startForecast]);
 
     return <div></div>;
 };

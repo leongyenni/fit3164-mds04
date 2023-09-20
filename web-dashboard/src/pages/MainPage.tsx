@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
 import { AppState } from '../redux/store';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useTSFinanceAPI from '../hooks/useTSFinanceAPI';
 import { Chart } from '../components/Chart';
 import LoadingBar from '../components/LoadingBar';
@@ -21,16 +21,22 @@ export const MainPage: React.FC = () => {
         timeRangeData.timeInterval,
         timeRangeData.timeRange
     );
-    const historicalData = useTSFinanceAPI(tickerSymbol, '1h', '7d');
-    const forecastData = useTSFinanceAPI(tickerSymbol, '1h', '1d');
+    const historicalData = useTSFinanceAPI(tickerSymbol, '1h', '2d');
+    // const forecastData = useTSFinanceAPI(tickerSymbol, '1h', '1d');
 
     const [startForecast, setStartForecast] = useState(false);
-    
+
+    useEffect(() => {
+        setStartForecast(false);
+    }, [tickerSymbol]);
+
     const getData = () => {
-        return new Promise((resolve, reject) => fetch('http://localhost:5000/api')
-        .then((response) => { console.log(response.json()) }))
-    }
-    
+        return new Promise((resolve, reject) =>
+            fetch('http://localhost:5000/api').then((response) => {
+                console.log(response.json());
+            })
+        );
+    };
 
     const navigateToStartPage = () => {
         router.push({ pathname: '/' });
@@ -39,7 +45,7 @@ export const MainPage: React.FC = () => {
     if (tickerData.loading) {
         return <LoadingBar />;
     } else {
-        getData();
+
         return (
             <div>
                 <div className="w-full relative">
@@ -82,8 +88,18 @@ export const MainPage: React.FC = () => {
 
                 <div className="my-5 py-5 mr-6" id="forecast-chart-div">
                     <ForecastChart
-                        historicalData={historicalData.data!}
-                        forecastData={forecastData.data!}
+                        historicalData={
+                            historicalData.data?.slice(
+                                0,
+                                historicalData.data.length/2+1
+                            )!
+                        }
+                        forecastData={
+                            historicalData.data?.slice(
+                                historicalData.data.length/2,
+                                historicalData.data.length
+                            )!
+                        }
                         startForecast={startForecast}
                     />
                 </div>

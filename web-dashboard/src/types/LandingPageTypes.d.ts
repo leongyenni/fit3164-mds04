@@ -1,8 +1,3 @@
-export type RangeSwitcherProps = {
-    range: string;
-    onClick: () => void;
-}
-
 export type SearchBarProps = {
     className?: string;
 }
