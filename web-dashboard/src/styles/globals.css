@@ -4,7 +4,7 @@
 @tailwind utilities;
 
 body {
-    background: #02061a;
+    background: #050A21;
     padding: 0 2rem ;
     font-family: 'Titillium Web', sans-serif;
     color: #fff;
@@ -149,7 +149,7 @@ body {
     background-size: cover;
     background-position: bottom right;
     z-index: -1;
-    opacity: 0.1;
+    opacity: 0.25;
 }
 
 /* SEARCH BAR */

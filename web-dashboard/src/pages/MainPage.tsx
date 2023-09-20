@@ -87,6 +87,11 @@ export const MainPage: React.FC = () => {
                 </div>
 
                 <div className="my-5 py-5 mr-6" id="forecast-chart-div">
+                    
+                    <div className='inline-grid'>
+                        <span>Historical data</span>
+                        {startForecast && <span>Forecast data</span>}
+                    </div>
                     <ForecastChart
                         historicalData={
                             historicalData.data?.slice(

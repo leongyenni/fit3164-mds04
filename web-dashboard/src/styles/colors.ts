@@ -1,5 +1,5 @@
 export const color = {
-    backgroundColor: '#02061a',
+    backgroundColor: '#050A21',
     lineColor: 'rgba(255, 255, 255, 0.5)',
     textColor: '#FFFFFF',
     areaTopColor: '#4B84ED',
