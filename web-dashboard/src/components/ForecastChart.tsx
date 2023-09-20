@@ -25,17 +25,19 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
                 layout: {
                     background: {
                         type: ColorType.Solid,
-                        color: color.backgroundColor
+                        color: 'transparent'
                     },
                     textColor: color.textColor
                 },
                 width: document.getElementById('forecast-chart-div')!
-                    .clientWidth,
-                height: 500,
+                    .clientWidth * 0.97,
+                height: 475,
                 timeScale: {
                     timeVisible: true,
                     secondsVisible: false,
-                    borderVisible: false
+                    borderVisible: false,
+                    fixLeftEdge: true,
+                    fixRightEdge: true
                 },
                 rightPriceScale: {
                     borderVisible: false
@@ -61,6 +63,12 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
                         style: 2,
                         color: color.toolTipColor
                     }
+                },
+                handleScale: {
+                    mouseWheel: false,
+                    pinch: false,
+                    axisPressedMouseMove: false,
+                    axisDoubleClickReset: false
                 }
             }
         );
@@ -89,6 +97,9 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
         );
 
         chart.timeScale().fitContent();
+        console.log(chart
+            .timeScale()
+            .width()/2);
 
         let currentIndex = 0;
         const lastIndex = forecastData.length;

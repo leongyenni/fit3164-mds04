@@ -71,7 +71,9 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
             timeScale: {
                 timeVisible: timeInterval === '1d' ? false : true,
                 secondsVisible: false,
-                borderVisible: false
+                borderVisible: false,
+                fixLeftEdge: true,
+                fixRightEdge: true
             },
             rightPriceScale: {
                 borderVisible: false

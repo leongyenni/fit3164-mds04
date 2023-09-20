@@ -9,6 +9,7 @@ import Searchbar from '../components/SearchBar';
 import Legend from '../components/Legend';
 import { ForecastChart } from '../components/ForecastChart';
 import RangeSwitcher from '../components/RangeSwitcher';
+import { color } from '../styles/colors';
 
 export const MainPage: React.FC = () => {
     const router = useRouter();
@@ -42,10 +43,9 @@ export const MainPage: React.FC = () => {
         router.push({ pathname: '/' });
     };
 
-    if (tickerData.loading) {
+    if (tickerData.loading || historicalData.loading) {
         return <LoadingBar />;
     } else {
-
         return (
             <div>
                 <div className="w-full relative">
@@ -77,36 +77,43 @@ export const MainPage: React.FC = () => {
 
                 <RangeSwitcher />
 
-                <div className="my-10">
-                    <button
-                        className="bg-sky-600 py-3 px-4 rounded-lg"
-                        onClick={() => setStartForecast(true)}
+                <div
+                    className="mt-20 p-8 rounded-xl"
+                    style={{ backgroundColor: color.backgroundColor2 }}
+                    id="forecast-chart-div"
+                >
+                    <div
+                        className={`grid mb-5 ${
+                            startForecast ? 'grid-cols-2' : ''
+                        } text-center text-xl font-medium tracking-wider`}
                     >
-                        Start Forecast
-                    </button>
-                </div>
-
-                <div className="my-5 py-5 mr-6" id="forecast-chart-div">
-                    
-                    <div className='inline-grid'>
-                        <span>Historical data</span>
-                        {startForecast && <span>Forecast data</span>}
+                        <div>Historical data</div>
+                        {startForecast && <div>Forecast data</div>}
                     </div>
                     <ForecastChart
                         historicalData={
                             historicalData.data?.slice(
                                 0,
-                                historicalData.data.length/2+1
+                                historicalData.data.length / 2 + 1
                             )!
                         }
                         forecastData={
                             historicalData.data?.slice(
-                                historicalData.data.length/2,
+                                historicalData.data.length / 2,
                                 historicalData.data.length
                             )!
                         }
                         startForecast={startForecast}
                     />
+                </div>
+
+                <div className="my-5">
+                    <button
+                        className="bg-sky-600 py-2 px-4 rounded-md"
+                        onClick={() => setStartForecast(true)}
+                    >
+                        Start Forecast
+                    </button>
                 </div>
             </div>
         );
