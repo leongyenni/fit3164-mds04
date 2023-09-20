@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { AppState } from '../redux/store';
 import { useSelector } from 'react-redux';
 import { dateFormatter } from '../utils/formattingUtils';

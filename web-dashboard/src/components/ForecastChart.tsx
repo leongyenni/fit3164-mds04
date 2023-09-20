@@ -69,41 +69,24 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({ data }) => {
             lineWidth: 1
         });
 
-        
+        let currentIndex = 0;
+        const lastIndex = data.length;
 
-        var currentIndex = 0;
-        const lastIndex = data.length - 1;
-
-        console.log(data);
-        console.log(lastIndex);
-
-        setInterval(function () {
-            if (currentIndex <= lastIndex) {
+        const updateDataPoint = () => {
+            if (currentIndex < lastIndex) {
                 const currentPoint = {
                     value: data[currentIndex].close,
                     time: data[currentIndex].date
                 };
-                console.log(data[currentIndex].close);
+                chart.timeScale().fitContent();
                 lineSeries.update(currentPoint);
                 currentIndex++;
             } else {
-                return;
+                clearInterval(intervalId); 
             }
-        }, 300);
+        };
 
-        chart.timeScale().fitContent();
-
-        // if (currentIndex < lastIndex) {
-        //     const currentPoint = {
-        //         value: data[currentIndex].close,
-        //         time: data[currentIndex].date
-        //     };
-        //     console.log(data[currentIndex].close);
-        //     lineSeries.update(currentPoint);
-        //     currentIndex++;
-        // } else {
-        //     return;
-        // }
+        const intervalId = setInterval(updateDataPoint, 350);
 
         window.addEventListener('resize', handleResize);
 

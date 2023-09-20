@@ -1,15 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-interface StockDataState {
-    timestamp: number;
-    symbol: string;
-    open: string;
-    high: string;
-    low: string;
-    close: string;
-    volume: string;
-    colour: string;
-}
+import { StockDataState } from '../types/ReduxStoreTypes';
 
 const initialState: StockDataState = {
     timestamp: 0,
