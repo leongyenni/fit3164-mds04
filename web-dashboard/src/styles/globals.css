@@ -94,6 +94,12 @@ body {
     }
 }
 
+.glow-text {
+    text-shadow: 
+        0 0 5px #ffffff, 
+        0 0 3px #ffffff;
+}
+
 /* BACKGROUND */
 #shape-1,
 #shape-2,
@@ -182,7 +188,7 @@ body {
     margin: 1rem;
     margin-left: 0;
     background-color: #01000b;
-    opacity: 0.7;
+    opacity: 1;
     border-radius: 1rem;
 }
 

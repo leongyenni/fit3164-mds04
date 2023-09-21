@@ -14,7 +14,7 @@ const Tooltip: React.FC<TooltipProps> = ({ posX }) => {
     
     return (
         <div
-            className="w-40 h-5/6 absolute p-3  box-border text-base text-left z-10 pointer-events-none rounded-tl-4 
+            className="w-40 h-[570px] absolute p-3  box-border text-base text-left z-10 pointer-events-none rounded-tl-4 
             rounded-tr-4 border-b-0 shadow-md antialiased bg-opacity-25 text-white bg-white text-md "
             style={{ left: posX - 40 }}
         >
