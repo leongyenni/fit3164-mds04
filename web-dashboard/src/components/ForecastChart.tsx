@@ -5,6 +5,7 @@ import { ForecastChartProps } from '../types/MainPageTypes';
 import { color } from '../styles/colors';
 import { currencyFormatter, OHLCFormatter } from '../utils/formattingUtils';
 import { setForecastData } from '../redux/forecastDataSlice';
+import SmallTooltip from './SmallTooltip';
 
 export const ForecastChart: React.FC<ForecastChartProps> = ({
     historicalData,
@@ -132,21 +133,18 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
                 !param.time ||
                 param.point.x < 0 ||
                 param.point.x >
-                    document.getElementById('chart-div')!.clientWidth ||
+                    document.getElementById('forecast-chart-div')!
+                        .clientWidth ||
                 param.point.y < 0 ||
                 param.point.y >
-                    document.getElementById('chart-div')!.clientHeight
+                    document.getElementById('forecast-chart-div')!.clientHeight
             ) {
                 setTooltipVisible(false);
             } else {
-                const areaData = param.seriesData.get(
-                    areaSeriesHist 
-                )? param.seriesData.get(
-                    areaSeriesHist
-                ) as AreaData : param.seriesData.get(
-                    areaSeriesForecast 
-                ) as AreaData;
-               
+                const areaData = param.seriesData.get(areaSeriesHist)
+                    ? (param.seriesData.get(areaSeriesHist) as AreaData)
+                    : (param.seriesData.get(areaSeriesForecast) as AreaData);
+
                 const tooltipContent = {
                     timestamp: parseInt(areaData.time.toString()),
                     close: OHLCFormatter(areaData.value),
@@ -169,5 +167,11 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
         };
     }, [startForecast]);
 
-    return <div></div>;
+    return (
+        <div>
+            <div id="forecast-chart-div">
+                {tooltipVisible && <SmallTooltip />}
+            </div>
+        </div>
+    );
 };

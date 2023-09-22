@@ -9,7 +9,4 @@ export type ForecastChartProps = {
     startForecast: boolean;
 };
 
-export type TooltipProps = {
-    posX: number;
-};
 

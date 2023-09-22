@@ -2,15 +2,16 @@ import React from 'react';
 import { AppState } from '../redux/store';
 import { useSelector } from 'react-redux';
 import { dateFormatter } from '../utils/formattingUtils';
-import { TooltipProps } from '../types/MainPageTypes';
 
-const Tooltip: React.FC<TooltipProps> = ({ posX }) => {
+const Tooltip: React.FC = () => {
     const tooltipData = useSelector((state: AppState) => state.stockData);
 
     const date = dateFormatter(tooltipData.timestamp)[0];
     const time = dateFormatter(tooltipData.timestamp)[1];
 
     const close = tooltipData.close;
+
+    const posX = tooltipData.x;
     
     return (
         <div

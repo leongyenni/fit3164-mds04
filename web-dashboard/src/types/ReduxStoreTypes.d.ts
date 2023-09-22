@@ -12,7 +12,7 @@ export type StockDataState = {
     close: string;
     volume: string;
     colour: string;
-    x? : number;
+    x : number;
 };
 
 export type ForecastDataState = {

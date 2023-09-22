@@ -27,22 +27,21 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
         low: OHLCFormatter(data[i].low),
         close: OHLCFormatter(data[i].close),
         volume: volumeFormatter(data[i].volume),
-        colour: data[i].close > data[i].open ? color.upColor : color.downColor
+        colour: data[i].close > data[i].open ? color.upColor : color.downColor,
+        x: 0
     };
 
     const dispatch = useDispatch();
 
     // Tooltip
     const [tooltipVisible, setTooltipVisible] = useState(false);
-    const [tooltipX, setTooltipX] = useState(0);
 
     const hideTooltip = () => {
         setTooltipVisible(false);
         dispatch(setStockData(currentStockData));
     };
 
-    const showTooltip = (x: number) => {
-        setTooltipX(x);
+    const showTooltip = () => {
         setTooltipVisible(true);
     };
 
@@ -203,10 +202,11 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
                     colour:
                         OHLCdata.close > OHLCdata.open
                             ? color.upColor
-                            : color.downColor
+                            : color.downColor,
+                    x: param.point.x
                 };
                 dispatch(setStockData(tooltipContent));
-                showTooltip(param.point.x);
+                showTooltip();
             }
         });
 
@@ -224,7 +224,7 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
     return (
         <div>
             <div id="chart-div">
-                {tooltipVisible && <Tooltip posX={tooltipX} />}
+                {tooltipVisible && <Tooltip/>}
             </div>
         </div>
     );
