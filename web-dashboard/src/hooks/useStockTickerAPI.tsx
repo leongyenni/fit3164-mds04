@@ -5,7 +5,7 @@ import { Ticker } from '../types/DataTypes';
 
 const useStockTickerAPI = (letter: string = ''): Ticker[] => {
     const [tickers, setTickers] = useState<Ticker[]>([]);
-   // const [filteredTicker, setFilteredTicker] = useState<Ticker[]>(tickers);
+    const [filteredTicker, setFilteredTicker] = useState<Ticker[]>(tickers); 
 
     const fetchStockTickers = async (letter: string = '') => {
         try {
@@ -28,20 +28,20 @@ const useStockTickerAPI = (letter: string = ''): Ticker[] => {
     };
 
     useEffect(() => {
-        fetchStockTickers(letter);
+        fetchStockTickers();
         console.log('fetch');
+    }, []);
+
+    useEffect(() => {
+        const filteredTickerSymbol = tickers.filter((ticker) =>
+            ticker.symbol.startsWith(letter)
+        );
+        setFilteredTicker(filteredTickerSymbol);
+
+        console.log('filter');
     }, [letter]);
 
-    // useEffect(() => {
-    //     const filteredTickerSymbol = tickers.filter((ticker) =>
-    //         ticker.symbol.startsWith(letter)
-    //     );
-    //     setFilteredTicker(filteredTickerSymbol);
-
-    //     console.log('filter');
-    // }, [letter]);
-
-    return tickers;
+    return filteredTicker;
 };
 
 export default useStockTickerAPI;

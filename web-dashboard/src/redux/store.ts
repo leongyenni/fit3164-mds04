@@ -1,13 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
-import stockDataReducer from './stockDataSlice';
 import { createWrapper } from 'next-redux-wrapper';
+import stockDataReducer from './stockDataSlice';
 import timeRangeReducer from './timeRangeSlice';
+import forecastDataReducer from './forecastDataSlice';
 
 const makeStore = () =>
     configureStore({
         reducer: {
+            timeRangeData: timeRangeReducer,
             stockData: stockDataReducer,
-            timeRangeData: timeRangeReducer
+            forecastData: forecastDataReducer
         }
     });
 
