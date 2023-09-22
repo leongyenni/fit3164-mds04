@@ -77,6 +77,15 @@ export const MainPage: React.FC = () => {
 
                 <RangeSwitcher />
 
+                <div className="my-5 align-center">
+                    <button
+                        className="bg-sky-600 py-2 px-4 rounded-md"
+                        onClick={() => setStartForecast(true)}
+                    >
+                        Start Forecast
+                    </button>
+                </div>
+
                 <div
                     className="mt-20 p-8 rounded-xl"
                     style={{ backgroundColor: color.backgroundColor2 }}
@@ -105,15 +114,6 @@ export const MainPage: React.FC = () => {
                         }
                         startForecast={startForecast}
                     />
-                </div>
-
-                <div className="my-5">
-                    <button
-                        className="bg-sky-600 py-2 px-4 rounded-md"
-                        onClick={() => setStartForecast(true)}
-                    >
-                        Start Forecast
-                    </button>
                 </div>
             </div>
         );
