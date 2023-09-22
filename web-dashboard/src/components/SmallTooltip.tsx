@@ -12,7 +12,11 @@ const SmallTooltip: React.FC = () => {
     const posX = tooltipData.x;
 
     return (
-        <div className="bg-slate-700 text-white" style={{ left: posX }}>
+        <div
+            className="w-40 absolute p-3  box-bordertext-left z-10 pointer-events-none rounded-tl-4 
+            rounded-tr-4 border-b-0 shadow-md antialiased bg-opacity-25 text-white bg-white text-sm"
+            style={{ left: posX }}
+        >
             <p className="text-lg tracking-wide">{date}</p>
             <p className="text-md tracking-wide text-slate-300 font-mono">
                 {time}
