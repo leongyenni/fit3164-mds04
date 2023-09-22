@@ -5,7 +5,7 @@ import { Ticker } from '../types/DataTypes';
 
 const useStockTickerAPI = (letter: string = ''): Ticker[] => {
     const [tickers, setTickers] = useState<Ticker[]>([]);
-    const [filteredTicker, setFilteredTicker] = useState<Ticker[]>(tickers); 
+    const [filteredTicker, setFilteredTicker] = useState<Ticker[]>(tickers);
 
     const fetchStockTickers = async (letter: string = '') => {
         try {
@@ -13,15 +13,22 @@ const useStockTickerAPI = (letter: string = ''): Ticker[] => {
                 'https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=25&offset=0&download=true';
             const response = await axios.get(url);
             const result = response.data;
-            const tickerSymbols = result.data.rows.flatMap((ticker: any) =>
-                String(ticker.symbol).startsWith(letter.toUpperCase())
-                    ? {
-                          symbol: String(ticker.symbol).replace('^', '-P'),
-                          company_name: ticker.name
-                      }
-                    : []
-            );
+            const tickerSymbols = result.data.rows
+                .flatMap((ticker: any) => {
+                    if (
+                        String(ticker.country).startsWith('United States') &&
+                        String(ticker.symbol).startsWith(letter.toUpperCase())
+                    ) {
+                        return {
+                            symbol: String(ticker.symbol).replace('^', '-P'),
+                            company_name: ticker.name
+                        };
+                    }
+                    return null; // Return null for tickers that don't match the criteria
+                })
+                .filter(Boolean); 
             setTickers(tickerSymbols);
+            console.log(tickerSymbols);
         } catch (error) {
             console.log('Error getting stock tickers: ', error);
         }

@@ -1,14 +1,20 @@
-import { createChart, ColorType, Time } from 'lightweight-charts';
+import { createChart, ColorType, AreaData } from 'lightweight-charts';
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { ForecastChartProps } from '../types/MainPageTypes';
 import { color } from '../styles/colors';
-import { currencyFormatter } from '../utils/formattingUtils';
+import { currencyFormatter, OHLCFormatter } from '../utils/formattingUtils';
+import { setForecastData } from '../redux/forecastDataSlice';
 
 export const ForecastChart: React.FC<ForecastChartProps> = ({
     historicalData,
     forecastData,
     startForecast
 }) => {
+    const dispatch = useDispatch();
+
+    const [tooltipVisible, setTooltipVisible] = useState(false);
+
     useEffect(() => {
         const handleResize = () => {
             if (chart) {
@@ -29,8 +35,9 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
                     },
                     textColor: color.textColor
                 },
-                width: document.getElementById('forecast-chart-div')!
-                    .clientWidth * 0.97,
+                width:
+                    document.getElementById('forecast-chart-div')!.clientWidth *
+                    0.97,
                 height: 475,
                 timeScale: {
                     timeVisible: true,
@@ -97,9 +104,7 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
         );
 
         chart.timeScale().fitContent();
-        console.log(chart
-            .timeScale()
-            .width()/2);
+        console.log(chart.timeScale().width() / 2);
 
         let currentIndex = 0;
         const lastIndex = forecastData.length;
@@ -120,6 +125,38 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
         };
 
         const intervalId = setInterval(updateDataPoint, 350);
+
+        chart.subscribeCrosshairMove((param) => {
+            if (
+                param.point === undefined ||
+                !param.time ||
+                param.point.x < 0 ||
+                param.point.x >
+                    document.getElementById('chart-div')!.clientWidth ||
+                param.point.y < 0 ||
+                param.point.y >
+                    document.getElementById('chart-div')!.clientHeight
+            ) {
+                setTooltipVisible(false);
+            } else {
+                const areaData = param.seriesData.get(
+                    areaSeriesHist 
+                )? param.seriesData.get(
+                    areaSeriesHist
+                ) as AreaData : param.seriesData.get(
+                    areaSeriesForecast 
+                ) as AreaData;
+               
+                const tooltipContent = {
+                    timestamp: parseInt(areaData.time.toString()),
+                    close: OHLCFormatter(areaData.value),
+                    x: param.point.x
+                };
+                dispatch(setForecastData(tooltipContent));
+                setTooltipVisible(true);
+                console.log(tooltipContent);
+            }
+        });
 
         window.addEventListener('resize', handleResize);
 

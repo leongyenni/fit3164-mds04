@@ -3,7 +3,8 @@ import { ForecastDataState } from '../types/ReduxStoreTypes';
 
 const initialState: ForecastDataState = {
     timestamp: 0,
-    close: ''
+    close: '',
+    x: 0
 };
 
 const forecastDataSlice = createSlice({
