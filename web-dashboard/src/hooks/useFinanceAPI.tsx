@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { StockData } from '../types/DataTypes';
 import { UTCTimestamp } from 'lightweight-charts';
+import { resolve } from 'path';
+import { reject } from 'lodash';
 
 const useFinanceAPI = (
     symbol: string
@@ -14,44 +16,24 @@ const useFinanceAPI = (
     const [error, setError] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
-    const fetchData = async () => {
-        try {
-            const response = await axios.get<string>(
-                `https://query1.finance.yahoo.com/v7/finance/download/${symbol}`
-            );
-
-            const raw_data: string[] = response.data.split(',');
-
-            const dateParts = raw_data[6].split('\n')[1].split('-'); // Assuming date format: day-month-year
-            const year = parseInt(dateParts[0]);
-            const month = parseInt(dateParts[1]);
-            const day = parseInt(dateParts[2]);
-            const date = new Date(Date.UTC(year, month, day));
-            const unixTimestamp = (date.getTime() / 1000) as UTCTimestamp;
-
-            setData({
-                symbol: symbol,
-                date: unixTimestamp,
-                open: parseFloat(raw_data[7]),
-                high: parseFloat(raw_data[8]),
-                low: parseFloat(raw_data[9]),
-                close: parseFloat(raw_data[10]),
-                adjClose: parseFloat(raw_data[11]),
-                volume: parseFloat(raw_data[12])
+    const apiUrl = `http://localhost:5000/api/stock-data/${symbol}`;
+    const fetchStockData = () => {
+        axios
+            .get(apiUrl)
+            .then((response) => {
+                setData(response.data);
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.error('Error fetching stock data:', err);
+                setError(err);
+                setLoading(false);
             });
-
-            setLoading(false);
-            console.log(response.data);
-        } catch (error) {
-            console.error('Error fetching stock data:', error);
-            setError(error);
-            setLoading(false);
-        }
     };
 
     // Fetch data when the component mounts
     useEffect(() => {
-        fetchData();
+        fetchStockData();
     }, []);
 
     return { loading, error, data };

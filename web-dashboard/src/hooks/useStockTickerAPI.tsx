@@ -7,36 +7,20 @@ const useStockTickerAPI = (letter: string = ''): Ticker[] => {
     const [tickers, setTickers] = useState<Ticker[]>([]);
     const [filteredTicker, setFilteredTicker] = useState<Ticker[]>(tickers);
 
-    const fetchStockTickers = async (letter: string = '') => {
-        try {
-            const url =
-                'https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=25&offset=0&download=true';
-            const response = await axios.get(url);
-            const result = response.data;
-            const tickerSymbols = result.data.rows
-                .flatMap((ticker: any) => {
-                    if (
-                        String(ticker.country).startsWith('United States') &&
-                        String(ticker.symbol).startsWith(letter.toUpperCase())
-                    ) {
-                        return {
-                            symbol: String(ticker.symbol).replace('^', '-P'),
-                            company_name: ticker.name
-                        };
-                    }
-                    return null; // Return null for tickers that don't match the criteria
-                })
-                .filter(Boolean); 
-            setTickers(tickerSymbols);
-            console.log(tickerSymbols);
-        } catch (error) {
-            console.log('Error getting stock tickers: ', error);
-        }
+    const apiUrl = `http://localhost:5000/api/stock-tickers`;
+    const fetchStockTickers = () => {
+        axios
+            .get(apiUrl)
+            .then((response) => {
+                setTickers(response.data);
+            })
+            .catch((err) => {
+                console.error('Error fetching stock tickers:', err);
+            });
     };
 
     useEffect(() => {
         fetchStockTickers();
-        console.log('fetch');
     }, []);
 
     useEffect(() => {
@@ -44,8 +28,6 @@ const useStockTickerAPI = (letter: string = ''): Ticker[] => {
             ticker.symbol.startsWith(letter)
         );
         setFilteredTicker(filteredTickerSymbol);
-
-        console.log('filter');
     }, [letter]);
 
     return filteredTicker;
