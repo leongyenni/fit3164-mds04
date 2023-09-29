@@ -13,9 +13,11 @@ import { color } from '../styles/colors';
 
 export const MainPage: React.FC = () => {
     const router = useRouter();
-    const tickerSymbol = router.query.tickerSymbol as string;
+    const tickerSymbol = router.query['tickerSymbol'] as string;
 
     const timeRangeData = useSelector((state: AppState) => state.timeRangeData);
+
+    // 
 
     const tickerData = useTSFinanceAPI(
         tickerSymbol,
@@ -23,7 +25,10 @@ export const MainPage: React.FC = () => {
         timeRangeData.timeRange
     );
     const historicalData = useTSFinanceAPI(tickerSymbol, '1h', '2d');
+
     // const forecastData = useTSFinanceAPI(tickerSymbol, '1h', '1d');
+
+    console.log(tickerSymbol);
 
     const [startForecast, setStartForecast] = useState(false);
 

@@ -1,8 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { TimeSeriesStockData, StockData } from '../types/DataTypes';
-import { UTCTimestamp } from 'lightweight-charts';
+import { StockData } from '../types/DataTypes';
 
 const useTSFinanceAPI = (
     symbol: string,
@@ -39,6 +38,10 @@ const useTSFinanceAPI = (
 
     // Fetch data when the component mounts
     useEffect(() => {
+        if (!symbol) {
+            return;
+        }
+
         fetchStockData();
     }, [symbol, interval, range]);
 

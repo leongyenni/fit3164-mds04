@@ -105,9 +105,11 @@ if (!isDev && cluster.isMaster) {
         const { symbol } = req.params;
         const { interval, range } = req.query;
 
+        console.log(symbol);
+
         try {
             const response = await axios.get(
-                `https://query1.finance.yahoo.com/v7/finance/chart/${symbol}?`,
+                `https://query1.finance.yahoo.com/v7/finance/chart/${symbol}`,
                 {
                     params: {
                         interval,
