@@ -1,6 +1,5 @@
 const express = require('express');
 const axios = require('axios');
-const { UTCTimestamp } = require('lightweight-charts');
 const cors = require('cors');
 const path = require('path');
 const cluster = require('cluster');
@@ -102,7 +101,43 @@ if (!isDev && cluster.isMaster) {
         }
     });
 
-    
+    app.get('/api/time-series-stock-data/:symbol', async (req, res) => {
+        const { symbol } = req.params;
+        const { interval, range } = req.query;
+
+        try {
+            const response = await axios.get(
+                `https://query1.finance.yahoo.com/v7/finance/chart/${symbol}?`,
+                {
+                    params: {
+                        interval,
+                        range,
+                        includeAdjustedClose: true
+                    }
+                }
+            );
+
+            const result = response.data.chart.result[0];
+
+            const raw_data = result.timestamp.map((timestamp, index) => {
+                return {
+                    symbol: symbol,
+                    date: timestamp + result.meta.gmtoffset,
+                    open: result.indicators.quote[0].open[index] ?? 0,
+                    high: result.indicators.quote[0].high[index] ?? 0,
+                    low: result.indicators.quote[0].low[index] ?? 0,
+                    close: result.indicators.quote[0].close[index] ?? 0,
+                    // adjClose: result.indicators.adjclose[0].adjclose[index],
+                    adjClose: result.indicators.quote[0].close[index] ?? 0,
+                    volume: result.indicators.quote[0].volume[index] ?? 0
+                };
+            });
+            res.json(raw_data);
+        } catch (error) {
+            console.error('Error fetching stock data:', error);
+            res.status(500).json({ error: 'An error occurred' });
+        }
+    });
 
     app.get('/api/exactify', function (req, res) {
         var song_indexes = [];
