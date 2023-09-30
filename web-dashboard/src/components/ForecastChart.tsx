@@ -141,18 +141,32 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
             ) {
                 setTooltipVisible(false);
             } else {
+                const toolTipWidth = 80;
+                const toolTipHeight = 80;
+                const toolTipMargin = 15;
+
                 const areaData = param.seriesData.get(areaSeriesHist)
                     ? (param.seriesData.get(areaSeriesHist) as AreaData)
                     : (param.seriesData.get(areaSeriesForecast) as AreaData);
 
+                const closePrice = areaData.value;
+
+                const coordinate = areaSeriesHist.priceToCoordinate(closePrice)
+                    ? areaSeriesHist.priceToCoordinate(closePrice)!
+                    : areaSeriesForecast.priceToCoordinate(closePrice)!;
+
+                const containerOffset =
+                    document.getElementById('main-page')!.clientHeight -
+                    document.getElementById('forecast-chart-div')!.clientHeight;
+           
                 const tooltipContent = {
                     timestamp: parseInt(areaData.time.toString()),
                     close: OHLCFormatter(areaData.value),
-                    x: param.point.x
+                    x: param.point.x - toolTipMargin,
+                    y: containerOffset + coordinate - toolTipMargin
                 };
                 dispatch(setForecastData(tooltipContent));
                 setTooltipVisible(true);
-                console.log(tooltipContent);
             }
         });
 

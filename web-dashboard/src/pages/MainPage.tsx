@@ -17,7 +17,7 @@ export const MainPage: React.FC = () => {
 
     const timeRangeData = useSelector((state: AppState) => state.timeRangeData);
 
-    // 
+    //
 
     const tickerData = useTSFinanceAPI(
         tickerSymbol,
@@ -27,8 +27,6 @@ export const MainPage: React.FC = () => {
     const historicalData = useTSFinanceAPI(tickerSymbol, '1h', '2d');
 
     // const forecastData = useTSFinanceAPI(tickerSymbol, '1h', '1d');
-
-    console.log(tickerSymbol);
 
     const [startForecast, setStartForecast] = useState(false);
 
@@ -52,7 +50,7 @@ export const MainPage: React.FC = () => {
         return <LoadingBar />;
     } else {
         return (
-            <div>
+            <div id="main-page">
                 <div className="w-full relative">
                     <div className="grid grid-flow-col-dense auto-cols-max grid-cols-[1fr,auto] my-6">
                         <Searchbar />
@@ -82,43 +80,50 @@ export const MainPage: React.FC = () => {
 
                 <RangeSwitcher />
 
-                <div className="my-5 align-center">
-                    <button
-                        className="bg-sky-600 py-2 px-4 rounded-md"
-                        onClick={() => setStartForecast(true)}
-                    >
-                        Start Forecast
-                    </button>
-                </div>
-
-                <div
-                    className="mt-20 p-8 rounded-xl"
-                    style={{ backgroundColor: color.backgroundColor2 }}
-                    id="forecast-chart-div"
-                >
+                <div className="mt-20">
                     <div
-                        className={`grid mb-5 ${
-                            startForecast ? 'grid-cols-2' : ''
-                        } text-center text-xl font-medium tracking-wider`}
+                        className="p-10 rounded-xl"
+                        style={{ backgroundColor: color.backgroundColor2 }}
+                        id="forecast-chart-div"
                     >
-                        <div>Historical data</div>
-                        {startForecast && <div>Forecast data</div>}
+                        <div
+                            className={`grid mb-5 ${
+                                startForecast ? 'grid-cols-2' : ''
+                            } text-center text-xl font-medium tracking-wider`}
+                        >
+                            <div>Historical data</div>
+                            {startForecast && <div>Forecast data</div>}
+                        </div>
+                        <ForecastChart
+                            historicalData={
+                                historicalData.data?.slice(
+                                    0,
+                                    historicalData.data.length / 2 + 1
+                                )!
+                            }
+                            forecastData={
+                                historicalData.data?.slice(
+                                    historicalData.data.length / 2,
+                                    historicalData.data.length
+                                )!
+                            }
+                            startForecast={startForecast}
+                        />
                     </div>
-                    <ForecastChart
-                        historicalData={
-                            historicalData.data?.slice(
-                                0,
-                                historicalData.data.length / 2 + 1
-                            )!
-                        }
-                        forecastData={
-                            historicalData.data?.slice(
-                                historicalData.data.length / 2,
-                                historicalData.data.length
-                            )!
-                        }
-                        startForecast={startForecast}
-                    />
+                </div>
+                <div className="my-5 align-center">
+                    {!startForecast && (
+                        <button
+                            className="bg-sky-600 py-2 px-4 rounded-md hover:bg-sky-900"
+                            onClick={() => setStartForecast(true)}
+                        >
+                            Start Forecast
+                        </button>
+                    )}
+
+                    {startForecast && (
+                        <div className="text-lg"> Predicted Close Price</div>
+                    )}
                 </div>
             </div>
         );

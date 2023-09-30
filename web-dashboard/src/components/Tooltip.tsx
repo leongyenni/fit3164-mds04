@@ -25,7 +25,7 @@ const Tooltip: React.FC = () => {
             </p>
             <p className="text-3xl tracking-wider font-black mt-2">
                 {close}
-                <span className="pl-2 text-lg font-thin">usd</span>
+                <span className="pl-1 text-lg font-thin">USD</span>
             </p>
         </div>
     );
