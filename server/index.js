@@ -71,6 +71,20 @@ if (!isDev && cluster.isMaster) {
     });
 
     app.get('/api/stock-tickers', async (req, res) => {
+        const group = (tickerSymbols) => {
+            const groupedSymbols = {};
+
+            tickerSymbols.forEach((ticker) => {
+                const firstLetter = ticker.symbol.charAt(0).toLowerCase();
+                if (!groupedSymbols[firstLetter]) {
+                    groupedSymbols[firstLetter] = [];
+                }
+                groupedSymbols[firstLetter].push(ticker);
+            });
+
+            return groupedSymbols;
+        };
+
         try {
             const url =
                 'https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=25&offset=0&download=true';
@@ -94,7 +108,7 @@ if (!isDev && cluster.isMaster) {
                 })
                 .filter(Boolean);
 
-            res.json(tickerSymbols);
+            res.json(group(tickerSymbols));
         } catch (error) {
             console.log('Error getting stock tickers: ', error);
             res.status(500).json({ error: 'An error occurred' });
@@ -140,7 +154,7 @@ if (!isDev && cluster.isMaster) {
     });
 
     app.get('/api/model/', (req, res) => {
-        // const symbol = req.params;
+        const symbol = req.params;
         // console.log(`Predicting ${symbol}`);
 
         const forecast_data = [];
