@@ -8,7 +8,7 @@ import pandas as pd
 def preprocess():
 
     # Set the relative path to the AAPL directory
-    dir_path2 = './AAPL'
+    dir_path2 = './TSLA'
 
     # Get a list of all the CSV filenames in the directory
     all_files2 = [dir_path2 + '/' + filename for filename in os.listdir(dir_path2) if filename.endswith('.csv')]
@@ -83,15 +83,15 @@ def make_preds(model, input_data):
   return tf.squeeze(forecast) # return 1D array of predictions
 
 
-# if __name__=="__main__":
-X_test2=preprocess()
+if __name__=="__main__":
+  X_test2=preprocess()
 
-loaded_w_revin_model=tf.keras.models.load_model("./nbeats_revin_model")
+  loaded_w_revin_model=tf.keras.models.load_model("./nbeats_revin_model")
 
-model_w_revin_preds = make_preds(loaded_w_revin_model, X_test2)
+  model_w_revin_preds = make_preds(loaded_w_revin_model, X_test2)
 
-model_w_revin_preds_lastcol = model_w_revin_preds[:, -1]  # Take the last column
-model_w_revin_preds_lastcol = tf.expand_dims(model_w_revin_preds_lastcol, axis=-1)  # Expand dimensions to shape (494, 1)
-model_w_revin_preds_lastcol_seven=model_w_revin_preds_lastcol[-7:]
+  model_w_revin_preds_lastcol = model_w_revin_preds[:, -1]  # Take the last column
+  model_w_revin_preds_lastcol = tf.expand_dims(model_w_revin_preds_lastcol, axis=-1)  # Expand dimensions to shape (494, 1)
+  model_w_revin_preds_lastcol_seven=model_w_revin_preds_lastcol[-7:]
 
-print(model_w_revin_preds_lastcol_seven)
+  print(model_w_revin_preds_lastcol_seven)
