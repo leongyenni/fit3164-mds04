@@ -1,6 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 const path = require('path');
 const cluster = require('cluster');
 const numCPUs = require('os').cpus().length;
@@ -27,8 +28,11 @@ if (!isDev && cluster.isMaster) {
 } else {
     const app = express();
 
+    // Middleware
     app.use(cors());
+    app.use(bodyParser.json());
 
+    // Get requests
     app.get('/api', function (req, res) {
         res.set('Content-Type', 'application/json');
         res.send('{"message":"Hello from the custom server!"}');
@@ -63,6 +67,7 @@ if (!isDev && cluster.isMaster) {
                 volume: parseFloat(raw_data[12])
             };
 
+            res.set('Content-Type', 'application/json');
             res.json(stockData);
         } catch (error) {
             console.error('Error fetching stock data:', error);
@@ -101,16 +106,19 @@ if (!isDev && cluster.isMaster) {
                                     '$1'
                                 )
                                 .replace(/Common.*|Ordinary.*/, '')
-                                .trim()
+                                .trim(),
+                            netchange: parseFloat(ticker.netchange),
+                            pctchange: ticker.pctchange
                         };
                     }
                     return null;
                 })
                 .filter(Boolean);
 
+            res.set('Content-Type', 'application/json');
             res.json(group(tickerSymbols));
         } catch (error) {
-            console.log('Error getting stock tickers: ', error);
+            console.log('Error fetching stock tickers: ', error);
             res.status(500).json({ error: 'An error occurred' });
         }
     });
@@ -133,47 +141,116 @@ if (!isDev && cluster.isMaster) {
 
             const result = response.data.chart.result[0];
 
-            const raw_data = result.timestamp.map((timestamp, index) => {
+            const stockData = result.timestamp.map((timestamp, index) => {
+                const jsonData = result.indicators.quote[0];
+
                 return {
                     symbol: symbol,
                     date: timestamp + result.meta.gmtoffset,
-                    open: result.indicators.quote[0].open[index] ?? 0,
-                    high: result.indicators.quote[0].high[index] ?? 0,
-                    low: result.indicators.quote[0].low[index] ?? 0,
-                    close: result.indicators.quote[0].close[index] ?? 0,
+                    open: jsonData.open[index] ?? 0,
+                    high: jsonData.high[index] ?? 0,
+                    low: jsonData.low[index] ?? 0,
+                    close: jsonData.close[index] ?? 0,
                     // adjClose: result.indicators.adjclose[0].adjclose[index],
-                    adjClose: result.indicators.quote[0].close[index] ?? 0,
-                    volume: result.indicators.quote[0].volume[index] ?? 0
+                    adjClose: jsonData.close[index] ?? 0,
+                    volume: jsonData.volume[index] ?? 0
                 };
             });
-            res.json(raw_data);
+
+            res.set('Content-Type', 'application/json');
+            res.json(stockData);
         } catch (error) {
             console.error('Error fetching stock data:', error);
             res.status(500).json({ error: 'An error occurred' });
         }
     });
 
-    app.get('/api/model/', (req, res) => {
-        const symbol = req.params;
-        // console.log(`Predicting ${symbol}`);
+    app.get('/api/stock-ticker-stat/:symbol', async (req, res) => {
+        const { symbol } = req.params;
+        const url = `https://query1.finance.yahoo.com/v7/finance/options/${symbol}`;
 
-        const forecast_data = [];
+        try {
+            const response = await axios.get(url);
+            const result = response.data.optionChain.result[0].quote;
+
+            const statsData = {
+                companyName: result.longName,
+                quoteType: result.quoteType,
+                marketChangePct: result.regularMarketChangePercent,
+                marketPrice: result.regularMarketPrice,
+                analystRating: result.averageAnalystRating,
+                marketState: result.marketState,
+                marketDayHigh: result.regularMarketDayHigh,
+                marketDayLow: result.regularMarketDayLow,
+                marketDayVolume: result.regularMarketDayVolume,
+                marketPrevClose: result.regularMarketPreviousClose,
+                bid: result.bid,
+                ask: result.ask,
+                marketCap: result.marketCap,
+                peRatio: result.priceEpsCurrentYear,
+                dividendRate: result.trailingAnnualDividendRate,
+                dividendYield: result.trailingAnnualDividendYield,
+                totalShares: result.sharesOutstanding,
+                fiftyTwoWeekLow: result.fiftyTwoWeekLow,
+                fiftyTwoWeekHigh: result.fiftyTwoWeekHigh,
+                closingTime:
+                    result.regularMarketTime + resultgmtOffSetMilliseconds
+            };
+
+            res.set('Content-Type', 'application/json');
+            res.json(statsData);
+        } catch {
+            console.error('Error fetching stock ticker stats:', error);
+            res.status(500).json({ error: 'An error occured' });
+        }
+    });
+
+    // N-BEATS-RevIN-Model
+    app.post('/api/model', (req, res) => {
+        const historicalData = req.body.historicalData;
+        const forecastData = [];
+
+        const currentDir = path.dirname(__filename);
+        console.log(path.dirname(__filename) + '\\nbeats_revin_model.py');
+
+        // Run a Python command to get the Python interpreter path
+        const python1 = spawn('python', [
+            '-c',
+            'import sys; print(sys.executable)'
+        ]);
+
+        let pythonInterpreterPath = '';
+
+        python1.stdout.on('data', (data) => {
+            pythonInterpreterPath += data.toString();
+        });
+
+        python1.on('close', (code) => {
+            if (code === 0) {
+                pythonInterpreterPath = pythonInterpreterPath.trim();
+                console.log('Python Interpreter Path:', pythonInterpreterPath);
+            } else {
+                console.error(
+                    `Failed to capture Python interpreter path. Exit code: ${code}`
+                );
+            }
+        });
 
         const python = spawn('python', [
-            './server/nbeats_revin_model.py'
-            // symbol
+            currentDir + '\\nbeats_revin_model.py',
+            JSON.stringify(historicalData)
         ]);
 
         python.stdout.on('data', (data) => {
             console.log('Pipe data from python script');
-            forecast_data.push(JSON.parse(data));
+            forecastData.push(JSON.parse(data));
         });
 
         python.on('close', (code) => {
             console.log(`Child process close all stdio with code ${code}`);
-            console.log('Forecast data: ', forecast_data);
+            console.log('Forecast data: ', JSON.stringify(forecastData));
             res.set('Content-Type', 'application/json');
-            res.send(forecast_data);
+            res.send(forecastData);
         });
     });
 

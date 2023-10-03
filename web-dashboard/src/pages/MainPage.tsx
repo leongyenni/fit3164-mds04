@@ -10,6 +10,7 @@ import Legend from '../components/Legend';
 import { ForecastChart } from '../components/ForecastChart';
 import RangeSwitcher from '../components/RangeSwitcher';
 import { color } from '../styles/colors';
+import axios from 'axios';
 
 export const MainPage: React.FC = () => {
     const router = useRouter();
@@ -24,15 +25,32 @@ export const MainPage: React.FC = () => {
         timeRangeData.timeInterval,
         timeRangeData.timeRange
     );
-    const historicalData = useTSFinanceAPI(tickerSymbol, '1h', '2d');
-
-    // const forecastData = useTSFinanceAPI(tickerSymbol, '1h', '1d');
+    const historicalData = useTSFinanceAPI(tickerSymbol, '1h', '10d');
 
     const [startForecast, setStartForecast] = useState(false);
 
     useEffect(() => {
         setStartForecast(false);
     }, [tickerSymbol]);
+
+    useEffect(() => {
+        if (startForecast) {
+            axios
+                .post(
+                    'http://localhost:5000/api/model',
+                    { historicalData: historicalData.data },
+                    { headers: { 'Content-Type': 'application/json' } }
+                )
+                .then((response) => {
+                    console.log('Response from server:', response.data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+            getData();
+            console.log(historicalData.data);
+        }
+    }, [historicalData, startForecast]);
 
     const getData = () => {
         return new Promise((resolve, reject) =>

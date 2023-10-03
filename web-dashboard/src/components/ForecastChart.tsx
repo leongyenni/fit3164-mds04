@@ -116,7 +116,7 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
                     time: forecastData[currentIndex].date,
                     value: forecastData[currentIndex].close
                 };
-                console.log(forecastData[currentIndex].date);
+
                 chart.timeScale().fitContent();
                 areaSeriesForecast.update(currentPoint);
                 currentIndex++;

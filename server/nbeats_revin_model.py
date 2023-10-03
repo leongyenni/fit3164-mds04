@@ -4,31 +4,38 @@ from tensorflow.keras import layers
 import matplotlib.pyplot as plt
 import os
 import pandas as pd
+import sys
+import json
 
-def preprocess():
+def preprocess(df2):
 
     # Set the relative path to the AAPL directory
-    dir_path2 = './TSLA'
+    #dir_path2 = './TSLA'
 
     # Get a list of all the CSV filenames in the directory
-    all_files2 = [dir_path2 + '/' + filename for filename in os.listdir(dir_path2) if filename.endswith('.csv')]
+    #all_files2 = [dir_path2 + '/' + filename for filename in os.listdir(dir_path2) if filename.endswith('.csv')]
 
     # Read each file and append its content to a list of DataFrames
-    dfs2 = [pd.read_csv(file, parse_dates=["Datetime"], index_col=["Datetime"]) for file in all_files2]
+    #dfs2 = [pd.read_csv(file, parse_dates=["Datetime"], index_col=["Datetime"]) for file in all_files2]
 
     # Combine all the DataFrames into one
-    df2 = pd.concat(dfs2, axis=0)
+    #df2 = pd.concat(dfs2, axis=0)
 
     # Sort the DataFrame by its index (which is the date)
     df2 = df2.sort_index()
 
-    df2 = df2[['Open','High','Low','Close','Adj Close']]
+    df2 = df2[['date','open','high','low','close','adjClose']]
+    df2.set_index('date', inplace=True)
 
     # Extract the last date in the index
-    last_date = df2.index[-1]
+    last_date = df2.index[len(df2)-1]
 
     # Add one day to the date and set the time to 09:30:00-04:00
-    new_date = pd.Timestamp(last_date.date() + pd.Timedelta(days=1), tz='US/Eastern').replace(hour=9, minute=30)
+    #datetime_obj = datetime.datetime.fromtimestamp(last_date)
+
+    #new_date = pd.Timestamp(last_date.date() + pd.Timedelta(days=1), tz='US/Eastern').replace(hour=9, minute=30)
+
+    new_date = last_date + 100
 
     # Append the new date to the DataFrame with NaN values for all columns
     df2.loc[new_date] = [pd.NA] * len(df2.columns)
@@ -41,11 +48,11 @@ def preprocess():
 
     # Add windowed columns
     for i in range(WINDOW_SIZE): # Shift values for each step in WINDOW_SIZE
-      df_windowed2[f"Open-{WINDOW_SIZE-i}"] = df_windowed2["Open"].shift(periods=i+1)
-      df_windowed2[f"High-{WINDOW_SIZE-i}"] = df_windowed2["High"].shift(periods=i+1)
-      df_windowed2[f"Low-{WINDOW_SIZE-i}"] = df_windowed2["Low"].shift(periods=i+1)
-      df_windowed2[f"Close-{WINDOW_SIZE-i}"] = df_windowed2["Close"].shift(periods=i+1)
-      df_windowed2[f"Adj Close-{WINDOW_SIZE-i}"] = df_windowed2["Adj Close"].shift(periods=i+1)
+      df_windowed2[f"open-{WINDOW_SIZE-i}"] = df_windowed2['open'].shift(periods=i+1)
+      df_windowed2[f"high-{WINDOW_SIZE-i}"] = df_windowed2['high'].shift(periods=i+1)
+      df_windowed2[f"low-{WINDOW_SIZE-i}"] = df_windowed2['low'].shift(periods=i+1)
+      df_windowed2[f"close-{WINDOW_SIZE-i}"] = df_windowed2['close'].shift(periods=i+1)
+      df_windowed2[f"adjClose-{WINDOW_SIZE-i}"] = df_windowed2['adjClose'].shift(periods=i+1)
 
 
     # Step 1: Filter out columns with -7 to -1 suffix
@@ -57,12 +64,12 @@ def preprocess():
     df_filtered = df_windowed2.loc[indices_to_keep]
 
     # Step 3: Drop columns 'Open', 'High', 'Low', and 'Adj Close' without the -7 to -1 suffixes
-    cols_to_exclude = ['Open', 'High', 'Low', 'Adj Close']
+    cols_to_exclude = ['open', 'high', 'low', 'adjClose']
     cols_to_drop = [col for col in df_filtered.columns if col in cols_to_exclude and not any(suffix in col for suffix in suffixes_to_check)]
     df_filtered = df_filtered.drop(columns=cols_to_drop)
 
     # Separating into X2 and y2
-    X2 = df_filtered.drop(columns=['Close'])
+    X2 = df_filtered.drop(columns=['close'])
     X_test2 = X2.tail(50)
 
     return X_test2
@@ -79,19 +86,29 @@ def make_preds(model, input_data):
 
   Returns model predictions on input_data.
   """
-  forecast = model.predict(input_data)
+  forecast = model.predict(input_data, verbose=0)
   return tf.squeeze(forecast) # return 1D array of predictions
 
 
-if __name__=="__main__":
-  X_test2=preprocess()
+data = json.loads(sys.argv[1])
+df = pd.DataFrame(data)
 
-  loaded_w_revin_model=tf.keras.models.load_model("./nbeats_revin_model")
+X_test2=preprocess(df)
 
-  model_w_revin_preds = make_preds(loaded_w_revin_model, X_test2)
+loaded_w_revin_model=tf.keras.models.load_model("./server/nbeats_revin_model")
 
-  model_w_revin_preds_lastcol = model_w_revin_preds[:, -1]  # Take the last column
-  model_w_revin_preds_lastcol = tf.expand_dims(model_w_revin_preds_lastcol, axis=-1)  # Expand dimensions to shape (494, 1)
-  model_w_revin_preds_lastcol_seven=model_w_revin_preds_lastcol[-7:]
+model_w_revin_preds = make_preds(loaded_w_revin_model, X_test2)
 
-  print(model_w_revin_preds_lastcol_seven)
+model_w_revin_preds_lastcol = model_w_revin_preds[:, -1]  # Take the last column
+model_w_revin_preds_lastcol = tf.expand_dims(model_w_revin_preds_lastcol, axis=-1)  # Expand dimensions to shape (494, 1)
+model_w_revin_preds_lastcol_seven = model_w_revin_preds_lastcol[-7:]
+pred_list = model_w_revin_preds_lastcol_seven.numpy().tolist()
+
+
+flattened_data = [item for sublist in pred_list for item in sublist]
+
+if (len(pred_list) > 0):
+ prediction = json.dumps({"forecastData": flattened_data})
+ print(prediction)
+else: 
+ print(json.dumps({"forecastData": "null"}))
