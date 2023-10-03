@@ -33,13 +33,10 @@ def preprocess():
     # Append the new date to the DataFrame with NaN values for all columns
     df2.loc[new_date] = [pd.NA] * len(df2.columns)
 
-    df2.tail(10)
 
-
-    HORIZON=7
     WINDOW_SIZE=7
 
-    # Make a copy of the Bitcoin historical data with block reward feature
+    # Make a copy of the stock historical data with block reward feature
     df_windowed2 = df2.copy()
 
     # Add windowed columns
@@ -52,7 +49,7 @@ def preprocess():
 
 
     # Step 1: Filter out columns with -7 to -1 suffix
-    suffixes_to_check = [f"-{i}" for i in range(7, 0, -1)]
+    suffixes_to_check = [f"-{i}" for i in range(WINDOW_SIZE, 0, -1)]
     columns_to_check_for_nan = [col for col in df_windowed2.columns if any(suffix in col for suffix in suffixes_to_check)]
 
     # Step 2: Drop rows only if there's a NaN in columns with the -7 to -1 suffix
@@ -66,14 +63,8 @@ def preprocess():
 
     # Separating into X2 and y2
     X2 = df_filtered.drop(columns=['Close'])
-    y2_withClose = df_filtered['Close']
+    X_test2 = X2.tail(50)
 
-
-    start_test = pd.Timestamp('2023-09-07').tz_localize('US/Eastern')
-    end_test = pd.Timestamp('2023-09-17').tz_localize('US/Eastern')
-
-    X_test2, y_test2_withClose = X2.loc[start_test:end_test], y2_withClose.loc[start_test:end_test]
-    
     return X_test2
 
 
