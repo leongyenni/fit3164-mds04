@@ -20,8 +20,9 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
         const handleResize = () => {
             if (chart) {
                 chart.applyOptions({
-                    width: document.getElementById('forecast-chart-div')!
-                        .clientWidth
+                    width:
+                        document.getElementById('forecast-chart-div')!
+                            .clientWidth * 0.95
                 });
             }
         };
@@ -105,7 +106,6 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
         );
 
         chart.timeScale().fitContent();
-        console.log(chart.timeScale().width() / 2);
 
         let currentIndex = 0;
         const lastIndex = forecastData.length;
@@ -141,8 +141,6 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
             ) {
                 setTooltipVisible(false);
             } else {
-                const toolTipWidth = 80;
-                const toolTipHeight = 80;
                 const toolTipMargin = 15;
 
                 const areaData = param.seriesData.get(areaSeriesHist)
@@ -158,7 +156,7 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
                 const containerOffset =
                     document.getElementById('main-page')!.clientHeight -
                     document.getElementById('forecast-chart-div')!.clientHeight;
-           
+
                 const tooltipContent = {
                     timestamp: parseInt(areaData.time.toString()),
                     close: OHLCFormatter(areaData.value),
