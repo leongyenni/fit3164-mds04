@@ -105,8 +105,6 @@ if (!isDev && cluster.isMaster) {
         const { symbol } = req.params;
         const { interval, range } = req.query;
 
-        console.log(symbol);
-
         try {
             const response = await axios.get(
                 `https://query1.finance.yahoo.com/v7/finance/chart/${symbol}`,
@@ -139,6 +137,30 @@ if (!isDev && cluster.isMaster) {
             console.error('Error fetching stock data:', error);
             res.status(500).json({ error: 'An error occurred' });
         }
+    });
+
+    app.get('/api/model/', (req, res) => {
+        // const symbol = req.params;
+        // console.log(`Predicting ${symbol}`);
+
+        const forecast_data = [];
+
+        const python = spawn('python', [
+            './server/nbeats_revin_model.py'
+            // symbol
+        ]);
+
+        python.stdout.on('data', (data) => {
+            console.log('Pipe data from python script');
+            forecast_data.push(JSON.parse(data));
+        });
+
+        python.on('close', (code) => {
+            console.log(`Child process close all stdio with code ${code}`);
+            console.log('Forecast data: ', forecast_data);
+            res.set('Content-Type', 'application/json');
+            res.send(forecast_data);
+        });
     });
 
     app.get('/api/exactify', function (req, res) {
