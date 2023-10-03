@@ -4,6 +4,7 @@ import { AiOutlineSearch } from 'react-icons/ai';
 import useStockTickerAPI from '../hooks/useStockTickerAPI';
 import { Ticker } from '../types/DataTypes';
 import { SearchBarProps } from '../types/LandingPageTypes';
+import { color } from '../styles/colors';
 
 const Searchbar: React.FC<SearchBarProps> = ({ className }) => {
     const [inputVal, setInputVal] = useState('');
@@ -53,7 +54,7 @@ const Searchbar: React.FC<SearchBarProps> = ({ className }) => {
                     <input
                         type="search"
                         placeholder="Search..."
-                        className="search-bar-input w-full h-12 p-3 pl-[56px] bg-slate-800 rounded-lg"
+                        className="search-bar-input w-full h-12 p-3 pl-[56px] bg-slate-800 rounded-lg focus:bg-slate-950"
                         onClick={(e) => {
                             handleChange(e.target.value.toUpperCase());
                         }}
@@ -74,12 +75,12 @@ const Searchbar: React.FC<SearchBarProps> = ({ className }) => {
                 {open && (
                     <div
                         ref={dropdownRef}
-                        className="absolute top-3 mt-12 w-3/5 max-h-[200px] z-50 bg-white overflow-y-scroll rounded-lg"
+                        className="search-bar absolute top-3 mt-12 w-3/5 max-h-[240px] z-50 bg-slate-950 overflow-y-scroll rounded-lg shadow-lg shadow-slate-950"
                     >
                         <ul>
                             {tickerSymbols.map((tickerSymbol) => (
                                 <li
-                                    className="search-bar-item text-slate-800 p-2"
+                                    className="text-white p-2 hover:bg-slate-700"
                                     key={tickerSymbol.symbol}
                                     value={tickerSymbol.symbol}
                                     onClick={() => {
@@ -88,10 +89,28 @@ const Searchbar: React.FC<SearchBarProps> = ({ className }) => {
                                 >
                                     <div className="flex items-center">
                                         <span className="flex-grow font-medium">
-                                            {tickerSymbol.symbol}
+                                            <span>{tickerSymbol.symbol}</span>{' '}
+                                            &#183;
+                                            <span className="text-slate-400 tracking-wide font-thin text-left cursor-default p-2">
+                                                {tickerSymbol.company_name}
+                                            </span>
                                         </span>
-                                        <span className="text-slate-500 tracking-wide font-thin text-left cursor-default">
-                                            {tickerSymbol.company_name}
+                                        <span
+                                            className="tracking-wide text-left px-1 rounded-md"
+                                            style={{
+                                                backgroundColor:
+                                                    tickerSymbol.netchange > 0
+                                                        ? color.upColorLight
+                                                        : color.downColorLight,
+                                                color:
+                                                    tickerSymbol.netchange > 0
+                                                        ? color.upColor
+                                                        : color.downColor
+                                            }}
+                                        >
+                                            {tickerSymbol.netchange}
+                                            &nbsp;/&nbsp;
+                                            {tickerSymbol.pctchange}
                                         </span>
                                     </div>
                                 </li>

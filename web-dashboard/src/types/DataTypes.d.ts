@@ -12,6 +12,8 @@ export type StockData = {
 export type Ticker = {
     symbol: string;
     company_name: string;
+    netchange: number;
+    pctchange: string;
 };
 
 export type TimeSeriesStockData = {
