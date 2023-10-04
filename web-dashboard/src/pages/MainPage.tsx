@@ -20,6 +20,10 @@ export const MainPage: React.FC = () => {
         router.push({ pathname: '/' });
     };
 
+    const navigateToErrorPage = () => {
+        router.push({ pathname: '/ErrorPage' });
+    };
+
     const tickerSymbol = router.query['tickerSymbol'] as string;
 
     const timeRangeData = useSelector((state: AppState) => state.timeRangeData);
@@ -66,8 +70,14 @@ export const MainPage: React.FC = () => {
         );
     }
 
-    if (!tickerData.data || !historicalData.data) {
-        return <div>Error </div>;
+    if (
+        !tickerData.data ||
+        !historicalData.data ||
+        tickerData.error ||
+        historicalData.error
+    ) {
+        navigateToErrorPage();
+        return <></>;
     }
 
     return (

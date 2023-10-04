@@ -9,7 +9,7 @@ const SearchItem: React.FC<SearchItemProps> = ({ tickerSymbol, onClick }) => {
 
     return (
         <li
-            className="text-white p-2 hover:bg-slate-700 border-b border-slate-900 border-opacity-40"
+            className="text-white p-2 hover:bg-slate-700 border-b border-slate-900 border-opacity-80"
             key={tickerSymbol.symbol}
             value={tickerSymbol.symbol}
             onClick={handleItemClick}

@@ -32,9 +32,12 @@ const StockDataItem: React.FC<StockDataItemProps> = ({ symbol }) => {
 
     const isMarketIncrease = data.marketChange >= 0;
 
+    // hover:bg-slate-950 hover:bg-opacity-60 hover:border-slate-900 hover:border-2
     return (
         <div
-            className="grid-item flex-shrink-0"
+            className="grid-item flex-shrink-0 cursor-pointer mx-20 transform transition-transform 
+            duration-300 ease-in-out hover:scale-110 hover:shadow-xl hover:shadow-slate-950 hover:mr-10 
+            hover:ml-4 "
             onClick={() => handleClick(symbol)}
         >
             <div className="text-2xl text-white font-bold opacity-1">

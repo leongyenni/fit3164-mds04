@@ -1,4 +1,5 @@
 import '../styles/globals.css';
+import '../styles/animations.css';
 import type { AppProps } from 'next/app';
 import { Provider } from 'react-redux';
 import { wrapper } from '../redux/store';
