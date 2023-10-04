@@ -9,7 +9,8 @@ const initialState: StockDataState = {
     low: '',
     close: '',
     volume: '',
-    colour: 'red'
+    colour: 'red',
+    x: 0
 };
 
 const stockDataSlice = createSlice({

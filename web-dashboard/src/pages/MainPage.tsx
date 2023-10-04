@@ -40,21 +40,19 @@ export const MainPage: React.FC = () => {
     const handleForecast = () => {
         setStartForecast(true);
 
-        if (!historicalData.loading) {
-            axios
-                .post(
-                    'http://localhost:5000/api/model',
-                    { historicalData: historicalData.data },
-                    { headers: { 'Content-Type': 'application/json' } }
-                )
-                .then((response) => {
-                    setForecastData(response.data.forecastData);
-                    console.log(response.data);
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
-        }
+        axios
+            .post(
+                'http://localhost:5000/api/model',
+                { historicalData: historicalData.data },
+                { headers: { 'Content-Type': 'application/json' } }
+            )
+            .then((response) => {
+                setForecastData(response.data.forecastData);
+                console.log(response.data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
     };
 
     if (tickerData.loading || historicalData.loading) {
@@ -66,87 +64,87 @@ export const MainPage: React.FC = () => {
                 </div>
             </div>
         );
-    } else {
-        return (
-            <div id="main-page">
-                <div className="w-full relative">
-                    <div className="grid grid-flow-col-dense auto-cols-max grid-cols-[1fr,auto] my-6">
-                        <Searchbar />
-                        <p
-                            className="text-3xl mr-6 cursor-pointer glow"
-                            onClick={() => navigateToStartPage()}
-                        >
-                            TradeTrens $ | MDS04
-                        </p>
+    }
+
+    if (!tickerData.data || !historicalData.data) {
+        return <div>Error </div>;
+    }
+
+    return (
+        <div id="main-page">
+            <div className="w-full relative">
+                <div className="grid grid-flow-col-dense auto-cols-max grid-cols-[1fr,auto] my-6">
+                    <Searchbar />
+                    <p
+                        className="text-3xl mr-6 cursor-pointer glow"
+                        onClick={() => navigateToStartPage()}
+                    >
+                        TradeTrens $ | MDS04
+                    </p>
+                </div>
+                <hr className="border-t border-gray-800 my-3" />
+            </div>
+
+            <div className="mt-4 cursor-default">
+                <span className="text-4xl font-medium">{tickerSymbol}</span>
+                <Legend />
+            </div>
+
+            <div className="pt-2" id="chart-div">
+                <Chart
+                    data={tickerData.data}
+                    timeInterval={timeRangeData.timeInterval}
+                />
+            </div>
+
+            <hr className="border-t border-gray-800 mb-1" />
+
+            <RangeSwitcher />
+
+            <div className="mt-20">
+                <div
+                    className="p-10 rounded-xl"
+                    style={{ backgroundColor: color.backgroundColor2 }}
+                    id="forecast-chart-div"
+                >
+                    <div
+                        className={`grid mb-5 ${
+                            startForecast ? 'grid-cols-2' : ''
+                        } text-center text-xl font-medium tracking-wider`}
+                    >
+                        <div>Historical data</div>
+                        {startForecast && <div>Forecast data</div>}
                     </div>
-                    <hr className="border-t border-gray-800 my-3" />
-                </div>
-
-                <div className="mt-4 cursor-default">
-                    <span className="text-4xl font-medium">{tickerSymbol}</span>
-                    <Legend />
-                </div>
-
-                <div className="pt-2" id="chart-div">
-                    <Chart
-                        data={tickerData.data!}
-                        timeInterval={timeRangeData.timeInterval}
+                    <ForecastChart
+                        historicalData={historicalData.data.slice(
+                            0,
+                            historicalData.data.length / 2 + 1
+                        )}
+                        forecastData={historicalData.data.slice(
+                            historicalData.data.length / 2,
+                            historicalData.data.length
+                        )}
+                        startForecast={startForecast}
                     />
                 </div>
-
-                <hr className="border-t border-gray-800 mb-1" />
-
-                <RangeSwitcher />
-
-                <div className="mt-20">
-                    <div
-                        className="p-10 rounded-xl"
-                        style={{ backgroundColor: color.backgroundColor2 }}
-                        id="forecast-chart-div"
-                    >
-                        <div
-                            className={`grid mb-5 ${
-                                startForecast ? 'grid-cols-2' : ''
-                            } text-center text-xl font-medium tracking-wider`}
-                        >
-                            <div>Historical data</div>
-                            {startForecast && <div>Forecast data</div>}
-                        </div>
-                        <ForecastChart
-                            historicalData={
-                                historicalData.data?.slice(
-                                    0,
-                                    historicalData.data.length / 2 + 1
-                                )!
-                            }
-                            forecastData={
-                                historicalData.data?.slice(
-                                    historicalData.data.length / 2,
-                                    historicalData.data.length
-                                )!
-                            }
-                            startForecast={startForecast}
-                        />
-                    </div>
-                </div>
-                <div className="my-5 align-center">
-                    {!startForecast && (
-                        <button
-                            className="bg-sky-600 py-2 px-4 rounded-md hover:bg-sky-900"
-                            onClick={() => handleForecast()}
-                        >
-                            Start Forecast
-                        </button>
-                    )}
-
-                    {startForecast && forecastData.length > 1 && (
-                        <div className="text-lg"> Predicted closing price </div>
-                    )}
-                </div>
-                <Footer />
             </div>
-        );
-    }
+            <div className="my-5 align-center">
+                {!startForecast && (
+                    <button
+                        className="bg-sky-600 py-2 px-4 rounded-md hover:bg-sky-900"
+                        onClick={() => handleForecast()}
+                    >
+                        Start Forecast
+                    </button>
+                )}
+
+                {startForecast && forecastData.length > 1 && (
+                    <div className="text-lg"> Predicted closing price </div>
+                )}
+            </div>
+            <Footer />
+        </div>
+    );
 };
 
 export default MainPage;

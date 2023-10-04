@@ -26,7 +26,6 @@ const useFinanceStatsAPI = (symbol: string) => {
 
     useEffect(() => {
         fetchStockStats();
-        console.log(data);
     }, [symbol]);
 
     return { loading, error, data };

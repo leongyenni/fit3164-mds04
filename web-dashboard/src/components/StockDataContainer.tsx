@@ -3,7 +3,7 @@ import StockDataItem from './StockDataItem';
 
 const StockDataContainer: React.FC = () => {
     return (
-        <div className="grid-container flex overflow-x-auto">
+        <div className="grid-container flex overflow-x-auto mt-3">
             <StockDataItem symbol="AAPL" />
             <StockDataItem symbol="TSLA" />
             <StockDataItem symbol="META" />

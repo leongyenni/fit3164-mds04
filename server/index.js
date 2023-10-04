@@ -5,11 +5,11 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const cluster = require('cluster');
 const numCPUs = require('os').cpus().length;
+const { spawn } = require('child_process');
 
 const isDev = process.env.NODE_ENV !== 'production';
 const PORT = process.env.PORT || 5000;
 
-const { spawn } = require('child_process');
 
 // Multi-process to utilize all CPU cores.
 if (!isDev && cluster.isMaster) {
