@@ -24,7 +24,7 @@ const useStockTickerAPI = (letter: string = ''): Ticker[] => {
         fetchStockTickers();
     }, []);
 
-    useMemo(() => {
+    useEffect(() => {
         const firstChar = letter.charAt(0).toLocaleLowerCase();
         if (tickers && tickers[firstChar]) {
             setFilteredTicker(
@@ -35,9 +35,9 @@ const useStockTickerAPI = (letter: string = ''): Ticker[] => {
         } else {
             setFilteredTicker([]);
         }
-    }, [letter, tickers]);
 
-    console.log(filteredTicker);
+        console.log(filteredTicker);
+    }, [letter]);
 
     return filteredTicker;
 };

@@ -211,30 +211,6 @@ if (!isDev && cluster.isMaster) {
         const forecastData = [];
 
         const currentDir = path.dirname(__filename);
-        console.log(path.dirname(__filename) + '\\nbeats_revin_model.py');
-
-        // Run a Python command to get the Python interpreter path
-        const python1 = spawn('python', [
-            '-c',
-            'import sys; print(sys.executable)'
-        ]);
-
-        let pythonInterpreterPath = '';
-
-        python1.stdout.on('data', (data) => {
-            pythonInterpreterPath += data.toString();
-        });
-
-        python1.on('close', (code) => {
-            if (code === 0) {
-                pythonInterpreterPath = pythonInterpreterPath.trim();
-                console.log('Python Interpreter Path:', pythonInterpreterPath);
-            } else {
-                console.error(
-                    `Failed to capture Python interpreter path. Exit code: ${code}`
-                );
-            }
-        });
 
         const python = spawn('python', [
             currentDir + '\\nbeats_revin_model.py',
@@ -248,9 +224,9 @@ if (!isDev && cluster.isMaster) {
 
         python.on('close', (code) => {
             console.log(`Child process close all stdio with code ${code}`);
-            console.log('Forecast data: ', JSON.stringify(forecastData));
+            console.log('Data: ', JSON.stringify(forecastData[0]));
             res.set('Content-Type', 'application/json');
-            res.send(forecastData);
+            res.send(forecastData[0]);
         });
     });
 

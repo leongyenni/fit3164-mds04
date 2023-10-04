@@ -89,6 +89,15 @@ def make_preds(model, input_data):
   forecast = model.predict(input_data, verbose=0)
   return tf.squeeze(forecast) # return 1D array of predictions
 
+def load_or_create_model():
+    global loaded_w_revin_model, model_loaded
+    
+    if not model_loaded:
+        loaded_w_revin_model = tf.keras.models.load_model("./server/nbeats_revin_model")
+        model_loaded = True 
+        
+    return loaded_w_revin_model
+
 
 data = json.loads(sys.argv[1])
 df = pd.DataFrame(data)
@@ -97,13 +106,13 @@ X_test2=preprocess(df)
 
 loaded_w_revin_model=tf.keras.models.load_model("./server/nbeats_revin_model")
 
+# loaded_w_revin_model = load_or_create_model()
 model_w_revin_preds = make_preds(loaded_w_revin_model, X_test2)
 
 model_w_revin_preds_lastcol = model_w_revin_preds[:, -1]  # Take the last column
 model_w_revin_preds_lastcol = tf.expand_dims(model_w_revin_preds_lastcol, axis=-1)  # Expand dimensions to shape (494, 1)
 model_w_revin_preds_lastcol_seven = model_w_revin_preds_lastcol[-7:]
 pred_list = model_w_revin_preds_lastcol_seven.numpy().tolist()
-
 
 flattened_data = [item for sublist in pred_list for item in sublist]
 

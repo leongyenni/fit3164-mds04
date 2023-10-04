@@ -41,8 +41,8 @@ const useTSFinanceAPI = (
         if (!symbol) {
             return;
         }
-
         fetchStockData();
+        console.log('fetch TS data');
     }, [symbol, interval, range]);
 
     return { loading, error, data };

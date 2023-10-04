@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
 import { AppState } from '../redux/store';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import useTSFinanceAPI from '../hooks/useTSFinanceAPI';
 import { Chart } from '../components/Chart';
 import LoadingBar from '../components/LoadingBar';
@@ -18,23 +18,23 @@ export const MainPage: React.FC = () => {
 
     const timeRangeData = useSelector((state: AppState) => state.timeRangeData);
 
-    //
-
     const tickerData = useTSFinanceAPI(
         tickerSymbol,
         timeRangeData.timeInterval,
         timeRangeData.timeRange
     );
     const historicalData = useTSFinanceAPI(tickerSymbol, '1h', '10d');
-
+    const [forecastData, setForecastData] = useState([]);
     const [startForecast, setStartForecast] = useState(false);
 
     useEffect(() => {
         setStartForecast(false);
     }, [tickerSymbol]);
 
-    useEffect(() => {
-        if (startForecast) {
+    const handleForecast = () => {
+        setStartForecast(true);
+
+        if (!historicalData.loading) {
             axios
                 .post(
                     'http://localhost:5000/api/model',
@@ -42,22 +42,15 @@ export const MainPage: React.FC = () => {
                     { headers: { 'Content-Type': 'application/json' } }
                 )
                 .then((response) => {
-                    console.log('Response from server:', response.data);
+                    console.log('startForecast:', startForecast);
+                    console.log('historicalData:', historicalData);
+                    setForecastData(response.data.forecastData);
+                    console.log(response.data);
                 })
                 .catch((error) => {
                     console.error('Error:', error);
                 });
-            getData();
-            console.log(historicalData.data);
         }
-    }, [historicalData, startForecast]);
-
-    const getData = () => {
-        return new Promise((resolve, reject) =>
-            fetch('http://localhost:5000/api').then((response) => {
-                console.log(response.json());
-            })
-        );
     };
 
     const navigateToStartPage = () => {
@@ -133,14 +126,14 @@ export const MainPage: React.FC = () => {
                     {!startForecast && (
                         <button
                             className="bg-sky-600 py-2 px-4 rounded-md hover:bg-sky-900"
-                            onClick={() => setStartForecast(true)}
+                            onClick={() => handleForecast()}
                         >
                             Start Forecast
                         </button>
                     )}
 
-                    {startForecast && (
-                        <div className="text-lg"> Predicted Close Price</div>
+                    {startForecast && forecastData.length > 1 && (
+                        <div className="text-lg"> Predicted closing price </div>
                     )}
                 </div>
             </div>
