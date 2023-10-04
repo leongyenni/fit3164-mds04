@@ -10,9 +10,9 @@ const useTSFinanceAPI = (
 ): {
     loading: boolean;
     error: any;
-    data: StockData[] | null;
+    data: StockData[];
 } => {
-    const [data, setData] = useState<StockData[] | null>(null);
+    const [data, setData] = useState<StockData[]>([]);
     const [error, setError] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(true);
 

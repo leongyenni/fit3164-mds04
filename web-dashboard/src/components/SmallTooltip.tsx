@@ -21,10 +21,6 @@ const SmallTooltip: React.FC = () => {
             <p className="text-base tracking-wide text-slate-300 ">
                 {time} <span className="pl-2"> {close} USD</span>
             </p>
-            {/* <p className="text-sm tracking-wider font-black mt-2">
-                {close}
-                <span className="pl-2 text-lg font-thin">usd</span>
-            </p> */}
         </div>
     );
 };

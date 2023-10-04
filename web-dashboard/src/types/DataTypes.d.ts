@@ -9,11 +9,35 @@ export type StockData = {
     volume: number;
 };
 
-export type Ticker = {
+export type TickerData = {
     symbol: string;
     company_name: string;
     netchange: number;
     pctchange: string;
+};
+
+export type StatsData = {
+    companyName: string;
+    quoteType: string;
+    marketChangePct: string;
+    marketChange: number;
+    marketPrice: number;
+    analystRating: string;
+    marketState: string;
+    marketDayHigh: number;
+    marketDayLow: number;
+    marketDayVolume: number;
+    marketPrevClose: number;
+    bid: number;
+    ask: number;
+    marketCap: number;
+    peRatio: number;
+    dividendRate: number;
+    dividendYield: number;
+    totalShares: number;
+    fiftyTwoWeekLow: number;
+    fiftyTwoWeekHigh: number;
+    closingTime: UTCTimestamp;
 };
 
 export type TimeSeriesStockData = {

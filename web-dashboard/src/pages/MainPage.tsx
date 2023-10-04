@@ -15,6 +15,11 @@ import LoadingSpinner from '../components/LoadingSpinner';
 
 export const MainPage: React.FC = () => {
     const router = useRouter();
+
+    const navigateToStartPage = () => {
+        router.push({ pathname: '/' });
+    };
+
     const tickerSymbol = router.query['tickerSymbol'] as string;
 
     const timeRangeData = useSelector((state: AppState) => state.timeRangeData);
@@ -43,8 +48,6 @@ export const MainPage: React.FC = () => {
                     { headers: { 'Content-Type': 'application/json' } }
                 )
                 .then((response) => {
-                    console.log('startForecast:', startForecast);
-                    console.log('historicalData:', historicalData);
                     setForecastData(response.data.forecastData);
                     console.log(response.data);
                 })
@@ -52,10 +55,6 @@ export const MainPage: React.FC = () => {
                     console.error('Error:', error);
                 });
         }
-    };
-
-    const navigateToStartPage = () => {
-        router.push({ pathname: '/' });
     };
 
     if (tickerData.loading || historicalData.loading) {

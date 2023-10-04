@@ -147,13 +147,13 @@ if (!isDev && cluster.isMaster) {
                 return {
                     symbol: symbol,
                     date: timestamp + result.meta.gmtoffset,
-                    open: jsonData.open[index] ?? 0,
-                    high: jsonData.high[index] ?? 0,
-                    low: jsonData.low[index] ?? 0,
-                    close: jsonData.close[index] ?? 0,
+                    open: parseFloat(jsonData.open[index]) ?? 0,
+                    high: parseFloat(jsonData.high[index]) ?? 0,
+                    low: parseFloat(jsonData.low[index]) ?? 0,
+                    close: parseFloat(jsonData.close[index]) ?? 0,
                     // adjClose: result.indicators.adjclose[0].adjclose[index],
-                    adjClose: jsonData.close[index] ?? 0,
-                    volume: jsonData.volume[index] ?? 0
+                    adjClose: parseFloat(jsonData.close[index]) ?? 0,
+                    volume: parseFloat(jsonData.volume[index]) ?? 0
                 };
             });
 
@@ -165,7 +165,7 @@ if (!isDev && cluster.isMaster) {
         }
     });
 
-    app.get('/api/stock-ticker-stat/:symbol', async (req, res) => {
+    app.get('/api/stock-ticker-stats/:symbol', async (req, res) => {
         const { symbol } = req.params;
         const url = `https://query1.finance.yahoo.com/v7/finance/options/${symbol}`;
 
@@ -176,30 +176,34 @@ if (!isDev && cluster.isMaster) {
             const statsData = {
                 companyName: result.longName,
                 quoteType: result.quoteType,
-                marketChangePct: result.regularMarketChangePercent,
-                marketPrice: result.regularMarketPrice,
+                marketChangePct:
+                    parseFloat(result.regularMarketChangePercent).toFixed(2) +
+                    '%',
+                marketChange: parseFloat(result.regularMarketChange),
+                marketPrice: parseFloat(result.regularMarketPrice),
                 analystRating: result.averageAnalystRating,
                 marketState: result.marketState,
-                marketDayHigh: result.regularMarketDayHigh,
-                marketDayLow: result.regularMarketDayLow,
-                marketDayVolume: result.regularMarketDayVolume,
-                marketPrevClose: result.regularMarketPreviousClose,
-                bid: result.bid,
-                ask: result.ask,
-                marketCap: result.marketCap,
-                peRatio: result.priceEpsCurrentYear,
-                dividendRate: result.trailingAnnualDividendRate,
-                dividendYield: result.trailingAnnualDividendYield,
-                totalShares: result.sharesOutstanding,
-                fiftyTwoWeekLow: result.fiftyTwoWeekLow,
-                fiftyTwoWeekHigh: result.fiftyTwoWeekHigh,
+                marketDayHigh: parseFloat(result.regularMarketDayHigh),
+                marketDayLow: parseFloat(result.regularMarketDayLow),
+                marketDayVolume: parseFloat(result.regularMarketDayVolume),
+                marketPrevClose: parseFloat(result.regularMarketPreviousClose),
+                bid: parseFloat(result.bid),
+                ask: parseFloat(result.ask),
+                marketCap: parseFloat(result.marketCap),
+                peRatio: parseFloat(result.priceEpsCurrentYear),
+                dividendRate: parseFloat(result.trailingAnnualDividendRate),
+                dividendYield: parseFloat(result.trailingAnnualDividendYield),
+                totalShares: parseFloat(result.sharesOutstanding),
+                fiftyTwoWeekLow: parseFloat(result.fiftyTwoWeekLow),
+                fiftyTwoWeekHigh: parseFloat(result.fiftyTwoWeekHigh),
                 closingTime:
-                    result.regularMarketTime + resultgmtOffSetMilliseconds
+                    parseInt(result.regularMarketTime) +
+                    parseInt(result.gmtOffSetMilliseconds)
             };
 
             res.set('Content-Type', 'application/json');
             res.json(statsData);
-        } catch {
+        } catch (error) {
             console.error('Error fetching stock ticker stats:', error);
             res.status(500).json({ error: 'An error occured' });
         }

@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { createChart, ColorType, AreaData } from 'lightweight-charts';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { ForecastChartProps } from '../types/MainPageTypes';
+import { ForecastChartProps } from '../types/ComponentTypes';
 import { color } from '../styles/colors';
 import { currencyFormatter, OHLCFormatter } from '../utils/formattingUtils';
 import { setForecastData } from '../redux/forecastDataSlice';

@@ -7,7 +7,7 @@ import {
 } from 'lightweight-charts';
 import Tooltip from './Tooltip';
 import React, { useEffect, useState } from 'react';
-import { ChartProps } from '../types/MainPageTypes';
+import { ChartProps } from '../types/ComponentTypes';
 import { useDispatch } from 'react-redux';
 import { setStockData } from '../redux/stockDataSlice';
 import {
@@ -223,9 +223,7 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
 
     return (
         <div>
-            <div id="chart-div">
-                {tooltipVisible && <Tooltip/>}
-            </div>
+            <div id="chart-div">{tooltipVisible && <Tooltip />}</div>
         </div>
     );
 };

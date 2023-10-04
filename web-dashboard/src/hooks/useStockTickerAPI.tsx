@@ -1,10 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import axios from 'axios';
 import { useEffect, useMemo, useState } from 'react';
-import { Ticker } from '../types/DataTypes';
+import { TickerData } from '../types/DataTypes';
 
-const useStockTickerAPI = (letter: string = ''): Ticker[] => {
-    const [tickers, setTickers] = useState<Record<string, Ticker[]>>();
-    const [filteredTicker, setFilteredTicker] = useState<Ticker[]>([]);
+const useStockTickerAPI = (letter: string = ''): TickerData[] => {
+    const [tickers, setTickers] = useState<Record<string, TickerData[]>>();
+    const [filteredTicker, setFilteredTicker] = useState<TickerData[]>([]);
 
     const apiUrl = `http://localhost:5000/api/stock-tickers`;
 
@@ -12,7 +13,6 @@ const useStockTickerAPI = (letter: string = ''): Ticker[] => {
         axios
             .get(apiUrl)
             .then((response) => {
-                console.log(response);
                 setTickers(response.data);
             })
             .catch((err) => {
@@ -24,7 +24,7 @@ const useStockTickerAPI = (letter: string = ''): Ticker[] => {
         fetchStockTickers();
     }, []);
 
-    useEffect(() => {
+    useMemo(() => {
         const firstChar = letter.charAt(0).toLocaleLowerCase();
         if (tickers && tickers[firstChar]) {
             setFilteredTicker(
@@ -35,8 +35,6 @@ const useStockTickerAPI = (letter: string = ''): Ticker[] => {
         } else {
             setFilteredTicker([]);
         }
-
-        console.log(filteredTicker);
     }, [letter]);
 
     return filteredTicker;
