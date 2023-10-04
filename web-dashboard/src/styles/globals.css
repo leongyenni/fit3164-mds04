@@ -10,6 +10,7 @@ body {
     color: #fff;
     /* padding: 25px; */
     scroll-padding-left: 20px;
+    overflow-x: hidden; /* Hide the horizontal scrollbar */
 }
 
 /* TEXT */
@@ -84,7 +85,7 @@ body {
 }
 
 .glowing-down {
-    text-shadow: 0 0 10px rgba(239, 83, 80, 1);
+    animation: glow-down 2s ease-in-out infinite alternate;
 }
 
 @keyframes glow-down {
@@ -98,10 +99,10 @@ body {
     }
 }
 
-.glow-text {
+.glowing-white {
     text-shadow:
-        0 0 5px #ffffff,
-        0 0 3px #ffffff;
+        0 0 3px #ffffff,
+        0 0 2px #ffffff;
 }
 
 /* BACKGROUND */
@@ -148,6 +149,12 @@ body {
   z-index: -1;
 } */
 
+.container {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
 .container::before {
     content: '';
     position: absolute;
@@ -174,19 +181,35 @@ body {
 }
 
 /* BLOCK */
-.grid-container {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
+
+/* .grid-container {
+    white-space: nowrap;
+    transition: opacity 0.5s ease;
 }
+
+.grid-container > div {
+    padding: 1rem;
+    margin: 1rem;
+    margin-left: 0;
+    background-color: #01000b;
+    opacity: 0; 
+    border-radius: 1rem;
+    height: 11rem;
+    width: 16rem;
+} */
+
+/* .visible {
+    opacity: 1;
+} */
 
 .grid-item {
     padding: 1rem;
     margin: 1rem;
     margin-left: 0;
     background-color: #01000b;
-    opacity: 1;
     border-radius: 1rem;
+    height: 11rem;
+    width: 16rem;
 }
 
 /* Scroll bar */
@@ -198,6 +221,7 @@ body {
 
 ::-webkit-scrollbar {
     width: 0.5rem;
+    height: 0;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -212,4 +236,3 @@ body {
 ::-webkit-scrollbar-corner {
     background: transparent;
 }
-

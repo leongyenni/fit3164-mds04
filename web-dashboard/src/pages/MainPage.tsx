@@ -4,13 +4,14 @@ import { AppState } from '../redux/store';
 import { useEffect, useState, useMemo } from 'react';
 import useTSFinanceAPI from '../hooks/useTSFinanceAPI';
 import { Chart } from '../components/Chart';
-import LoadingBar from '../components/LoadingBar';
 import Searchbar from '../components/SearchBar';
 import Legend from '../components/Legend';
 import { ForecastChart } from '../components/ForecastChart';
 import RangeSwitcher from '../components/RangeSwitcher';
+import Footer from '../components/Footer';
 import { color } from '../styles/colors';
 import axios from 'axios';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 export const MainPage: React.FC = () => {
     const router = useRouter();
@@ -58,7 +59,14 @@ export const MainPage: React.FC = () => {
     };
 
     if (tickerData.loading || historicalData.loading) {
-        return <LoadingBar />;
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <LoadingSpinner />
+                <div className="ml-3 text-gray-400 text-2xl animate-pulse ">
+                    Loading...
+                </div>
+            </div>
+        );
     } else {
         return (
             <div id="main-page">
@@ -136,6 +144,7 @@ export const MainPage: React.FC = () => {
                         <div className="text-lg"> Predicted closing price </div>
                     )}
                 </div>
+                <Footer />
             </div>
         );
     }
