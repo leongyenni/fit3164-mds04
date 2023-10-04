@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { AppState } from '../redux/store';
 
-const Legend: React.FC = () => {
+const ChartLegends: React.FC = () => {
     const stockData = useSelector((state: AppState) => state.stockData);
 
     return (
@@ -51,4 +51,4 @@ const Legend: React.FC = () => {
     );
 };
 
-export default Legend;
+export default ChartLegends;

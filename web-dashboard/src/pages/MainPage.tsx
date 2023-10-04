@@ -2,18 +2,19 @@ import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
 import { AppState } from '../redux/store';
 import { useEffect, useState, useMemo } from 'react';
+import axios from 'axios';
 import useTSFinanceAPI from '../hooks/useTSFinanceAPI';
 import { Chart } from '../components/Chart';
-import Legend from '../components/Legend';
+import ChartLegends from '../components/ChartLegends';
 import { ForecastChart } from '../components/ForecastChart';
-import RangeSwitcher from '../components/RangeSwitcher';
 import Footer from '../components/Footer';
-import { color } from '../styles/colors';
-import axios from 'axios';
 import LoadingSpinner from '../components/LoadingSpinner';
 import useFinanceStatsAPI from '../hooks/useFinanceStatsAPI';
 import RightSideMenu from '../components/RightSideMenu';
 import Header from '../components/Header';
+import ChartControls from '../components/ChartControls';
+import { color } from '../styles/colors';
+import ChartTools from '../components/ChartTools';
 
 export const MainPage: React.FC = () => {
     const router = useRouter();
@@ -87,13 +88,15 @@ export const MainPage: React.FC = () => {
 
             <div className="flex">
                 <div className="flex-1">
-                    <div className="mt-4 cursor-default">
+                    <div className="mt-2 cursor-default">
                         <span className="text-4xl font-medium">
                             {tickerSymbol}
                         </span>
-                        <Legend />
+
+                        <ChartLegends />
+                        <ChartTools />
                     </div>
-                    <div className="pt-2 mr-8 " id="chart-div">
+                    <div className="pt-2" id="chart-div">
                         <Chart
                             data={tickerData.data}
                             timeInterval={timeRangeData.timeInterval}
@@ -104,9 +107,7 @@ export const MainPage: React.FC = () => {
                 <RightSideMenu />
             </div>
 
-            <hr className="border-t border-gray-800 mb-1" />
-
-            <RangeSwitcher />
+            <ChartControls />
 
             <div className="mt-20">
                 <div
