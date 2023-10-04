@@ -41,64 +41,6 @@ body {
     opacity: 0.85;
 }
 
-/* TITLE GLOWING EFFECT */
-.glow {
-    color: #ffffff;
-    -webkit-animation: glow 3s ease-in-out infinite alternate;
-    -moz-animation: glow 3s ease-in-out infinite alternate;
-    animation: glow 3s ease-in-out infinite alternate;
-}
-
-@keyframes glow {
-    from {
-        text-shadow:
-            0 0 10px #eeeeee,
-            0 0 20px #000000,
-            0 0 30px #000000,
-            0 0 40px #000000,
-            0 0 50px #00033f,
-            0 0 60px #00033f,
-            0 0 70px #00033f;
-    }
-    to {
-        text-shadow:
-            0 0 20px #eeeeee,
-            0 0 30px #87d4e5,
-            0 0 40px #87d4e5;
-    }
-}
-
-/* TEXT GLOWING EFFECT */
-.glowing-up {
-    animation: glow-up 2s ease-in-out infinite alternate;
-}
-
-@keyframes glow-up {
-    from {
-        text-shadow: 0 0 10px rgba(38, 166, 154, 1);
-    }
-    to {
-        text-shadow:
-            0 0 20px rgba(38, 166, 154, 1),
-            0 0 30px rgba(38, 166, 154, 1);
-    }
-}
-
-.glowing-down {
-    animation: glow-down 2s ease-in-out infinite alternate;
-}
-
-@keyframes glow-down {
-    from {
-        text-shadow: 0 0 10px rgba(239, 83, 80, 1);
-    }
-    to {
-        text-shadow:
-            0 0 20px rgba(239, 83, 80, 1),
-            0 0 30px rgba(239, 83, 80, 1);
-    }
-}
-
 .glowing-white {
     text-shadow:
         0 0 3px #ffffff,

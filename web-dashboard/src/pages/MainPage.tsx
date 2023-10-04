@@ -4,7 +4,6 @@ import { AppState } from '../redux/store';
 import { useEffect, useState, useMemo } from 'react';
 import useTSFinanceAPI from '../hooks/useTSFinanceAPI';
 import { Chart } from '../components/Chart';
-import Searchbar from '../components/SearchBar';
 import Legend from '../components/Legend';
 import { ForecastChart } from '../components/ForecastChart';
 import RangeSwitcher from '../components/RangeSwitcher';
@@ -12,13 +11,12 @@ import Footer from '../components/Footer';
 import { color } from '../styles/colors';
 import axios from 'axios';
 import LoadingSpinner from '../components/LoadingSpinner';
+import useFinanceStatsAPI from '../hooks/useFinanceStatsAPI';
+import RightSideMenu from '../components/RightSideMenu';
+import Header from '../components/Header';
 
 export const MainPage: React.FC = () => {
     const router = useRouter();
-
-    const navigateToStartPage = () => {
-        router.push({ pathname: '/' });
-    };
 
     const navigateToErrorPage = () => {
         router.push({ pathname: '/ErrorPage' });
@@ -36,6 +34,8 @@ export const MainPage: React.FC = () => {
     const historicalData = useTSFinanceAPI(tickerSymbol, '1h', '10d');
     const [forecastData, setForecastData] = useState([]);
     const [startForecast, setStartForecast] = useState(false);
+
+    const statsData = useFinanceStatsAPI(tickerSymbol);
 
     useEffect(() => {
         setStartForecast(false);
@@ -59,7 +59,7 @@ export const MainPage: React.FC = () => {
             });
     };
 
-    if (tickerData.loading || historicalData.loading) {
+    if (tickerData.loading || historicalData.loading || statsData.loading) {
         return (
             <div className="flex items-center justify-center h-screen">
                 <LoadingSpinner />
@@ -73,38 +73,35 @@ export const MainPage: React.FC = () => {
     if (
         !tickerData.data ||
         !historicalData.data ||
+        !statsData.data ||
         tickerData.error ||
-        historicalData.error
+        historicalData.error ||
+        statsData.error
     ) {
-        navigateToErrorPage();
-        return <></>;
+        return <div>Error</div>;
     }
 
     return (
         <div id="main-page">
-            <div className="w-full relative">
-                <div className="grid grid-flow-col-dense auto-cols-max grid-cols-[1fr,auto] my-6">
-                    <Searchbar />
-                    <p
-                        className="text-3xl mr-6 cursor-pointer glow"
-                        onClick={() => navigateToStartPage()}
-                    >
-                        TradeTrens $ | MDS04
-                    </p>
+            <Header />
+
+            <div className="flex">
+                <div className="flex-1">
+                    <div className="mt-4 cursor-default">
+                        <span className="text-4xl font-medium">
+                            {tickerSymbol}
+                        </span>
+                        <Legend />
+                    </div>
+                    <div className="pt-2 mr-8 " id="chart-div">
+                        <Chart
+                            data={tickerData.data}
+                            timeInterval={timeRangeData.timeInterval}
+                        />
+                    </div>
                 </div>
-                <hr className="border-t border-gray-800 my-3" />
-            </div>
 
-            <div className="mt-4 cursor-default">
-                <span className="text-4xl font-medium">{tickerSymbol}</span>
-                <Legend />
-            </div>
-
-            <div className="pt-2" id="chart-div">
-                <Chart
-                    data={tickerData.data}
-                    timeInterval={timeRangeData.timeInterval}
-                />
+                <RightSideMenu />
             </div>
 
             <hr className="border-t border-gray-800 mb-1" />
