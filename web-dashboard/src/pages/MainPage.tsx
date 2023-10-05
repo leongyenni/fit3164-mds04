@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
 import { AppState } from '../redux/store';
-import { useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import useTSFinanceAPI from '../hooks/useTSFinanceAPI';
 import { Chart } from '../components/Chart';
@@ -10,11 +10,10 @@ import { ForecastChart } from '../components/ForecastChart';
 import Footer from '../components/Footer';
 import LoadingSpinner from '../components/LoadingSpinner';
 import useFinanceStatsAPI from '../hooks/useFinanceStatsAPI';
-import RightSideMenu from '../components/RightSideMenu';
+import ChartSideMenu from '../components/ChartSideMenu';
 import Header from '../components/Header';
 import ChartControls from '../components/ChartControls';
 import { color } from '../styles/colors';
-import ChartTools from '../components/ChartTools';
 
 export const MainPage: React.FC = () => {
     const router = useRouter();
@@ -82,8 +81,8 @@ export const MainPage: React.FC = () => {
         <div id="main-page">
             <Header />
 
-            <div className="flex">
-                <div className="flex-1">
+            <div className="flex" id="chart-whole">
+                <div className="flex-1" id="chart">
                     <ChartLegends statsData={statsData.data} />
                     <div className="pt-2" id="chart-div">
                         <Chart
@@ -91,13 +90,12 @@ export const MainPage: React.FC = () => {
                             timeInterval={timeRangeData.timeInterval}
                         />
                     </div>
+                    <hr className="border-t border-gray-800 " />
+                    <ChartControls statsData={statsData.data} />
                 </div>
 
-                <RightSideMenu />
+                <ChartSideMenu />
             </div>
-
-            <hr className="border-t border-gray-800 " />
-            <ChartControls statsData={statsData.data} />
 
             <div className="mt-20">
                 <div

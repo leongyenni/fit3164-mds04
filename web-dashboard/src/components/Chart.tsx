@@ -6,7 +6,7 @@ import {
     HistogramData
 } from 'lightweight-charts';
 import Tooltip from './Tooltip';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ChartProps } from '../types/ComponentTypes';
 import { useDispatch, useSelector } from 'react-redux';
 import { setStockData } from '../redux/stockDataSlice';
@@ -48,6 +48,8 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
         setTooltipVisible(true);
     };
 
+    const chartContainerRef = useRef();
+
     // Chart component
     useEffect(() => {
         dispatch(setStockData(currentStockData));
@@ -55,10 +57,19 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
         const handleResize = () => {
             if (chart) {
                 chart.applyOptions({
-                    width: document.getElementById('chart-div')!.clientWidth
+                    width: document.fullscreenElement
+                        ? document.getElementById('chart-whole')!.clientWidth
+                        : document.getElementById('chart-whole')!.clientWidth *
+                          0.95,
+                    height: document.fullscreenElement ? 740 : 570
                 });
             }
         };
+
+        if (chartState.isFullscreen) {
+            document.getElementById('chart')!.requestFullscreen();
+            dispatch(setChartState({ isFullscreen: false }));
+        }
 
         const chart = createChart(document.getElementById('chart-div')!, {
             layout: {
@@ -68,8 +79,10 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
                 },
                 textColor: color.textColor
             },
-            width: document.getElementById('chart-div')!.clientWidth,
-            height: 570,
+            width: document.fullscreenElement
+                ? document.getElementById('chart-whole')!.clientWidth
+                : document.getElementById('chart-whole')!.clientWidth * 0.95,
+            height: document.fullscreenElement ? 740 : 570,
             timeScale: {
                 timeVisible: timeInterval === '1d' ? false : true,
                 secondsVisible: false,
@@ -235,7 +248,7 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
 
     return (
         <div>
-            <div id="chart-div">{tooltipVisible && <Tooltip />}</div>
+            <div ref={chartContainerRef}>{tooltipVisible && <Tooltip />}</div>
         </div>
     );
 };

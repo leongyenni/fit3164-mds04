@@ -158,3 +158,21 @@ body {
 ::-webkit-scrollbar-corner {
     background: transparent;
 }
+
+:-webkit-full-screen {
+    position: fixed;
+    /* width: 100%; */
+    height: 700px;
+    /* top: 0;
+    left: 0; */
+    background: none;
+    padding: 2rem;
+    align-items: center;
+    background-color: #050a21;
+}
+
+
+:fullscreen {
+    height: 700px;
+    width: 80%;
+}

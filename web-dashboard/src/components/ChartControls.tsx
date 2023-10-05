@@ -4,7 +4,7 @@ import { VscAdd } from 'react-icons/vsc';
 import { CiSquareMore } from 'react-icons/ci';
 import { VscSymbolConstant } from 'react-icons/vsc';
 import { PiTableThin } from 'react-icons/pi';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { VscRefresh } from 'react-icons/vsc';
 import { CiCamera } from 'react-icons/ci';
 import { PiCopyThin, PiDownloadSimpleThin } from 'react-icons/pi';
@@ -13,9 +13,11 @@ import { setChartState } from '../redux/chartSlice';
 import { setTimeRange } from '../redux/timeRangeSlice';
 import { ChartControlsProps } from '../types/ComponentTypes';
 import { dateFormatter } from '../utils/formattingUtils';
+import { AppState } from '../redux/store';
 
 const ChartControls: React.FC<ChartControlsProps> = ({ statsData }) => {
     const dispatch = useDispatch();
+    const chartState = useSelector((state: AppState) => state.chartState);
 
     const handleReset = () => {
         dispatch(
@@ -25,15 +27,21 @@ const ChartControls: React.FC<ChartControlsProps> = ({ statsData }) => {
         );
     };
 
+    const handleFullscreen = () => {
+        dispatch(
+            setChartState({
+                isFullscreen: true
+            })
+        );
+    };
+
     return (
         <div className="flex justify-between">
-            
-
-            <div className='flex-1'>
+            <div className="flex-1">
                 <RangeSwitcher />
             </div>
 
-            <div className='pr-8'>
+            <div >
                 <span
                     className="inline-block text-xl align-middle mx-1 p-2 rounded-sm 
                 transition duration-300 ease-in-out transform hover:bg-gray-800"
@@ -45,7 +53,7 @@ const ChartControls: React.FC<ChartControlsProps> = ({ statsData }) => {
                 </span>
 
                 <span
-                    className="inline-block text-2xl align-middle mx-1 p-2 rounded-sm 
+                    className="inline-block text-xl align-middle mx-1 p-2 rounded-sm 
                 transition duration-300 ease-in-out transform hover:bg-gray-800"
                     onClick={() => {
                         handleReset();
@@ -58,7 +66,7 @@ const ChartControls: React.FC<ChartControlsProps> = ({ statsData }) => {
                 </span>
 
                 <span
-                    className="inline-block text-3xl align-middle mx-1 p-2 rounded-sm 
+                    className="inline-block text-2xl align-middle mx-1 my-1 p-2 rounded-sm 
                 transition duration-300 ease-in-out transform hover:bg-gray-800"
                 >
                     <CiCamera
@@ -68,12 +76,15 @@ const ChartControls: React.FC<ChartControlsProps> = ({ statsData }) => {
                 </span>
 
                 <span
-                    className="inline-block text-lg align-middle mx-1 p-2 rounded-sm 
+                    className="inline-block text-lg align-middle mx-1 p-2  rounded-sm 
                 transition duration-300 ease-in-out transform hover:bg-gray-800"
                 >
                     <BsFullscreen
                         className="transition duration-300 ease-in-out transform 
                 hover:scale-110 hover:text-gray-200"
+                        onClick={() => {
+                            handleFullscreen();
+                        }}
                     />
                 </span>
             </div>

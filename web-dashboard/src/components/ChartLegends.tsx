@@ -9,10 +9,16 @@ const ChartLegends: React.FC<ChartLegendsProps> = ({ statsData }) => {
 
     return (
         <div className="flex justify-between cursor-default">
-            <div className="flex-1 text-lg tracking-wider">
-                <span className="text-xl font-medium">
+            <div className="flex-1 text-base tracking-wider">
+                <span className="text-base font-medium">
                     {statsData.companyName}
                 </span>
+
+                <span className="px-2">
+                    {statsData.marketChange.toFixed(2)}/
+                    {statsData.marketChangePct}
+                </span>
+
                 <span className="font-medium pl-3">O </span>
                 <span
                     style={{
@@ -54,7 +60,7 @@ const ChartLegends: React.FC<ChartLegendsProps> = ({ statsData }) => {
                     {stockData.volume}
                 </span>
             </div>
-            <div className="text-slate-400 mr-6 align-bottom">
+            <div className="text-base text-slate-400 mr-6 align-bottom">
                 Closed: {dateFormatter(statsData.closingTime)} (UTC - 4)
             </div>
         </div>

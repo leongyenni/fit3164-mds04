@@ -24,4 +24,5 @@ export type ForecastDataState = {
 
 export type ChartState = {
     isReset?: boolean;
+    isFullscreen?: boolean;
 };

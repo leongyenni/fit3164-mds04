@@ -2,7 +2,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ChartState } from '../types/ReduxStoreTypes';
 
 const initialState: ChartState = {
-    isReset: false
+    isReset: false,
+    isFullscreen: false
 };
 
 const chartSlice = createSlice({
