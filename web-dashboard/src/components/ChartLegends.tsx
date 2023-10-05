@@ -2,53 +2,62 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { AppState } from '../redux/store';
 import { ChartLegendsProps } from '../types/ComponentTypes';
+import { dateFormatter } from '../utils/formattingUtils';
 
 const ChartLegends: React.FC<ChartLegendsProps> = ({ statsData }) => {
     const stockData = useSelector((state: AppState) => state.stockData);
 
     return (
-        <span className="px-10 text-lg tracking-wider align-center">
-            <span className="font-medium pl-3">O </span>
-            <span
-                style={{
-                    color: stockData.colour
-                }}
-            >
-                {stockData.open}
-            </span>
-            <span className="font-medium pl-3"> H </span>
-            <span
-                style={{
-                    color: stockData.colour
-                }}
-            >
-                {stockData.high}
-            </span>
-            <span className="font-medium pl-3"> L </span>
-            <span
-                style={{
-                    color: stockData.colour
-                }}
-            >
-                {stockData.low}
-            </span>
-            <span className="font-medium pl-3"> C </span>
-            <span
-                style={{
-                    color: stockData.colour
-                }}
-            >
-                {stockData.close}
-            </span>
-            <span className="font-medium pl-3"> V </span>
-            <span
-                style={{
-                    color: stockData.colour
-                }}
-            >
-                {stockData.volume}
-            </span>
-        </span>
+        <div className="flex justify-between cursor-default">
+            <div className="flex-1 text-lg tracking-wider">
+                <span className="text-xl font-medium">
+                    {statsData.companyName}
+                </span>
+                <span className="font-medium pl-3">O </span>
+                <span
+                    style={{
+                        color: stockData.colour
+                    }}
+                >
+                    {stockData.open}
+                </span>
+                <span className="font-medium pl-3"> H </span>
+                <span
+                    style={{
+                        color: stockData.colour
+                    }}
+                >
+                    {stockData.high}
+                </span>
+                <span className="font-medium pl-3"> L </span>
+                <span
+                    style={{
+                        color: stockData.colour
+                    }}
+                >
+                    {stockData.low}
+                </span>
+                <span className="font-medium pl-3"> C </span>
+                <span
+                    style={{
+                        color: stockData.colour
+                    }}
+                >
+                    {stockData.close}
+                </span>
+                <span className="font-medium pl-3"> V </span>
+                <span
+                    style={{
+                        color: stockData.colour
+                    }}
+                >
+                    {stockData.volume}
+                </span>
+            </div>
+            <div className="text-slate-400 mr-6 align-bottom">
+                Closed: {dateFormatter(statsData.closingTime)} (UTC - 4)
+            </div>
+        </div>
     );
 };
 

@@ -84,14 +84,7 @@ export const MainPage: React.FC = () => {
 
             <div className="flex">
                 <div className="flex-1">
-                    <div className="mt-2 cursor-default">
-                        <span className="text-4xl font-medium">
-                            {tickerSymbol}
-                        </span>
-
-                        <ChartLegends statsData={statsData.data}/>
-                        <ChartTools />
-                    </div>
+                    <ChartLegends statsData={statsData.data} />
                     <div className="pt-2" id="chart-div">
                         <Chart
                             data={tickerData.data}
@@ -103,7 +96,8 @@ export const MainPage: React.FC = () => {
                 <RightSideMenu />
             </div>
 
-            <ChartControls statsData={statsData.data}/>
+            <hr className="border-t border-gray-800 " />
+            <ChartControls statsData={statsData.data} />
 
             <div className="mt-20">
                 <div
