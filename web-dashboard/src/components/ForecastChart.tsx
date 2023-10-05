@@ -119,16 +119,23 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
             })
         );
 
-        areaSeriesHist.update(
-            {time: forecastWithTimestamps[0].date as UTCTimestamp,
-            value: forecastWithTimestamps[0].close as number
-        })
+        // areaSeriesHist.update(
+        //     {time: forecastWithTimestamps[0].date as UTCTimestamp,
+        //     value: forecastWithTimestamps[0].close as number
+        // })
 
         chart.timeScale().fitContent();
 
         let currentIndex = 0;
         const lastIndex = forecastData.length;
 
+        if (startForecast){
+            areaSeriesForecast.update({
+                time: historicalData[historicalData.length-1].date as UTCTimestamp,
+                value: historicalData[historicalData.length-1].close as number
+            });
+        }
+        
         const updateDataPoint = () => {
             if (currentIndex < lastIndex && startForecast) {
                 const currentPoint = {
