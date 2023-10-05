@@ -1,8 +1,10 @@
 import React from 'react';
 import RangeSwitcher from './RangeSwitcher';
 import { VscAdd } from 'react-icons/vsc';
+import { ChartControlsProps } from '../types/ComponentTypes';
+import { dateFormatter } from '../utils/formattingUtils';
 
-const ChartControls: React.FC = () => {
+const ChartControls: React.FC<ChartControlsProps> = ({ statsData }) => {
     return (
         <div className="relative">
             <hr className="border-t border-gray-800 " />
@@ -19,7 +21,9 @@ const ChartControls: React.FC = () => {
                 <span>Indicator</span>
             </button>
 
-            <div className="text-base text-slate-500 absolute top-1 right-8">Closed:</div>
+            <div className="text-base text-slate-400 absolute px-2 py-1 top-1 right-8">
+                Closed: {dateFormatter(statsData.closingTime)} (UTC - 4)
+            </div>
         </div>
     );
 };

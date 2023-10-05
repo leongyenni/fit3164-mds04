@@ -1,23 +1,33 @@
-export type SearchBarProps = {
+import { StatsData } from "./DataTypes";
+
+export interface SearchBarProps {
     className?: string;
 };
 
-export type SearchItemProps = {
+export interface SearchItemProps {
     tickerSymbol: TickerData;
     onClick: (tickerSymbol: string) => void;
 };
 
-export type StockDataItemProps = {
+export interface StockDataItemProps {
     symbol: string;
 };
 
-export type ChartProps = {
+export interface ChartProps {
     data: StockData[];
     timeInterval: string;
 };
 
-export type ForecastChartProps = {
+export interface ForecastChartProps {
     historicalData: StockData[];
     forecastData: StockData[];
     startForecast: boolean;
 };
+
+export interface ChartLegendsProps {
+    statsData: StatsData
+}
+
+export interface ChartControlsProps {
+    statsData: StatsData;
+}

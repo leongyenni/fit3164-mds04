@@ -10,7 +10,6 @@ const { spawn } = require('child_process');
 const isDev = process.env.NODE_ENV !== 'production';
 const PORT = process.env.PORT || 5000;
 
-
 // Multi-process to utilize all CPU cores.
 if (!isDev && cluster.isMaster) {
     console.error(`Node cluster master ${process.pid} is running`);
@@ -198,7 +197,7 @@ if (!isDev && cluster.isMaster) {
                 fiftyTwoWeekHigh: parseFloat(result.fiftyTwoWeekHigh),
                 closingTime:
                     parseInt(result.regularMarketTime) +
-                    parseInt(result.gmtOffSetMilliseconds)
+                    parseInt(result.gmtOffSetMilliseconds) / 1000
             };
 
             res.set('Content-Type', 'application/json');

@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
 import { AppState } from '../redux/store';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState} from 'react';
 import axios from 'axios';
 import useTSFinanceAPI from '../hooks/useTSFinanceAPI';
 import { Chart } from '../components/Chart';
@@ -18,10 +18,6 @@ import ChartTools from '../components/ChartTools';
 
 export const MainPage: React.FC = () => {
     const router = useRouter();
-
-    const navigateToErrorPage = () => {
-        router.push({ pathname: '/ErrorPage' });
-    };
 
     const tickerSymbol = router.query['tickerSymbol'] as string;
 
@@ -93,7 +89,7 @@ export const MainPage: React.FC = () => {
                             {tickerSymbol}
                         </span>
 
-                        <ChartLegends />
+                        <ChartLegends statsData={statsData.data}/>
                         <ChartTools />
                     </div>
                     <div className="pt-2" id="chart-div">
@@ -107,7 +103,7 @@ export const MainPage: React.FC = () => {
                 <RightSideMenu />
             </div>
 
-            <ChartControls />
+            <ChartControls statsData={statsData.data}/>
 
             <div className="mt-20">
                 <div

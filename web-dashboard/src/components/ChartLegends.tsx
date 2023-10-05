@@ -1,8 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { AppState } from '../redux/store';
+import { ChartLegendsProps } from '../types/ComponentTypes';
 
-const ChartLegends: React.FC = () => {
+const ChartLegends: React.FC<ChartLegendsProps> = ({ statsData }) => {
     const stockData = useSelector((state: AppState) => state.stockData);
 
     return (

@@ -8,7 +8,7 @@ import {
 import Tooltip from './Tooltip';
 import React, { useEffect, useState } from 'react';
 import { ChartProps } from '../types/ComponentTypes';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setStockData } from '../redux/stockDataSlice';
 import {
     currencyFormatter,
@@ -16,6 +16,8 @@ import {
     volumeFormatter
 } from '../utils/formattingUtils';
 import { color } from '../styles/colors';
+import { AppState } from '../redux/store';
+import { setChartState } from '../redux/chartSlice';
 
 export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
     const i = data.length - 1;
@@ -32,6 +34,7 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
     };
 
     const dispatch = useDispatch();
+    const chartState = useSelector((state: AppState) => state.chartState);
 
     // Tooltip
     const [tooltipVisible, setTooltipVisible] = useState(false);
@@ -170,6 +173,15 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
 
         chart.timeScale().fitContent();
 
+        if (chartState.isReset) {
+            chart.timeScale().fitContent();
+            dispatch(
+                setChartState({
+                    isReset: false
+                })
+            );
+        }
+
         chart.subscribeCrosshairMove((param) => {
             if (
                 param.point === undefined ||
@@ -219,7 +231,7 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
                 chart.remove();
             }
         };
-    }, [data]);
+    }, [data, chartState]);
 
     return (
         <div>

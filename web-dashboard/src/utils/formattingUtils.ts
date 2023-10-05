@@ -39,7 +39,7 @@ export const dateFormatter = (timestamp: number) => {
     const hour = date.getUTCHours();
     const min = date.getUTCMinutes().toString().padStart(2, '0');
 
-    const date_str = `${month} ${day}, ${year}`;
+    const date_str = `${month} ${day}, ${year} `;
     const time_str = `${hour}:${min} `;
 
     return [date_str, time_str];

@@ -21,3 +21,7 @@ export type ForecastDataState = {
     x: number;
     y: number;
 };
+
+export type ChartState = {
+    isReset?: boolean;
+};

@@ -3,13 +3,15 @@ import { createWrapper } from 'next-redux-wrapper';
 import stockDataReducer from './stockDataSlice';
 import timeRangeReducer from './timeRangeSlice';
 import forecastDataReducer from './forecastDataSlice';
+import chartReducer from './chartSlice';
 
 const makeStore = () =>
     configureStore({
         reducer: {
             timeRangeData: timeRangeReducer,
             stockData: stockDataReducer,
-            forecastData: forecastDataReducer
+            forecastData: forecastDataReducer,
+            chartState: chartReducer
         }
     });
 
