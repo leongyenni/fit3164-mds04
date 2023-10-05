@@ -7,6 +7,7 @@ import { color } from '../styles/colors';
 import { currencyFormatter, OHLCFormatter } from '../utils/formattingUtils';
 import { setForecastData } from '../redux/forecastDataSlice';
 import SmallTooltip from './SmallTooltip';
+import { UTCTimestamp } from '../types/DataTypes';
 
 export const ForecastChart: React.FC<ForecastChartProps> = ({
     historicalData,
@@ -97,14 +98,31 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
             lineWidth: 1
         });
 
+        const lastHistoricalDate = new Date(historicalData[historicalData.length - 1].date * 1000);
+        const startForecastDateUTC = new Date(Date.UTC(lastHistoricalDate.getUTCFullYear(), lastHistoricalDate.getUTCMonth(), lastHistoricalDate.getUTCDate() + 1, 9, 30));
+        let startForecastTimestamp = Math.floor(startForecastDateUTC.getTime() / 1000);
+        
+        const forecastWithTimestamps = forecastData.map((value, index) => {
+            const currentTimestamp = startForecastTimestamp + index * 3600;
+            return {
+                date: currentTimestamp, 
+                close: value
+            };
+        });
+        
         areaSeriesHist.setData(
             historicalData.map((d) => {
                 return {
-                    time: d.date,
+                    time: d.date as UTCTimestamp,
                     value: d.close
                 };
             })
         );
+
+        areaSeriesHist.update(
+            {time: forecastWithTimestamps[0].date as UTCTimestamp,
+            value: forecastWithTimestamps[0].close as number
+        })
 
         chart.timeScale().fitContent();
 
@@ -114,8 +132,8 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
         const updateDataPoint = () => {
             if (currentIndex < lastIndex && startForecast) {
                 const currentPoint = {
-                    time: forecastData[currentIndex].date,
-                    value: forecastData[currentIndex].close
+                    time: forecastWithTimestamps[currentIndex].date as UTCTimestamp,
+                    value: forecastWithTimestamps[currentIndex].close as number
                 };
 
                 chart.timeScale().fitContent();

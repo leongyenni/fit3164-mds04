@@ -39,8 +39,7 @@ export const MainPage: React.FC = () => {
     }, [tickerSymbol]);
 
     const handleForecast = () => {
-        setStartForecast(true);
-
+        
         axios
             .post(
                 'http://localhost:5000/api/model',
@@ -49,6 +48,7 @@ export const MainPage: React.FC = () => {
             )
             .then((response) => {
                 setForecastData(response.data.forecastData);
+                setStartForecast(true);
                 console.log(response.data);
             })
             .catch((error) => {
@@ -119,17 +119,18 @@ export const MainPage: React.FC = () => {
                         <div>Historical data</div>
                         {startForecast && <div>Forecast data</div>}
                     </div>
-                    <ForecastChart
-                        historicalData={historicalData.data.slice(
-                            0,
-                            historicalData.data.length / 2 + 1
-                        )}
-                        forecastData={historicalData.data.slice(
-                            historicalData.data.length / 2,
-                            historicalData.data.length
-                        )}
+                    {startForecast? (
+                        <ForecastChart
+                        historicalData={historicalData.data.slice(-8)}
+                        forecastData={forecastData}
+                        startForecast={startForecast}/>
+                        ) : (
+                        <ForecastChart
+                        historicalData={historicalData.data.slice(-8)}
+                        forecastData={historicalData.data.slice(-8).map(item => item.close)}
                         startForecast={startForecast}
-                    />
+                        />  
+                    )}                      
                 </div>
             </div>
             <div className="my-5 align-center">
