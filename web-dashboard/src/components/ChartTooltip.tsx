@@ -3,7 +3,7 @@ import { AppState } from '../redux/store';
 import { useSelector } from 'react-redux';
 import { dateFormatter } from '../utils/formattingUtils';
 
-const Tooltip: React.FC = () => {
+const ChartTooltip: React.FC = () => {
     const tooltipData = useSelector((state: AppState) => state.stockData);
 
     const date = dateFormatter(tooltipData.timestamp)[0];
@@ -33,4 +33,4 @@ const Tooltip: React.FC = () => {
     );
 };
 
-export default Tooltip;
+export default ChartTooltip;

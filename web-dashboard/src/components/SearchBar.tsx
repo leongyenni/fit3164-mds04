@@ -5,6 +5,8 @@ import useStockTickerAPI from '../hooks/useStockTickerAPI';
 import { TickerData } from '../types/DataTypes';
 import { SearchBarProps } from '../types/ComponentTypes';
 import SearchItem from './SearchItem';
+import { useSelector } from 'react-redux';
+import { AppState } from '../redux/store';
 
 const Searchbar: React.FC<SearchBarProps> = ({ className }) => {
     const [inputVal, setInputVal] = useState('');

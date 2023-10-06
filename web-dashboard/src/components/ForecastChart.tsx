@@ -6,7 +6,7 @@ import { ForecastChartProps } from '../types/ComponentTypes';
 import { color } from '../styles/colors';
 import { currencyFormatter, OHLCFormatter } from '../utils/formattingUtils';
 import { setForecastData } from '../redux/forecastDataSlice';
-import SmallTooltip from './SmallTooltip';
+import ForecastTooltip from './ForecastTooltip';
 
 export const ForecastChart: React.FC<ForecastChartProps> = ({
     historicalData,
@@ -183,7 +183,7 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
     return (
         <div>
             <div id="forecast-chart-div">
-                {tooltipVisible && <SmallTooltip />}
+                {tooltipVisible && <ForecastTooltip />}
             </div>
         </div>
     );

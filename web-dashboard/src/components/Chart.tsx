@@ -5,7 +5,7 @@ import {
     BarData,
     HistogramData
 } from 'lightweight-charts';
-import Tooltip from './Tooltip';
+import ChartTooltip from './ChartTooltip';
 import React, { useEffect, useRef, useState } from 'react';
 import { ChartProps } from '../types/ComponentTypes';
 import { useDispatch, useSelector } from 'react-redux';
@@ -48,7 +48,7 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
         setTooltipVisible(true);
     };
 
-    const chartContainerRef = useRef();
+    const chartContainerRef = useRef<HTMLDivElement | null>(null);
 
     // Chart component
     useEffect(() => {
@@ -248,7 +248,9 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
 
     return (
         <div>
-            <div ref={chartContainerRef}>{tooltipVisible && <Tooltip />}</div>
+            <div ref={chartContainerRef}>
+                {tooltipVisible && <ChartTooltip />}
+            </div>
         </div>
     );
 };

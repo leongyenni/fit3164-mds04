@@ -1,1 +1,5 @@
 //getForecastDate
+
+export const getMovingAverage = () => {
+    
+}

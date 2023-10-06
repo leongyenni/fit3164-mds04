@@ -1,5 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import useFinanceStatsAPI from '../hooks/useFinanceStatsAPI';
 import { StockDataItemProps } from '../types/ComponentTypes';
 import { OHLCFormatter } from '../utils/formattingUtils';
@@ -8,6 +9,7 @@ import LoadingSpinner from './LoadingSpinner';
 
 const StockDataItem: React.FC<StockDataItemProps> = ({ symbol }) => {
     const { loading, error, data } = useFinanceStatsAPI(symbol);
+    const [showLoading, setShowLoading] = useState(false);
 
     const router = useRouter();
 
@@ -18,12 +20,32 @@ const StockDataItem: React.FC<StockDataItemProps> = ({ symbol }) => {
         });
     };
 
-    if (loading) {
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowLoading(false);
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }, []);
+
+    useEffect(() => {
+        const checkLoading = setTimeout(() => {
+            if (loading) {
+                setShowLoading(true);
+            }
+        }, 3000);
+
+        return () => clearTimeout(checkLoading);
+    }, [loading]);
+
+    if (showLoading) {
         return (
             <div className="grid-item flex justify-center items-center">
                 <LoadingSpinner />
             </div>
         );
+    } else if (loading && !showLoading) {
+        return <div />;
     }
 
     if (!data) {

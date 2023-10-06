@@ -27,6 +27,7 @@ export const MainPage: React.FC = () => {
         timeRangeData.timeInterval,
         timeRangeData.timeRange
     );
+
     const historicalData = useTSFinanceAPI(tickerSymbol, '1h', '10d');
     const [forecastData, setForecastData] = useState([]);
     const [startForecast, setStartForecast] = useState(false);
@@ -55,7 +56,31 @@ export const MainPage: React.FC = () => {
             });
     };
 
-    if (tickerData.loading || historicalData.loading || statsData.loading) {
+    const [showLoading, setShowLoading] = useState(false);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowLoading(false);
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }, []);
+
+    useEffect(() => {
+        const checkLoading = setTimeout(() => {
+            if (
+                tickerData.loading ||
+                historicalData.loading ||
+                statsData.loading
+            ) {
+                setShowLoading(true);
+            }
+        }, 3000);
+
+        return () => clearTimeout(checkLoading);
+    }, [tickerData.loading, historicalData.loading, statsData.loading]);
+
+    if (showLoading) {
         return (
             <div className="flex items-center justify-center h-screen">
                 <LoadingSpinner />
@@ -64,6 +89,11 @@ export const MainPage: React.FC = () => {
                 </div>
             </div>
         );
+    } else if (
+        (tickerData.loading || historicalData.loading || statsData.loading) &&
+        !showLoading
+    ) {
+        return <div />;
     }
 
     if (

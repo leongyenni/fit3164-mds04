@@ -3,7 +3,7 @@ import { AppState } from '../redux/store';
 import { useSelector } from 'react-redux';
 import { dateFormatter } from '../utils/formattingUtils';
 
-const SmallTooltip: React.FC = () => {
+const ForecastTooltip: React.FC = () => {
     const tooltipData = useSelector((state: AppState) => state.forecastData);
 
     const date = dateFormatter(tooltipData.timestamp)[0];
@@ -25,4 +25,4 @@ const SmallTooltip: React.FC = () => {
     );
 };
 
-export default SmallTooltip;
+export default ForecastTooltip;
