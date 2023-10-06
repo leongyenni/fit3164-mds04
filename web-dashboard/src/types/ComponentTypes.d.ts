@@ -20,7 +20,7 @@ export interface ChartProps {
 
 export interface ForecastChartProps {
     historicalData: StockData[];
-    forecastData: StockData[];
+    forecastData: number[];
     startForecast: boolean;
 };
 
