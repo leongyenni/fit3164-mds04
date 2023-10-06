@@ -67,7 +67,7 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
         };
 
         if (chartState.isFullscreen) {
-            document.getElementById('chart')!.requestFullscreen();
+            document.getElementById('chart-fullscreen')!.requestFullscreen();
             dispatch(setChartState({ isFullscreen: false }));
         }
 
@@ -81,6 +81,8 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
             },
             width: document.fullscreenElement
                 ? document.getElementById('chart-whole')!.clientWidth
+                : chartState.isSideContainerOpen
+                ? document.getElementById('chart-fullscreen')!.clientWidth
                 : document.getElementById('chart-whole')!.clientWidth * 0.95,
             height: document.fullscreenElement ? 740 : 570,
             timeScale: {
@@ -186,15 +188,6 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
 
         chart.timeScale().fitContent();
 
-        if (chartState.isReset) {
-            chart.timeScale().fitContent();
-            dispatch(
-                setChartState({
-                    isReset: false
-                })
-            );
-        }
-
         chart.subscribeCrosshairMove((param) => {
             if (
                 param.point === undefined ||
@@ -234,6 +227,15 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
                 showTooltip();
             }
         });
+
+        if (chartState.isReset) {
+            chart.timeScale().fitContent();
+            dispatch(
+                setChartState({
+                    isReset: false
+                })
+            );
+        }
 
         window.addEventListener('resize', handleResize);
 
