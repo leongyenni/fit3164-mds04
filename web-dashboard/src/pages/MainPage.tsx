@@ -160,7 +160,7 @@ export const MainPage: React.FC = () => {
                 )}
 
                 {startForecast && forecastData.length > 1 && (
-                    <div className="text-lg"> Predicted closing price </div>
+                    <div className="text-lg"> Predicted closing price ( {dateFormatter(getForecastDate(historicalData.data[historicalData.data.length-1].date))[0]})</div>
                 )}
             </div>
             <Footer />
