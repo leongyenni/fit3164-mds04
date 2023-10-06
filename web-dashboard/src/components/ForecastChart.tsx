@@ -119,11 +119,6 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
             })
         );
 
-        // areaSeriesHist.update(
-        //     {time: forecastWithTimestamps[0].date as UTCTimestamp,
-        //     value: forecastWithTimestamps[0].close as number
-        // })
-
         chart.timeScale().fitContent();
 
         let currentIndex = 0;
