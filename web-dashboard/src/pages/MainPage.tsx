@@ -15,6 +15,7 @@ import Header from '../components/Header';
 import ChartControls from '../components/ChartControls';
 import { color } from '../styles/colors';
 import { dateFormatter } from '../utils/formattingUtils';
+import StatsDataContainer from '../components/StatsDataContainer';
 
 export const MainPage: React.FC = () => {
     const router = useRouter();
@@ -40,7 +41,6 @@ export const MainPage: React.FC = () => {
     }, [tickerSymbol]);
 
     const handleForecast = () => {
-        
         axios
             .post(
                 'http://localhost:5000/api/model',
@@ -110,14 +110,21 @@ export const MainPage: React.FC = () => {
 
     const getForecastDate = (historicalDate: number) => {
         const dateObj = new Date(historicalDate * 1000);
-        
+
         // If the day is Friday (5 in JavaScript's Date object)
         if (dateObj.getUTCDay() === 5) {
             // Add 3 days to get to Monday
-            return new Date(dateObj.getTime() + 3*24*60*60*1000).getTime()/1000;
+            return (
+                new Date(
+                    dateObj.getTime() + 3 * 24 * 60 * 60 * 1000
+                ).getTime() / 1000
+            );
         } else {
             // Otherwise, add 1 day
-            return new Date(dateObj.getTime() + 24*60*60*1000).getTime()/1000;
+            return (
+                new Date(dateObj.getTime() + 24 * 60 * 60 * 1000).getTime() /
+                1000
+            );
         }
     };
 
@@ -126,7 +133,7 @@ export const MainPage: React.FC = () => {
             <Header />
 
             <div className="flex" id="chart-whole">
-                <div className="flex-1" id="chart">
+                <div className="flex-1 w-auto" id="chart">
                     <ChartLegends statsData={statsData.data} />
                     <div className="pt-2" id="chart-div">
                         <Chart
@@ -137,7 +144,6 @@ export const MainPage: React.FC = () => {
                     <hr className="border-t border-gray-800 " />
                     <ChartControls statsData={statsData.data} />
                 </div>
-
                 <ChartSideMenu />
             </div>
 
@@ -152,22 +158,43 @@ export const MainPage: React.FC = () => {
                             startForecast ? 'grid-cols-2' : ''
                         } text-center text-xl font-medium tracking-wider`}
                     >
-                        <div>Historical data: {dateFormatter(historicalData.data[historicalData.data.length-1].date)[0]}</div>
-                        {startForecast && 
-                            <div>Forecast data: {dateFormatter(getForecastDate(historicalData.data[historicalData.data.length-1].date))[0]}</div>}
+                        <div>
+                            Historical closing price:{' '}
+                            {
+                                dateFormatter(
+                                    historicalData.data[
+                                        historicalData.data.length - 1
+                                    ].date
+                                )[0]
+                            }
+                        </div>
+                        {startForecast && (
+                            <div>
+                                Forecasted closing price :{' '}
+                                {
+                                    dateFormatter(
+                                        getForecastDate(
+                                            historicalData.data[
+                                                historicalData.data.length - 1
+                                            ].date
+                                        )
+                                    )[0]
+                                }
+                            </div>
+                        )}
                     </div>
-                    {startForecast? (
-                        <ForecastChart
+
+                    <ForecastChart
                         historicalData={historicalData.data.slice(-8)}
-                        forecastData={forecastData}
-                        startForecast={startForecast}/>
-                        ) : (
-                        <ForecastChart
-                        historicalData={historicalData.data.slice(-8)}
-                        forecastData={historicalData.data.slice(-8).map(item => item.close)}
+                        forecastData={
+                            startForecast
+                                ? forecastData
+                                : historicalData.data
+                                      .slice(-8)
+                                      .map((item) => item.close)
+                        }
                         startForecast={startForecast}
-                        />  
-                    )}                      
+                    />
                 </div>
             </div>
             <div className="my-5 align-center">
@@ -181,7 +208,20 @@ export const MainPage: React.FC = () => {
                 )}
 
                 {startForecast && forecastData.length > 1 && (
-                    <div className="text-lg"> Predicted closing price ( {dateFormatter(getForecastDate(historicalData.data[historicalData.data.length-1].date))[0]})</div>
+                    <div className="text-lg">
+                        {' '}
+                        Predicted closing price ({' '}
+                        {
+                            dateFormatter(
+                                getForecastDate(
+                                    historicalData.data[
+                                        historicalData.data.length - 1
+                                    ].date
+                                )
+                            )[0]
+                        }
+                        )
+                    </div>
                 )}
             </div>
             <Footer />

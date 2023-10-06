@@ -59,8 +59,7 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
                 chart.applyOptions({
                     width: document.fullscreenElement
                         ? document.getElementById('chart-whole')!.clientWidth
-                        : document.getElementById('chart-whole')!.clientWidth *
-                          0.95,
+                        : document.getElementById('chart')!.clientWidth,
                     height: document.fullscreenElement ? 740 : 570
                 });
             }
@@ -81,7 +80,7 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
             },
             width: document.fullscreenElement
                 ? document.getElementById('chart-whole')!.clientWidth
-                : document.getElementById('chart-whole')!.clientWidth * 0.95,
+                : document.getElementById('chart')!.clientWidth,
             height: document.fullscreenElement ? 740 : 570,
             timeScale: {
                 timeVisible: timeInterval === '1d' ? false : true,
@@ -193,6 +192,10 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
                     isReset: false
                 })
             );
+        }
+
+        if (chartState.isSideContainerOpen) {
+            handleResize();
         }
 
         chart.subscribeCrosshairMove((param) => {

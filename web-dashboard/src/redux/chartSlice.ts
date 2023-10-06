@@ -3,7 +3,8 @@ import { ChartState } from '../types/ReduxStoreTypes';
 
 const initialState: ChartState = {
     isReset: false,
-    isFullscreen: false
+    isFullscreen: false,
+    isSideContainerOpen: false
 };
 
 const chartSlice = createSlice({
