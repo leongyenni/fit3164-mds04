@@ -12,7 +12,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import useFinanceStatsAPI from '../hooks/useFinanceStatsAPI';
 import ChartSideMenu from '../components/ChartSideMenu';
 import Header from '../components/Header';
-import ChartControls from '../components/ChartControls';
+import ChartControls from '../components/ChartTools';
 import { color } from '../styles/colors';
 import { dateFormatter } from '../utils/formattingUtils';
 import StatsDataContainer from '../components/StatsDataContainer';
@@ -149,7 +149,7 @@ export const MainPage: React.FC = () => {
 
             <div className="mt-20" >
                 <div
-                    className="p-4 rounded-sm"
+                    className="p-4 rounded-md"
                     style={{ backgroundColor: color.backgroundColor2 }}
                     id="forecast-chart-div"
                 >
