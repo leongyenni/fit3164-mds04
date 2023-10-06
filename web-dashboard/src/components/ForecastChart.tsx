@@ -6,12 +6,8 @@ import { ForecastChartProps } from '../types/ComponentTypes';
 import { color } from '../styles/colors';
 import { currencyFormatter, OHLCFormatter } from '../utils/formattingUtils';
 import { setForecastData } from '../redux/forecastDataSlice';
-<<<<<<< HEAD
 import ForecastTooltip from './ForecastTooltip';
-=======
-import SmallTooltip from './SmallTooltip';
 import { UTCTimestamp } from '../types/DataTypes';
->>>>>>> rachel
 
 export const ForecastChart: React.FC<ForecastChartProps> = ({
     historicalData,
