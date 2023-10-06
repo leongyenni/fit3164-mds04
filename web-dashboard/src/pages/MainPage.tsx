@@ -133,7 +133,7 @@ export const MainPage: React.FC = () => {
             <Header />
 
             <div className="flex" id="chart-whole">
-                <div className="flex-1 w-auto" id="chart">
+                <div className="flex-1 w-auto" id="chart-fullscreen">
                     <ChartLegends statsData={statsData.data} />
                     <div className="pt-2" id="chart-div">
                         <Chart
@@ -147,9 +147,9 @@ export const MainPage: React.FC = () => {
                 <ChartSideMenu />
             </div>
 
-            <div className="mt-20">
+            <div className="mt-20" >
                 <div
-                    className="p-10 rounded-xl"
+                    className="p-4 rounded-sm"
                     style={{ backgroundColor: color.backgroundColor2 }}
                     id="forecast-chart-div"
                 >
