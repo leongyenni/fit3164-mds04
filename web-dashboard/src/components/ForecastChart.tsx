@@ -148,6 +148,8 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
 
         const intervalId = setInterval(updateDataPoint, 350);
 
+        chart.timeScale().fitContent();
+
         chart.subscribeCrosshairMove((param) => {
             if (
                 param.point === undefined ||

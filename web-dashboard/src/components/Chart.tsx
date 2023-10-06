@@ -66,11 +66,6 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
             }
         };
 
-        if (chartState.isFullscreen) {
-            document.getElementById('chart-fullscreen')!.requestFullscreen();
-            dispatch(setChartState({ isFullscreen: false }));
-        }
-
         const chart = createChart(document.getElementById('chart-div')!, {
             layout: {
                 background: {

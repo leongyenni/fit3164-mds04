@@ -18,15 +18,15 @@ const ChartSideMenu: React.FC = () => {
 
     return (
         <div className="flex">
+            {chartState.isSideContainerOpen && (
+                <div className="h-auto bg-white w-60 mr-2">container</div>
+            )}
             <div className="right-0 h-auto border-l-2 border-gray-800 px-4 ">
                 <PiTableThin
-                    className="text-3xl text-white"
+                    className="text-3xl text-white cursor-pointer"
                     onClick={toggleStatsDataContainer}
                 />
             </div>
-            {chartState.isSideContainerOpen && (
-                <div className="h-auto bg-white w-60">container</div>
-            )}
         </div>
     );
 };

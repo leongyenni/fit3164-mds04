@@ -28,7 +28,7 @@ const ForecastContainer: React.FC<Props> = ({ historicalData, forecastData }) =>
     const minDiffPercentage = (minForecast - minHistorical) / minHistorical * 100;
 
     return (
-        <div className="forecast-container mt-5 p-5 rounded-xl" style={{ backgroundColor: color.backgroundColor2 }}>
+        <div className="forecast-container mt-5 p-5 rounded-md" style={{ backgroundColor: color.backgroundColor2 }}>
             <div className="flex justify-between">
                 <div className="flex-1 flex flex-col items-center border-r border-gray-300">
                     <span className="text-center">Highest:</span>

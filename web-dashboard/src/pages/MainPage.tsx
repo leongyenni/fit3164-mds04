@@ -12,7 +12,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import useFinanceStatsAPI from '../hooks/useFinanceStatsAPI';
 import ChartSideMenu from '../components/ChartSideMenu';
 import Header from '../components/Header';
-import ChartControls from '../components/ChartTools';
+import ChartTools from '../components/ChartTools';
 import { color } from '../styles/colors';
 import { dateFormatter } from '../utils/formattingUtils';
 import ForecastContainer from '../components/ForecastContainer';
@@ -133,21 +133,25 @@ export const MainPage: React.FC = () => {
             <Header />
 
             <div className="flex" id="chart-whole">
-                <div className="flex-1 w-auto" id="chart-fullscreen">
+                <div
+                    className="flex-1 w-auto pl-4"
+                    id="chart-fullscreen"
+                    style={{ backgroundColor: color.backgroundColor }}
+                >
                     <ChartLegends statsData={statsData.data} />
-                    <div className="pt-2" id="chart-div">
+                    <div className="pt-3" id="chart-div">
                         <Chart
                             data={tickerData.data}
                             timeInterval={timeRangeData.timeInterval}
                         />
                     </div>
                     <hr className="border-t border-gray-800 " />
-                    <ChartControls statsData={statsData.data} />
+                    <ChartTools statsData={statsData.data} />
                 </div>
                 <ChartSideMenu />
             </div>
 
-            <div className="mt-20" >
+            <div className="mt-16">
                 <div
                     className="p-4 rounded-md"
                     style={{ backgroundColor: color.backgroundColor2 }}
@@ -208,10 +212,26 @@ export const MainPage: React.FC = () => {
                 )}
 
                 {startForecast && forecastData.length > 1 && (
-                    <div className="text-lg mt-10 text-center"> Forecasted closing price ( {dateFormatter(getForecastDate(historicalData.data[historicalData.data.length-1].date))[0]})</div>
+                    <div className="text-lg mt-10 text-center">
+                        {' '}
+                        Forecasted closing price ({' '}
+                        {
+                            dateFormatter(
+                                getForecastDate(
+                                    historicalData.data[
+                                        historicalData.data.length - 1
+                                    ].date
+                                )
+                            )[0]
+                        }
+                        )
+                    </div>
                 )}
                 {startForecast && forecastData.length > 1 && (
-                    <ForecastContainer historicalData={historicalData.data.slice(-7)} forecastData={forecastData} />
+                    <ForecastContainer
+                        historicalData={historicalData.data.slice(-7)}
+                        forecastData={forecastData}
+                    />
                 )}
             </div>
             <Footer />
