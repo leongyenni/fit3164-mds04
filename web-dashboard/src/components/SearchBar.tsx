@@ -20,6 +20,17 @@ const Searchbar: React.FC<SearchBarProps> = ({ className }) => {
         setInputVal(inputVal);
     };
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' && tickerSymbols.length === 0) {
+            // Prevent "Enter" key event when tickerSymbols.length is 0
+            e.preventDefault();
+        } else if (e.key === 'Enter') {
+            // Handle "Enter" key event when tickerSymbols.length > 0
+            const inputElement = e.target as HTMLInputElement;
+            handleClickValue(inputElement.value.toUpperCase());
+        }
+    };
+    
     const handleClickValue = (tickerSymbol: string) => {
         setOpen(false);
         setInputVal(tickerSymbol);
@@ -82,15 +93,19 @@ const Searchbar: React.FC<SearchBarProps> = ({ className }) => {
                         ref={dropdownRef}
                         className="search-bar absolute top-3 mt-12 w-3/5 max-h-[240px] z-50 bg-slate-950 overflow-y-scroll rounded-lg shadow-md shadow-zinc-950"
                     >
-                        <ul>
-                            {tickerSymbols.map((tickerSymbol) => (
-                                <SearchItem
-                                    key={tickerSymbol.symbol}
-                                    tickerSymbol={tickerSymbol}
-                                    onClick={handleClickValue}
-                                />
-                            ))}
-                        </ul>
+                        {tickerSymbols.length === 0 && inputVal.length > 1 ? (
+                            <p className="text-white p-2">No results found.</p>
+                        ) : (
+                            <ul>
+                                {tickerSymbols.map((tickerSymbol) => (
+                                    <SearchItem
+                                        key={tickerSymbol.symbol}
+                                        tickerSymbol={tickerSymbol}
+                                        onClick={handleClickValue}
+                                    />
+                                ))}
+                            </ul>
+                        )}
                     </div>
                 )}
             </div>
