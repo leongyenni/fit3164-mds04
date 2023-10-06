@@ -56,6 +56,21 @@
     }
 }
 
+.glowing-avg {
+    animation: glow-avg 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow-avg {
+    from {
+        text-shadow: 0 0 10px white;
+    }
+    to {
+        text-shadow:
+            0 0 20px white,
+            0 0 30px white;
+    }
+}
+
 @keyframes fadeIn {
     0% {
         opacity: 0;
