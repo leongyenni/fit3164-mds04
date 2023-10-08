@@ -28,7 +28,7 @@ export interface ChartLegendsProps {
     statsData: StatsData;
 }
 
-export interface ChartControlsProps {
+export interface ChartToolsProps {
     statsData: StatsData;
 }
 
@@ -36,4 +36,25 @@ export interface ToolButtonProps {
     icon: React.ReactNode;
     onClick?: () => void;
     tooltip: string;
+}
+
+export interface ToolButtonTooltipProps {
+    tooltip: string;
+}
+
+export interface StatsDataContainerProps {
+    statsData: StatsData;
+}
+
+export interface ChartSideMenuProps {
+    statsData: StatsData;
+}
+
+export interface ToastProps {
+    showToast: boolean;
+    message: string;
+    onClose: () => {
+        payload: undefined;
+        type: 'chart status/resetToastState';
+    };
 }

@@ -70,7 +70,7 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
             layout: {
                 background: {
                     type: ColorType.Solid,
-                    color: color.backgroundColor
+                    color: 'rgba(0, 0, 0, 0)'
                 },
                 textColor: color.textColor
             },

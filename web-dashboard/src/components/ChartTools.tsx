@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import html2canvas from 'html2canvas';
 import { saveAs } from 'file-saver';
 import RangeSwitcher from './RangeSwitcher';
@@ -9,15 +9,20 @@ import { VscRefresh } from 'react-icons/vsc';
 import { CiCamera } from 'react-icons/ci';
 import { PiDownloadSimpleThin } from 'react-icons/pi';
 import { RxEnterFullScreen, RxExitFullScreen } from 'react-icons/rx';
-import { setChartState } from '../redux/chartSlice';
-import { ChartControlsProps } from '../types/ComponentTypes';
 import { AppState } from '../redux/store';
+import { setChartState } from '../redux/chartSlice';
+import { setToastState } from '../redux/toastSlice';
+import { ChartToolsProps } from '../types/ComponentTypes';
+import Toast from './Toast';
 
-const ChartControls: React.FC<ChartControlsProps> = ({ statsData }) => {
+const ChartTools: React.FC<ChartToolsProps> = ({ statsData }) => {
     const dispatch = useDispatch();
     const chartState = useSelector((state: AppState) => state.chartState);
+    const stockData = useSelector((state: AppState) => state.stockData);
 
-    const [isFullscreen, setFullscreen] = useState(true);
+    // const [toast, setToast] = useState({ showToast: false, toastMessage: '' });
+
+    const handleAddIndicator = () => {};
 
     const handleReset = () => {
         dispatch(setChartState({ isReset: true }));
@@ -26,15 +31,17 @@ const ChartControls: React.FC<ChartControlsProps> = ({ statsData }) => {
     const handleFullscreen = () => {
         if (document.fullscreenElement) {
             document.exitFullscreen();
+            dispatch(setChartState({ isFullscreen: true }));
         } else {
             document.getElementById('chart-fullscreen')!.requestFullscreen();
+            dispatch(setChartState({ isFullscreen: true }));
         }
     };
 
     const handleScreenshot = async () => {
         try {
             const canvas = await html2canvas(
-                document.getElementById('chart-fullscreen')!
+                document.getElementById('chart-screenshot')!
             );
             const dataUrl = canvas.toDataURL('image/png');
 
@@ -57,17 +64,26 @@ const ChartControls: React.FC<ChartControlsProps> = ({ statsData }) => {
 
             // Remove the img element from the document (optional)
             document.body.removeChild(img);
-
-            alert('Screenshot copied to clipboard!');
+            dispatch(
+                setToastState({
+                    showToast: true,
+                    message: 'Chart screenshot copied to clipboard'
+                })
+            );
         } catch (error) {
             console.error('Error capturing or copying the screenshot:', error);
-            alert('Failed to capture and copy the screenshot.');
+            dispatch(
+                setToastState({
+                    showToast: true,
+                    message: 'Failed to capture and copy the screenshot.'
+                })
+            );
         }
     };
 
     const handleDownload = async () => {
         try {
-            const chartElement = document.getElementById('chart-fullscreen');
+            const chartElement = document.getElementById('chart-screenshot');
             if (!chartElement) {
                 throw new Error('Chart element not found');
             }
@@ -79,32 +95,45 @@ const ChartControls: React.FC<ChartControlsProps> = ({ statsData }) => {
             canvas.toBlob((blob) => {
                 if (blob) {
                     // Create a file name for the screenshot
-                    const fileName = 'screenshot.png';
+                    const fileName = `${stockData.symbol}.png`;
 
                     // Use FileSaver.js to save the blob as an image file
                     saveAs(blob, fileName);
 
-                    alert('Screenshot saved to your computer.');
+                    dispatch(
+                        setToastState({
+                            showToast: true,
+                            message: 'Image downloaded'
+                        })
+                    );
                 } else {
-                    alert('Failed to capture screenshot.');
+                    dispatch(
+                        setToastState({
+                            showToast: true,
+                            message: 'Failed to capture screenshot.'
+                        })
+                    );
                 }
             }, 'image/png');
         } catch (error) {
             console.error('Error capturing or saving the screenshot:', error);
-            alert('Failed to capture and save the screenshot.');
+            dispatch(
+                setToastState({
+                    showToast: true,
+                    message: 'Failed to capture and save the screenshot.'
+                })
+            );
         }
     };
 
     useEffect(() => {
-        // Add an event listener to detect fullscreen changes
         const handleFullscreenChange = () => {
-            setFullscreen(!!document.fullscreenElement);
+            dispatch(setChartState({ isFullscreen: false }));
         };
 
         document.addEventListener('fullscreenchange', handleFullscreenChange);
 
         return () => {
-            // Remove the event listener when the component unmounts
             document.removeEventListener(
                 'fullscreenchange',
                 handleFullscreenChange
@@ -122,7 +151,7 @@ const ChartControls: React.FC<ChartControlsProps> = ({ statsData }) => {
                 <ToolButton
                     icon={<VscAdd />}
                     onClick={() => {}}
-                    tooltip="Add"
+                    tooltip="Add indicator"
                 />
 
                 <ToolButton
@@ -152,7 +181,11 @@ const ChartControls: React.FC<ChartControlsProps> = ({ statsData }) => {
                         )
                     }
                     onClick={handleFullscreen}
-                    tooltip="Fullscreen"
+                    tooltip={
+                        !document.fullscreenElement 
+                            ? 'Fullscreen'
+                            : 'Exit Fullscreen'
+                    }
                 />
             </div>
 
@@ -165,4 +198,4 @@ const ChartControls: React.FC<ChartControlsProps> = ({ statsData }) => {
     );
 };
 
-export default ChartControls;
+export default ChartTools;
