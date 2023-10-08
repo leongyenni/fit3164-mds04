@@ -59,6 +59,9 @@ export const Chart: React.FC<ChartProps> = ({ data, timeInterval }) => {
                 chart.applyOptions({
                     width: document.fullscreenElement
                         ? document.getElementById('chart-whole')!.clientWidth
+                        : chartState.isSideContainerOpen
+                        ? document.getElementById('chart-fullscreen')!
+                              .clientWidth
                         : document.getElementById('chart-whole')!.clientWidth *
                           0.95,
                     height: document.fullscreenElement ? 740 : 570

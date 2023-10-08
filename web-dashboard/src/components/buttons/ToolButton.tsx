@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import ToolButtonTooltip from './ToolButtonTooltip';
-import { ToolButtonProps } from '../types/ComponentTypes';
+import { ToolButtonProps } from '../../types/ComponentTypes';
 
 const ToolButton: React.FC<ToolButtonProps> = ({ icon, onClick, tooltip }) => {
     const [isTooltipVisible, setTooltipVisible] = useState(false);
@@ -20,7 +19,15 @@ const ToolButton: React.FC<ToolButtonProps> = ({ icon, onClick, tooltip }) => {
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
-            {isTooltipVisible && <ToolButtonTooltip tooltip={tooltip} />}
+            {isTooltipVisible && (
+                <div
+                    className="absolute pointer-events-none tracking-widest left-1/2 transform -translate-x-1/2 
+                    bg-gray-900 text-white text-sm px-2 py-1 rounded mt-2 opacity-70 w-auto font-extralight"
+                    style={{ top: '2rem' }}
+                >
+                    {tooltip}
+                </div>
+            )}
             <button
                 className="transition duration-300 ease-in-out transform hover:scale-110 hover:text-gray-200"
                 onClick={onClick}

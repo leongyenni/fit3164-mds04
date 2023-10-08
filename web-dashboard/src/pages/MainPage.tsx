@@ -35,6 +35,9 @@ export const MainPage: React.FC = () => {
     const [forecastData, setForecastData] = useState([]);
     const [startForecast, setStartForecast] = useState(false);
 
+    const [showOverlay, setShowOverlay] = useState(true);
+    const [isLoadingForecast, setIsLoadingForecast] = useState(false);
+
     const statsData = useFinanceStatsAPI(tickerSymbol);
 
     useEffect(() => {
@@ -42,6 +45,8 @@ export const MainPage: React.FC = () => {
     }, [tickerSymbol]);
 
     const handleForecast = () => {
+        setIsLoadingForecast(true);
+
         axios
             .post(
                 'http://localhost:5000/api/model',
@@ -51,6 +56,7 @@ export const MainPage: React.FC = () => {
             .then((response) => {
                 setForecastData(response.data);
                 setStartForecast(true);
+                setIsLoadingForecast(false);
                 console.log(response.data);
             })
             .catch((error) => {
@@ -58,44 +64,15 @@ export const MainPage: React.FC = () => {
             });
     };
 
-    const [showLoading, setShowLoading] = useState(false);
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setShowLoading(false);
-        }, 3000);
-
-        return () => clearTimeout(timer);
-    }, []);
-
-    useEffect(() => {
-        const checkLoading = setTimeout(() => {
-            if (
-                tickerData.loading ||
-                historicalData.loading ||
-                statsData.loading
-            ) {
-                setShowLoading(true);
-            }
-        }, 3000);
-
-        return () => clearTimeout(checkLoading);
-    }, [tickerData.loading, historicalData.loading, statsData.loading]);
-
-    if (showLoading) {
+    if (tickerData.loading || historicalData.loading || statsData.loading) {
         return (
             <div className="flex items-center justify-center h-screen">
                 <LoadingSpinner />
                 <div className="ml-3 text-gray-400 text-2xl animate-pulse ">
-                    Loading...
+                    Loading data...
                 </div>
             </div>
         );
-    } else if (
-        (tickerData.loading || historicalData.loading || statsData.loading) &&
-        !showLoading
-    ) {
-        return <div />;
     }
 
     if (
@@ -159,7 +136,24 @@ export const MainPage: React.FC = () => {
                 <ChartSideMenu statsData={statsData.data} />
             </div>
 
-            <div className="mt-16">
+            <div className="mt-16 relative">
+                {!startForecast && (
+                    <div className="absolute inset-0 flex items-center justify-center z-50 bg-slate-900 rounded-md bg-opacity-90">
+                        {isLoadingForecast ? (
+                            <div className="bg-opacity-75 bg-black text-white p-4 rounded-lg">
+                                Loading Forecast...
+                            </div>
+                        ) : (
+                            <button
+                                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none"
+                                onClick={() => handleForecast()}
+                            >
+                                Start Forecast
+                            </button>
+                        )}
+                    </div>
+                )}
+
                 <div
                     className="p-4 rounded-md"
                     style={{ backgroundColor: color.backgroundColor2 }}
@@ -210,17 +204,8 @@ export const MainPage: React.FC = () => {
                 </div>
             </div>
             <div className="my-5 align-center">
-                {!startForecast && (
-                    <button
-                        className="bg-sky-600 py-2 px-4 rounded-md hover:bg-sky-900"
-                        onClick={() => handleForecast()}
-                    >
-                        Start Forecast
-                    </button>
-                )}
-
                 {startForecast && (
-                    <div className="text-lg mt-10 text-center">
+                    <div className="text-2xl tracking-wide mt-10 text-center">
                         {' '}
                         Forecasted closing price ({' '}
                         {
