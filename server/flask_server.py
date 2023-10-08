@@ -3,9 +3,20 @@ import tensorflow as tf
 import numpy as np
 import pandas as pd
 from flask_cors import CORS
+import threading 
 import logging
+import time
 
-loaded_w_revin_model = tf.keras.models.load_model("./nbeats_revin_model")
+model_loaded = False
+
+def load_model_background(): 
+    global loaded_w_revin_model, model_loaded
+    try:
+      loaded_w_revin_model = tf.keras.models.load_model("./nbeats_revin_model")
+      model_loaded = True
+      print("Model loaded successfully.")
+    except Exception as e:
+      print("Error loading the model:", str(e))
 
 def preprocess(df2):
 
@@ -22,7 +33,6 @@ def preprocess(df2):
     # Append the new date to the DataFrame with NaN values for all columns
     df2.loc[new_date] = [pd.NA] * len(df2.columns)
 
-
     WINDOW_SIZE=7
 
     # Make a copy of the stock historical data with block reward feature
@@ -35,7 +45,6 @@ def preprocess(df2):
       df_windowed2[f"low-{WINDOW_SIZE-i}"] = df_windowed2['low'].shift(periods=i+1)
       df_windowed2[f"close-{WINDOW_SIZE-i}"] = df_windowed2['close'].shift(periods=i+1)
       df_windowed2[f"adjClose-{WINDOW_SIZE-i}"] = df_windowed2['adjClose'].shift(periods=i+1)
-
 
     # Step 1: Filter out columns with -7 to -1 suffix
     suffixes_to_check = [f"-{i}" for i in range(WINDOW_SIZE, 0, -1)]
@@ -56,7 +65,6 @@ def preprocess(df2):
 
     return X_test2
 
-
 def make_preds(model, input_data):
   forecast = model.predict(input_data, verbose=0)
   return tf.squeeze(forecast) # return 1D array of predictions
@@ -66,6 +74,10 @@ CORS(app)
 
 @app.route('/api/model', methods=['POST'])
 def get_predictions():
+    global model_loaded
+
+    while not model_loaded:
+        time.sleep(1)
 
     # Retrieve the data from the request
     data = request.json['historicalData']
@@ -87,11 +99,8 @@ def get_predictions():
     else:
         return jsonify({"forecastData": "null"})
 
-    
-@app.route('/')
-def index():
-    return "Welcome to the Flask server!"
-
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=7000)
+  model_loaded_th = threading.Thread(target=load_model_background)
+  model_loaded_th.start()
+  app.run(debug=True, host='0.0.0.0', port=7000)
 
