@@ -57,19 +57,6 @@ export const MainPage: React.FC = () => {
             });
     };
 
-    axios.get('http://localhost:5000/api/model_status')
-    .then(response => {
-        if (response.data.status === "loaded") {
-            handleForecast();
-        } else {
-            console.log("Model is not ready yet.");
-            // Optionally: Display a message to the user
-        }
-    })
-    .catch(error => {
-        console.error('Error checking model status:', error);
-    });
-    
     const [showLoading, setShowLoading] = useState(false);
 
     useEffect(() => {

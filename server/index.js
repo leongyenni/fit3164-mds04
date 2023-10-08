@@ -30,12 +30,6 @@ if (!isDev && cluster.isMaster) {
     // Middleware
     app.use(cors());
     app.use(bodyParser.json());
-    
-    app.use((err, req, res, next) => {
-        console.error(err.stack);
-        res.status(500).send('Something broke!');
-    });
-    
 
     // Get requests
     app.get('/api', function (req, res) {
@@ -252,18 +246,6 @@ if (!isDev && cluster.isMaster) {
             res.status(500).json({ error: 'An error occurred' });
         }
     });
-    
-
-    app.get('/api/model_status', async (req, res) => {
-        try {
-            const response = await axios.get('http://127.0.0.1:7000/api/model_status');
-            res.json(response.data);
-        } catch (error) {
-            console.error('Error checking model status:', error);
-            res.status(500).json({ error: 'An error occurred checking model status' });
-        }
-    });
-    
 
     app.get('/api/exactify', function (req, res) {
         var song_indexes = [];

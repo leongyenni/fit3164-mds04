@@ -5,16 +5,7 @@ import pandas as pd
 from flask_cors import CORS
 import logging
 
-model_status = "loading"
-loaded_w_revin_model = None
-
-try:
-    loaded_w_revin_model = tf.keras.models.load_model("./nbeats_revin_model")
-    model_status = "loaded"
-except Exception as e:
-    print(f"Error loading model: {e}")
-    model_status = "error"
-
+loaded_w_revin_model = tf.keras.models.load_model("./nbeats_revin_model")
 
 def preprocess(df2):
 
@@ -76,35 +67,25 @@ CORS(app)
 @app.route('/api/model', methods=['POST'])
 def get_predictions():
 
-    try:
-        # Retrieve the data from the request
-        data = request.json['historicalData']
-        df = pd.DataFrame(data)
+    # Retrieve the data from the request
+    data = request.json['historicalData']
+    df = pd.DataFrame(data)
 
-        X_test2 = preprocess(df)
-        model_w_revin_preds = make_preds(loaded_w_revin_model, X_test2)
+    X_test2 = preprocess(df)
+    model_w_revin_preds = make_preds(loaded_w_revin_model, X_test2)
 
-        model_w_revin_preds_lastcol = model_w_revin_preds[:, -1]
-        model_w_revin_preds_lastcol = tf.expand_dims(model_w_revin_preds_lastcol, axis=-1)
-        model_w_revin_preds_lastcol_seven = model_w_revin_preds_lastcol[-7:]
-        pred_list = model_w_revin_preds_lastcol_seven.numpy().tolist()
+    model_w_revin_preds_lastcol = model_w_revin_preds[:, -1]
+    model_w_revin_preds_lastcol = tf.expand_dims(model_w_revin_preds_lastcol, axis=-1)
+    model_w_revin_preds_lastcol_seven = model_w_revin_preds_lastcol[-7:]
+    pred_list = model_w_revin_preds_lastcol_seven.numpy().tolist()
 
-        flattened_data = [item for sublist in pred_list for item in sublist]
+    flattened_data = [item for sublist in pred_list for item in sublist]
 
-        if len(pred_list) > 0:
-            prediction = {"forecastData": flattened_data}
-            return jsonify(prediction)
-        else:
-            return jsonify({"forecastData": "null"})
-        
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-    
-    
-    
-@app.route('/api/model_status', methods=['GET'])
-def get_model_status():
-    return jsonify({"status": model_status})
+    if len(pred_list) > 0:
+        prediction = {"forecastData": flattened_data}
+        return jsonify(prediction)
+    else:
+        return jsonify({"forecastData": "null"})
 
     
 @app.route('/')
