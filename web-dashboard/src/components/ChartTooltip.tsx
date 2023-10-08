@@ -15,10 +15,9 @@ const ChartTooltip: React.FC = () => {
 
     return (
         <div
-            className={`w-40 h-[${
-                document.fullscreenElement ? '740px' : '570px'
-            }] absolute p-3  box-border text-left z-10 pointer-events-none rounded-tl-4 
-            rounded-tr-4 border-b-0 shadow-md antialiased bg-opacity-25 text-white bg-white text-md`}
+            className={`w-40 ${!!document.fullscreenElement ? 'h-[740px]' : 'h-[570px]'} absolute p-3  
+            box-border text-left z-10 pointer-events-none rounded-tl-4 rounded-tr-4 border-b-0 shadow-md 
+            antialiased bg-opacity-25 text-white bg-white text-md`}
             style={{ left: posX - 40 }}
         >
             <p className="text-lg tracking-wide">{date}</p>

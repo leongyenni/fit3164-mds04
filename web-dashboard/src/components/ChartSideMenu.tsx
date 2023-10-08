@@ -3,8 +3,10 @@ import { PiTableThin } from 'react-icons/pi';
 import { useDispatch, useSelector } from 'react-redux';
 import { setChartState } from '../redux/chartSlice';
 import { AppState } from '../redux/store';
+import StatsDataContainer from './StatsDataContainer';
+import { ChartSideMenuProps } from '../types/ComponentTypes';
 
-const ChartSideMenu: React.FC = () => {
+const ChartSideMenu: React.FC<ChartSideMenuProps> = ({ statsData }) => {
     const dispatch = useDispatch();
     const chartState = useSelector((state: AppState) => state.chartState);
 
@@ -16,12 +18,14 @@ const ChartSideMenu: React.FC = () => {
         );
     };
 
+    console.log(chartState.isSideContainerOpen);
+
     return (
-        <div className="flex">
+        <div className="flex w-auto">
             {chartState.isSideContainerOpen && (
-                <div className="h-auto bg-white w-60 mr-2">container</div>
+                <StatsDataContainer statsData={statsData} />
             )}
-            <div className="right-0 h-auto border-l-2 border-gray-800 px-4 ">
+            <div className="right-0 h-auto w-16 border-l-2 border-gray-800 px-4 ">
                 <PiTableThin
                     className="text-3xl text-white cursor-pointer"
                     onClick={toggleStatsDataContainer}

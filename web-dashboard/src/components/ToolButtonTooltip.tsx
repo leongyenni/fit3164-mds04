@@ -1,12 +1,16 @@
-const ToolButtonTooltip = () => {
+import React, { useState } from 'react';
+import { ToolButtonTooltipProps } from '../types/ComponentTypes';
+
+const ToolButtonTooltip: React.FC<ToolButtonTooltipProps> = ({ tooltip }) => {
     return (
         <div
-            id="tooltip-default"
-            role="tooltip"
-            className="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+            className="absolute pointer-events-none tracking-wide left-1/2 transform -translate-x-1/2 
+        bg-gray-900 text-white text-sm px-2 py-1 rounded mt-2 opacity-80 w-auto"
+            style={{ top: '2rem' }}
         >
-            Tooltip content
-            <div className="tooltip-arrow" data-popper-arrow></div>
+            {tooltip}
         </div>
     );
-}
+};
+
+export default ToolButtonTooltip;
