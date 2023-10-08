@@ -27,3 +27,8 @@ export type ChartState = {
     isFullscreen?: boolean;
     isSideContainerOpen?: boolean;
 };
+
+export type ToastState = {
+    showToast: boolean;
+    message: string;
+};

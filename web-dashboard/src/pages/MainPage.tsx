@@ -16,6 +16,7 @@ import ChartTools from '../components/ChartTools';
 import { color } from '../styles/colors';
 import { dateFormatter } from '../utils/formattingUtils';
 import ForecastContainer from '../components/ForecastContainer';
+import Toast from '../components/Toast';
 
 export const MainPage: React.FC = () => {
     const router = useRouter();
@@ -134,21 +135,28 @@ export const MainPage: React.FC = () => {
 
             <div className="flex" id="chart-whole">
                 <div
-                    className="flex-1 w-auto pl-4"
                     id="chart-fullscreen"
+                    className="flex-1 w-auto pb-2"
                     style={{ backgroundColor: color.backgroundColor }}
                 >
-                    <ChartLegends statsData={statsData.data} />
-                    <div className="pt-3" id="chart-div">
-                        <Chart
-                            data={tickerData.data}
-                            timeInterval={timeRangeData.timeInterval}
-                        />
+                    <div
+                        id="chart-screenshot"
+                        className="pl-4"
+                        style={{ backgroundColor: color.backgroundColor }}
+                    >
+                        <ChartLegends statsData={statsData.data} />
+                        <div className="pt-3" id="chart-div">
+                            <Chart
+                                data={tickerData.data}
+                                timeInterval={timeRangeData.timeInterval}
+                            />
+                        </div>
                     </div>
-                    <hr className="border-t border-gray-800 " />
+
+                    <hr className="border-t border-gray-800" />
                     <ChartTools statsData={statsData.data} />
                 </div>
-                <ChartSideMenu />
+                <ChartSideMenu statsData={statsData.data} />
             </div>
 
             <div className="mt-16">
@@ -234,6 +242,7 @@ export const MainPage: React.FC = () => {
                     />
                 )}
             </div>
+            <Toast />
             <Footer />
         </div>
     );

@@ -4,6 +4,7 @@ import stockDataReducer from './stockDataSlice';
 import timeRangeReducer from './timeRangeSlice';
 import forecastDataReducer from './forecastDataSlice';
 import chartReducer from './chartSlice';
+import toastReducer from './toastSlice';
 
 const makeStore = () =>
     configureStore({
@@ -11,7 +12,8 @@ const makeStore = () =>
             timeRangeData: timeRangeReducer,
             stockData: stockDataReducer,
             forecastData: forecastDataReducer,
-            chartState: chartReducer
+            chartState: chartReducer,
+            toastState: toastReducer
         }
     });
 
