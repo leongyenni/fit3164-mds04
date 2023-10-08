@@ -48,7 +48,7 @@ export const MainPage: React.FC = () => {
                 { headers: { 'Content-Type': 'application/json' } }
             )
             .then((response) => {
-                setForecastData(response.data.forecastData);
+                setForecastData(response.data);
                 setStartForecast(true);
                 console.log(response.data);
             })
@@ -57,6 +57,19 @@ export const MainPage: React.FC = () => {
             });
     };
 
+    axios.get('http://localhost:5000/api/model_status')
+    .then(response => {
+        if (response.data.status === "loaded") {
+            handleForecast();
+        } else {
+            console.log("Model is not ready yet.");
+            // Optionally: Display a message to the user
+        }
+    })
+    .catch(error => {
+        console.error('Error checking model status:', error);
+    });
+    
     const [showLoading, setShowLoading] = useState(false);
 
     useEffect(() => {
@@ -211,7 +224,7 @@ export const MainPage: React.FC = () => {
                     </button>
                 )}
 
-                {startForecast && forecastData.length > 1 && (
+                {startForecast && (
                     <div className="text-lg mt-10 text-center">
                         {' '}
                         Forecasted closing price ({' '}
@@ -227,7 +240,7 @@ export const MainPage: React.FC = () => {
                         )
                     </div>
                 )}
-                {startForecast && forecastData.length > 1 && (
+                {startForecast && (
                     <ForecastContainer
                         historicalData={historicalData.data.slice(-7)}
                         forecastData={forecastData}

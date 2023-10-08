@@ -1,25 +1,22 @@
+from flask import Flask, request, jsonify
 import tensorflow as tf
 import numpy as np
-from tensorflow.keras import layers
-import matplotlib.pyplot as plt
-import os
 import pandas as pd
-import sys
-import json
+from flask_cors import CORS
+import logging
+
+model_status = "loading"
+loaded_w_revin_model = None
+
+try:
+    loaded_w_revin_model = tf.keras.models.load_model("./nbeats_revin_model")
+    model_status = "loaded"
+except Exception as e:
+    print(f"Error loading model: {e}")
+    model_status = "error"
+
 
 def preprocess(df2):
-
-    # Set the relative path to the AAPL directory
-    #dir_path2 = './TSLA'
-
-    # Get a list of all the CSV filenames in the directory
-    #all_files2 = [dir_path2 + '/' + filename for filename in os.listdir(dir_path2) if filename.endswith('.csv')]
-
-    # Read each file and append its content to a list of DataFrames
-    #dfs2 = [pd.read_csv(file, parse_dates=["Datetime"], index_col=["Datetime"]) for file in all_files2]
-
-    # Combine all the DataFrames into one
-    #df2 = pd.concat(dfs2, axis=0)
 
     # Sort the DataFrame by its index (which is the date)
     df2 = df2.sort_index()
@@ -29,12 +26,6 @@ def preprocess(df2):
 
     # Extract the last date in the index
     last_date = df2.index[len(df2)-1]
-
-    # Add one day to the date and set the time to 09:30:00-04:00
-    #datetime_obj = datetime.datetime.fromtimestamp(last_date)
-
-    #new_date = pd.Timestamp(last_date.date() + pd.Timedelta(days=1), tz='US/Eastern').replace(hour=9, minute=30)
-
     new_date = last_date + 100
 
     # Append the new date to the DataFrame with NaN values for all columns
@@ -76,48 +67,50 @@ def preprocess(df2):
 
 
 def make_preds(model, input_data):
-  """
-  Uses model to make predictions on input_data.
-
-  Parameters
-  ----------
-  model: trained model
-  input_data: windowed input data (same kind of data model was trained on)
-
-  Returns model predictions on input_data.
-  """
   forecast = model.predict(input_data, verbose=0)
   return tf.squeeze(forecast) # return 1D array of predictions
 
-# def load_or_create_model():
-#     global loaded_w_revin_model, model_loaded
-    
-#     if not model_loaded:
-#         loaded_w_revin_model = tf.keras.models.load_model("./server/nbeats_revin_model")
-#         model_loaded = True 
+app = Flask(__name__)
+CORS(app)
+
+@app.route('/api/model', methods=['POST'])
+def get_predictions():
+
+    try:
+        # Retrieve the data from the request
+        data = request.json['historicalData']
+        df = pd.DataFrame(data)
+
+        X_test2 = preprocess(df)
+        model_w_revin_preds = make_preds(loaded_w_revin_model, X_test2)
+
+        model_w_revin_preds_lastcol = model_w_revin_preds[:, -1]
+        model_w_revin_preds_lastcol = tf.expand_dims(model_w_revin_preds_lastcol, axis=-1)
+        model_w_revin_preds_lastcol_seven = model_w_revin_preds_lastcol[-7:]
+        pred_list = model_w_revin_preds_lastcol_seven.numpy().tolist()
+
+        flattened_data = [item for sublist in pred_list for item in sublist]
+
+        if len(pred_list) > 0:
+            prediction = {"forecastData": flattened_data}
+            return jsonify(prediction)
+        else:
+            return jsonify({"forecastData": "null"})
         
-#     return loaded_w_revin_model
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+    
+    
+@app.route('/api/model_status', methods=['GET'])
+def get_model_status():
+    return jsonify({"status": model_status})
 
+    
+@app.route('/')
+def index():
+    return "Welcome to the Flask server!"
 
-data = json.loads(sys.argv[1])
-df = pd.DataFrame(data)
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=7000)
 
-X_test2=preprocess(df)
-
-loaded_w_revin_model=tf.keras.models.load_model("./server/nbeats_revin_model")
-
-# loaded_w_revin_model = load_or_create_model()
-model_w_revin_preds = make_preds(loaded_w_revin_model, X_test2)
-
-model_w_revin_preds_lastcol = model_w_revin_preds[:, -1]  # Take the last column
-model_w_revin_preds_lastcol = tf.expand_dims(model_w_revin_preds_lastcol, axis=-1)  # Expand dimensions to shape (494, 1)
-model_w_revin_preds_lastcol_seven = model_w_revin_preds_lastcol[-7:]
-pred_list = model_w_revin_preds_lastcol_seven.numpy().tolist()
-
-flattened_data = [item for sublist in pred_list for item in sublist]
-
-if (len(pred_list) > 0):
- prediction = json.dumps({"forecastData": flattened_data})
- print(prediction)
-else: 
- print(json.dumps({"forecastData": "null"}))

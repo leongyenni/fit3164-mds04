@@ -30,6 +30,12 @@ if (!isDev && cluster.isMaster) {
     // Middleware
     app.use(cors());
     app.use(bodyParser.json());
+    
+    app.use((err, req, res, next) => {
+        console.error(err.stack);
+        res.status(500).send('Something broke!');
+    });
+    
 
     // Get requests
     app.get('/api', function (req, res) {
@@ -209,29 +215,55 @@ if (!isDev && cluster.isMaster) {
     });
 
     // N-BEATS-RevIN-Model
-    app.post('/api/model', (req, res) => {
+    // app.post('/api/model', (req, res) => {
+    //     const historicalData = req.body.historicalData;
+    //     const forecastData = [];
+
+    //     const currentDir = path.dirname(__filename);
+
+    //     const python = spawn('python', [
+    //         currentDir + '\\nbeats_revin_model.py',
+    //         JSON.stringify(historicalData)
+    //     ]);
+
+    //     python.stdout.on('data', (data) => {
+    //         console.log('Pipe data from python script');
+    //         forecastData.push(JSON.parse(data));
+    //     });
+
+    //     python.on('close', (code) => {
+    //         console.log(`Child process close all stdio with code ${code}`);
+    //         console.log('Data: ', JSON.stringify(forecastData[0]));
+    //         res.set('Content-Type', 'application/json');
+    //         res.send(forecastData[0]);
+    //     });
+    // });    
+
+    app.post('/api/model', async (req, res) => {
         const historicalData = req.body.historicalData;
         const forecastData = [];
-
-        const currentDir = path.dirname(__filename);
-
-        const python = spawn('python', [
-            currentDir + '\\nbeats_revin_model.py',
-            JSON.stringify(historicalData)
-        ]);
-
-        python.stdout.on('data', (data) => {
-            console.log('Pipe data from python script');
-            forecastData.push(JSON.parse(data));
-        });
-
-        python.on('close', (code) => {
-            console.log(`Child process close all stdio with code ${code}`);
-            console.log('Data: ', JSON.stringify(forecastData[0]));
-            res.set('Content-Type', 'application/json');
-            res.send(forecastData[0]);
-        });
+        try {
+            const response = await axios.post('http://127.0.0.1:7000/api/model', {historicalData: historicalData});
+            console.log(response.data.forecastData)
+            res.json(response.data.forecastData);
+            forecastData.push(response.data.forecastData);
+        } catch (error) {
+            console.error('Error predicting with the model:', error.response ? error.response.data : error.message);
+            res.status(500).json({ error: 'An error occurred' });
+        }
     });
+    
+
+    app.get('/api/model_status', async (req, res) => {
+        try {
+            const response = await axios.get('http://127.0.0.1:7000/api/model_status');
+            res.json(response.data);
+        } catch (error) {
+            console.error('Error checking model status:', error);
+            res.status(500).json({ error: 'An error occurred checking model status' });
+        }
+    });
+    
 
     app.get('/api/exactify', function (req, res) {
         var song_indexes = [];
