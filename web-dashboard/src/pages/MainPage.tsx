@@ -156,7 +156,7 @@ export const MainPage: React.FC = () => {
                     <hr className="border-t border-gray-800" />
                     <ChartTools statsData={statsData.data} />
                 </div>
-                <ChartSideMenu statsData={statsData.data} />
+                <ChartSideMenu statsData={statsData.data} tickerSymbol={tickerSymbol}/>
             </div>
 
             <div className="mt-16">

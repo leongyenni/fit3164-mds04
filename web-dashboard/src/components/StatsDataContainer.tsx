@@ -4,12 +4,14 @@ import { volumeFormatter } from '../utils/formattingUtils';
 import { color } from '../styles/colors';
 
 const StatsDataContainer: React.FC<StatsDataContainerProps> = ({
-    statsData
+    statsData,
+    tickerSymbol
 }) => {
     return (
         <div className="h-auto w-80 p-2 cursor-default border-gray-800 border-l-2 tracking-wide">
-            <div className="m-2 pb-8">
-                <div className="text-2xl pb-2">{statsData.companyName}</div>
+            <div className="m-2 pb-4">
+                <div className="text-2xl pb-2 font-bold">{tickerSymbol}</div>   
+                <div className="text-1xl pb-2">{statsData.companyName}</div>
 
                 <div className="pr-4 pb-2 font-semibold">
                     <span className="text-4xl pr-2">
@@ -31,21 +33,27 @@ const StatsDataContainer: React.FC<StatsDataContainerProps> = ({
                 </div>
 
                 <div
-                    className="font-extralight pb-4"
-                    style={{
-                        color:
-                            statsData.marketChange < 0
-                                ? color.downColor
-                                : color.upColor
-                    }}
+                    className="font-extralight pb-2 text-gray-400"
                 >
-                    MARKET {statsData.marketState.toLocaleUpperCase()}
+                    &#x2022; MARKET {statsData.marketState.toLocaleUpperCase()}
                 </div>
 
-                <div>
-                    <span>{statsData.marketDayLow}</span>
-                    <span>{statsData.marketDayHigh}</span>
+                <div className="p-1 mt-3 bg-transparent">
+                    <div className="flex justify-between items-center">
+                        <div className="text-white text-xs">
+                            {statsData.marketDayLow}
+                        </div>
+                        <div className="mb-1 text-center">
+                            Day's Range
+                        </div>
+                        <div className="text-white text-xs">
+                            {statsData.marketDayHigh}
+                        </div>
+                    </div>
+                    <div className="w-full max-w-xl h-3 bg-gradient-to-r from-red-500 to-green-500 rounded-full overflow-hidden"></div>
                 </div>
+
+
             </div>
 
             <div className="m-2 border-gray-800 border-t-2">

@@ -1,4 +1,4 @@
-import { StatsData } from './DataTypes';
+import { StatsData, TickerData } from './DataTypes';
 
 export interface SearchBarProps {
     className?: string;
@@ -44,10 +44,12 @@ export interface ToolButtonTooltipProps {
 
 export interface StatsDataContainerProps {
     statsData: StatsData;
+    tickerSymbol: string;
 }
 
 export interface ChartSideMenuProps {
     statsData: StatsData;
+    tickerSymbol: string;
 }
 
 export interface ToastProps {
