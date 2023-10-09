@@ -17,6 +17,7 @@ import { color } from '../styles/colors';
 import { dateFormatter } from '../utils/formattingUtils';
 import ForecastContainer from '../components/ForecastContainer';
 import Toast from '../components/Toast';
+import ForecastChartTools from '../components/ForecastChartTools';
 
 export const MainPage: React.FC = () => {
     const router = useRouter();
@@ -131,14 +132,14 @@ export const MainPage: React.FC = () => {
                     </div>
 
                     <hr className="border-t border-gray-800" />
-                    <ChartTools statsData={statsData.data} />
+                    <ChartTools />
                 </div>
                 <ChartSideMenu statsData={statsData.data} />
             </div>
 
             <div className="mt-16 relative">
                 {!startForecast && (
-                    <div className="absolute inset-0 flex items-center justify-center z-50 bg-slate-900 rounded-md bg-opacity-90">
+                    <div className="absolute inset-0 flex items-center justify-center z-10 bg-slate-900 rounded-md bg-opacity-90">
                         {isLoadingForecast ? (
                             <div className="bg-opacity-75 bg-black text-white p-4 rounded-lg">
                                 Loading Forecast...
@@ -155,53 +156,61 @@ export const MainPage: React.FC = () => {
                 )}
 
                 <div
-                    className="p-4 rounded-md"
-                    style={{ backgroundColor: color.backgroundColor2 }}
-                    id="forecast-chart-div"
+                    style={{ backgroundColor: color.backgroundColor }}
+                    id="forecast-chart-fullscreen"
                 >
                     <div
-                        className={`grid mb-5 ${
-                            startForecast ? 'grid-cols-2' : ''
-                        } text-center text-xl font-medium tracking-wider`}
+                        className="p-4 rounded-t-md"
+                        style={{ backgroundColor: color.backgroundColor2 }}
                     >
-                        <div>
-                            Historical closing price:{' '}
-                            {
-                                dateFormatter(
-                                    historicalData.data[
-                                        historicalData.data.length - 1
-                                    ].date
-                                )[0]
-                            }
-                        </div>
-                        {startForecast && (
+                        <div
+                            className={`grid mb-5 ${
+                                startForecast ? 'grid-cols-2' : ''
+                            } text-center text-xl font-medium tracking-wider`}
+                        >
                             <div>
-                                Forecasted closing price :{' '}
+                                Historical closing price:{' '}
                                 {
                                     dateFormatter(
-                                        getForecastDate(
-                                            historicalData.data[
-                                                historicalData.data.length - 1
-                                            ].date
-                                        )
+                                        historicalData.data[
+                                            historicalData.data.length - 1
+                                        ].date
                                     )[0]
                                 }
                             </div>
-                        )}
-                    </div>
+                            {startForecast && (
+                                <div>
+                                    Forecasted closing price :{' '}
+                                    {
+                                        dateFormatter(
+                                            getForecastDate(
+                                                historicalData.data[
+                                                    historicalData.data.length -
+                                                        1
+                                                ].date
+                                            )
+                                        )[0]
+                                    }
+                                </div>
+                            )}
+                        </div>
 
-                    <ForecastChart
-                        historicalData={historicalData.data.slice(-8)}
-                        forecastData={
-                            startForecast
-                                ? forecastData
-                                : historicalData.data
-                                      .slice(-8)
-                                      .map((item) => item.close)
-                        }
-                        startForecast={startForecast}
-                    />
+                        <div id="forecast-chart-div">
+                            <ForecastChart
+                                historicalData={historicalData.data.slice(-8)}
+                                forecastData={
+                                    startForecast
+                                        ? forecastData
+                                        : historicalData.data
+                                              .slice(-8)
+                                              .map((item) => item.close)
+                                }
+                                startForecast={startForecast}
+                            />
+                        </div>
+                    </div>
                 </div>
+                <ForecastChartTools />
             </div>
             <div className="my-5 align-center">
                 {startForecast && (
@@ -227,6 +236,7 @@ export const MainPage: React.FC = () => {
                     />
                 )}
             </div>
+
             <Toast />
             <Footer />
         </div>

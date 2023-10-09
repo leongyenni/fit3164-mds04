@@ -1,30 +1,29 @@
 import React from 'react';
-import RangeSwitcher from './RangeSwitcher';
-import ToolButton from './buttons/ToolButton';
-import { VscAdd } from 'react-icons/vsc';
-import ResetButton from './buttons/ResetButton';
 import ScreenshotButton from './buttons/ScreenshotButton';
 import DownloadButton from './buttons/DownloadButton';
-import FullscreenButton from './buttons/FullscreenButton';
+import { color } from '../styles/colors';
+import { useSelector } from 'react-redux';
+import { AppState } from '../redux/store';
 
 const ForecastChartTools: React.FC = () => {
+    const stockData = useSelector((state: AppState) => state.stockData);
+
     return (
-        <div className="flex justify-between">
+        <div
+            className="flex justify-between pb-2 rounded-b-md"
+            style={{ backgroundColor: color.backgroundColor2 }}
+        >
             <div className="flex-1">
-                <RangeSwitcher />
+                <div> </div>
             </div>
 
             <div>
-                <ToolButton
-                    icon={<VscAdd />}
-                    onClick={() => {}}
-                    tooltip="Add indicator"
+                <ScreenshotButton elementId="forecast-chart-fullscreen" />
+                <DownloadButton
+                    elementId="forecast-chart-fullscreen"
+                    filename={`${stockData.symbol}_forecast`}
                 />
-
-                <ResetButton />
-                <ScreenshotButton />
-                <DownloadButton />
-                <FullscreenButton />
+                {/* <FullscreenButton elementId="forecast-chart-fullscreen" /> */}
             </div>
         </div>
     );

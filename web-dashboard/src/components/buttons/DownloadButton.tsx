@@ -6,14 +6,15 @@ import { setToastState } from '../../redux/toastSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '../../redux/store';
 import ToolButton from './ToolButton';
+import { DownloadButtonProps } from '../../types/ComponentTypes';
 
-const DownloadButton = () => {
+const DownloadButton: React.FC<DownloadButtonProps> = ({elementId, filename}) => {
     const dispatch = useDispatch();
-    const stockData = useSelector((state: AppState) => state.stockData);
 
     const handleDownload = async () => {
         try {
-            const chartElement = document.getElementById('chart-screenshot');
+            // const chartElement = document.getElementById('chart-screenshot');
+            const chartElement = document.getElementById(elementId);
             if (!chartElement) {
                 throw new Error('Chart element not found');
             }
@@ -25,7 +26,7 @@ const DownloadButton = () => {
             canvas.toBlob((blob) => {
                 if (blob) {
                     // Create a file name for the screenshot
-                    const fileName = `${stockData.symbol}.png`;
+                    const fileName = `${filename}.png`;
 
                     // Use FileSaver.js to save the blob as an image file
                     saveAs(blob, fileName);

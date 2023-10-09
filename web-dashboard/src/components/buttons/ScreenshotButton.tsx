@@ -4,14 +4,16 @@ import { CiCamera } from 'react-icons/ci';
 import { setToastState } from '../../redux/toastSlice';
 import { useDispatch } from 'react-redux';
 import ToolButton from './ToolButton';
+import { ButtonProps } from '../../types/ComponentTypes';
 
-const ScreenshotButton: React.FC = () => {
+const ScreenshotButton: React.FC<ButtonProps> = ({ elementId }) => {
     const dispatch = useDispatch();
 
     const handleScreenshot = async () => {
         try {
             const canvas = await html2canvas(
-                document.getElementById('chart-screenshot')!
+                //document.getElementById('chart-screenshot')!
+                document.getElementById(elementId)!
             );
             const dataUrl = canvas.toDataURL('image/png');
 

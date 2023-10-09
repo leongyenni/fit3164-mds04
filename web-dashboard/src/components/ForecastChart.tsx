@@ -184,7 +184,7 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
                     timestamp: parseInt(areaData.time.toString()),
                     close: OHLCFormatter(areaData.value),
                     x: param.point.x - toolTipMargin,
-                    y: containerOffset + coordinate - toolTipMargin
+                    y: coordinate + toolTipMargin
                 };
                 dispatch(setForecastData(tooltipContent));
                 setTooltipVisible(true);

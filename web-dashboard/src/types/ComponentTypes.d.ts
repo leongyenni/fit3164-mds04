@@ -28,10 +28,6 @@ export interface ChartLegendsProps {
     statsData: StatsData;
 }
 
-export interface ChartToolsProps {
-    statsData: StatsData;
-}
-
 export interface ToolButtonProps {
     icon: React.ReactNode;
     onClick?: () => void;
@@ -50,11 +46,10 @@ export interface ChartSideMenuProps {
     statsData: StatsData;
 }
 
-export interface ToastProps {
-    showToast: boolean;
-    message: string;
-    onClose: () => {
-        payload: undefined;
-        type: 'chart status/resetToastState';
-    };
+export interface ButtonProps {
+    elementId: string;
+}
+
+export interface DownloadButtonProps extends ButtonProps {
+    filename: string
 }

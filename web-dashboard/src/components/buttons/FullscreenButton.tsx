@@ -3,8 +3,9 @@ import { useDispatch } from 'react-redux';
 import { setChartState } from '../../redux/chartSlice';
 import { RxEnterFullScreen, RxExitFullScreen } from 'react-icons/rx';
 import ToolButton from './ToolButton';
+import { ButtonProps } from '../../types/ComponentTypes';
 
-const FullscreenButton = () => {
+const FullscreenButton: React.FC<ButtonProps> = ({ elementId }) => {
     const dispatch = useDispatch();
 
     const handleFullscreen = () => {
@@ -12,7 +13,8 @@ const FullscreenButton = () => {
             document.exitFullscreen();
             dispatch(setChartState({ isFullscreen: true }));
         } else {
-            document.getElementById('chart-fullscreen')!.requestFullscreen();
+            // document.getElementById('chart-fullscreen')!.requestFullscreen();
+            document.getElementById(elementId)!.requestFullscreen();
             dispatch(setChartState({ isFullscreen: true }));
         }
     };
