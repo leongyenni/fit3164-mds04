@@ -98,18 +98,30 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
             lineWidth: 1
         });
 
-        const lastHistoricalDate = new Date(historicalData[historicalData.length - 1].date * 1000);
-        const startForecastDateUTC = new Date(Date.UTC(lastHistoricalDate.getUTCFullYear(), lastHistoricalDate.getUTCMonth(), lastHistoricalDate.getUTCDate() + 1, 9, 30));
-        let startForecastTimestamp = Math.floor(startForecastDateUTC.getTime() / 1000);
-        
+        const lastHistoricalDate = new Date(
+            historicalData[historicalData.length - 1].date * 1000
+        );
+        const startForecastDateUTC = new Date(
+            Date.UTC(
+                lastHistoricalDate.getUTCFullYear(),
+                lastHistoricalDate.getUTCMonth(),
+                lastHistoricalDate.getUTCDate() + 1,
+                9,
+                30
+            )
+        );
+        let startForecastTimestamp = Math.floor(
+            startForecastDateUTC.getTime() / 1000
+        );
+
         const forecastWithTimestamps = forecastData.map((value, index) => {
             const currentTimestamp = startForecastTimestamp + index * 3600;
             return {
-                date: currentTimestamp, 
+                date: currentTimestamp,
                 close: value
             };
         });
-        
+
         areaSeriesHist.setData(
             historicalData.map((d) => {
                 return {
@@ -124,17 +136,19 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
         let currentIndex = 0;
         const lastIndex = forecastData.length;
 
-        if (startForecast){
+        if (startForecast) {
             areaSeriesForecast.update({
-                time: historicalData[historicalData.length-1].date as UTCTimestamp,
-                value: historicalData[historicalData.length-1].close as number
+                time: historicalData[historicalData.length - 1]
+                    .date as UTCTimestamp,
+                value: historicalData[historicalData.length - 1].close as number
             });
         }
-        
+
         const updateDataPoint = () => {
             if (currentIndex < lastIndex && startForecast) {
                 const currentPoint = {
-                    time: forecastWithTimestamps[currentIndex].date as UTCTimestamp,
+                    time: forecastWithTimestamps[currentIndex]
+                        .date as UTCTimestamp,
                     value: forecastWithTimestamps[currentIndex].close as number
                 };
 
@@ -175,10 +189,6 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
                 const coordinate = areaSeriesHist.priceToCoordinate(closePrice)
                     ? areaSeriesHist.priceToCoordinate(closePrice)!
                     : areaSeriesForecast.priceToCoordinate(closePrice)!;
-
-                const containerOffset =
-                    document.getElementById('main-page')!.clientHeight -
-                    document.getElementById('forecast-chart-div')!.clientHeight;
 
                 const tooltipContent = {
                     timestamp: parseInt(areaData.time.toString()),

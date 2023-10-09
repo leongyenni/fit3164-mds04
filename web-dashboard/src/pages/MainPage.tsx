@@ -4,20 +4,22 @@ import { AppState } from '../redux/store';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import useTSFinanceAPI from '../hooks/useTSFinanceAPI';
+import useFinanceStatsAPI from '../hooks/useFinanceStatsAPI';
+import { color } from '../styles/colors';
+import { dateFormatter } from '../utils/formattingUtils';
+import { getForecastDate, getHistoricalData } from '../utils/chartUtils';
 import { Chart } from '../components/Chart';
 import ChartLegends from '../components/ChartLegends';
 import { ForecastChart } from '../components/ForecastChart';
 import Footer from '../components/Footer';
 import LoadingSpinner from '../components/LoadingSpinner';
-import useFinanceStatsAPI from '../hooks/useFinanceStatsAPI';
 import ChartSideMenu from '../components/ChartSideMenu';
 import Header from '../components/Header';
 import ChartTools from '../components/ChartTools';
-import { color } from '../styles/colors';
-import { dateFormatter } from '../utils/formattingUtils';
 import ForecastContainer from '../components/ForecastContainer';
 import Toast from '../components/Toast';
 import ForecastChartTools from '../components/ForecastChartTools';
+import { StockData } from '../types/DataTypes';
 
 export const MainPage: React.FC = () => {
     const router = useRouter();
@@ -32,18 +34,46 @@ export const MainPage: React.FC = () => {
         timeRangeData.timeRange
     );
 
-    const historicalData = useTSFinanceAPI(tickerSymbol, '1h', '10d');
-    const [forecastData, setForecastData] = useState([]);
-    const [startForecast, setStartForecast] = useState(false);
-
-    const [showOverlay, setShowOverlay] = useState(true);
-    const [isLoadingForecast, setIsLoadingForecast] = useState(false);
-
+    const preHistoricalData = useTSFinanceAPI(tickerSymbol, '1h', '11d');
     const statsData = useFinanceStatsAPI(tickerSymbol);
+
+    const [forecastData, setForecastData] = useState<number[]>([]);
+    const [historicalData, setHistoricalData] = useState<StockData[]>([]);
+
+    const [startForecast, setStartForecast] = useState(false);
+    const [isLoadingForecast, setIsLoadingForecast] = useState(false);
+    const [showForecastContainer, setShowForecastContainer] = useState(false);
 
     useEffect(() => {
         setStartForecast(false);
+        setShowForecastContainer(false);
     }, [tickerSymbol]);
+
+    useEffect(() => {
+        if (startForecast) {
+            const timeout = setTimeout(() => {
+                setShowForecastContainer(true);
+            }, 3000);
+
+            return () => clearTimeout(timeout);
+        }
+    }, [startForecast]);
+
+    useEffect(() => {
+        console.log(preHistoricalData);
+        console.log(statsData);
+        if (preHistoricalData.data && statsData.data) {
+            const data = getHistoricalData(
+                preHistoricalData.data,
+                statsData.data!.marketState
+            );
+            setHistoricalData(data);
+            console.log(data);
+            console.log(historicalData);
+        }
+
+        console.log('set historical data');
+    }, [preHistoricalData.data, statsData.data]);
 
     const handleForecast = () => {
         setIsLoadingForecast(true);
@@ -51,7 +81,7 @@ export const MainPage: React.FC = () => {
         axios
             .post(
                 'http://localhost:5000/api/model',
-                { historicalData: historicalData.data },
+                { historicalData: historicalData },
                 { headers: { 'Content-Type': 'application/json' } }
             )
             .then((response) => {
@@ -65,7 +95,17 @@ export const MainPage: React.FC = () => {
             });
     };
 
-    if (tickerData.loading || historicalData.loading || statsData.loading) {
+    if (
+        tickerData.loading ||
+        preHistoricalData.loading ||
+        statsData.loading ||
+        historicalData.length < 1
+    ) {
+        console.log(tickerData);
+        console.log(preHistoricalData);
+        console.log(statsData);
+        console.log(historicalData);
+
         return (
             <div className="flex items-center justify-center h-screen">
                 <LoadingSpinner />
@@ -78,34 +118,26 @@ export const MainPage: React.FC = () => {
 
     if (
         !tickerData.data ||
-        !historicalData.data ||
+        !preHistoricalData.data ||
         !statsData.data ||
         tickerData.error ||
-        historicalData.error ||
+        preHistoricalData.error ||
         statsData.error
     ) {
         return <div>Error</div>;
     }
 
-    const getForecastDate = (historicalDate: number) => {
-        const dateObj = new Date(historicalDate * 1000);
+    // if (preHistoricalData.data && statsData.data) {
+    //     setHistoricalData(
+    //         getHistoricalData(
+    //             preHistoricalData.data,
+    //             statsData.data.marketState
+    //         )
+    //     );
+    // }
 
-        // If the day is Friday (5 in JavaScript's Date object)
-        if (dateObj.getUTCDay() === 5) {
-            // Add 3 days to get to Monday
-            return (
-                new Date(
-                    dateObj.getTime() + 3 * 24 * 60 * 60 * 1000
-                ).getTime() / 1000
-            );
-        } else {
-            // Otherwise, add 1 day
-            return (
-                new Date(dateObj.getTime() + 24 * 60 * 60 * 1000).getTime() /
-                1000
-            );
-        }
-    };
+    console.log(preHistoricalData.data);
+    console.log(historicalData);
 
     return (
         <div id="main-page">
@@ -146,7 +178,7 @@ export const MainPage: React.FC = () => {
                             </div>
                         ) : (
                             <button
-                                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none"
+                                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 hover:scale-105 focus:outline-none"
                                 onClick={() => handleForecast()}
                             >
                                 Start Forecast
@@ -172,8 +204,8 @@ export const MainPage: React.FC = () => {
                                 Historical closing price:{' '}
                                 {
                                     dateFormatter(
-                                        historicalData.data[
-                                            historicalData.data.length - 1
+                                        historicalData[
+                                            historicalData.length - 1
                                         ].date
                                     )[0]
                                 }
@@ -184,9 +216,8 @@ export const MainPage: React.FC = () => {
                                     {
                                         dateFormatter(
                                             getForecastDate(
-                                                historicalData.data[
-                                                    historicalData.data.length -
-                                                        1
+                                                historicalData[
+                                                    historicalData.length - 1
                                                 ].date
                                             )
                                         )[0]
@@ -197,14 +228,8 @@ export const MainPage: React.FC = () => {
 
                         <div id="forecast-chart-div">
                             <ForecastChart
-                                historicalData={historicalData.data.slice(-8)}
-                                forecastData={
-                                    startForecast
-                                        ? forecastData
-                                        : historicalData.data
-                                              .slice(-8)
-                                              .map((item) => item.close)
-                                }
+                                historicalData={historicalData.slice(-8)}
+                                forecastData={forecastData}
                                 startForecast={startForecast}
                             />
                         </div>
@@ -213,25 +238,24 @@ export const MainPage: React.FC = () => {
                 <ForecastChartTools />
             </div>
             <div className="my-5 align-center">
-                {startForecast && (
+                {showForecastContainer && (
                     <div className="text-2xl tracking-wide mt-10 text-center">
                         {' '}
                         Forecasted closing price ({' '}
                         {
                             dateFormatter(
                                 getForecastDate(
-                                    historicalData.data[
-                                        historicalData.data.length - 1
-                                    ].date
+                                    historicalData[historicalData.length - 1]
+                                        .date
                                 )
                             )[0]
                         }
                         )
                     </div>
                 )}
-                {startForecast && (
+                {showForecastContainer && (
                     <ForecastContainer
-                        historicalData={historicalData.data.slice(-7)}
+                        historicalData={historicalData.slice(-7)}
                         forecastData={forecastData}
                     />
                 )}
