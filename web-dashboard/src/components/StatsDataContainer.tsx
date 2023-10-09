@@ -12,7 +12,7 @@ const StatsDataContainer: React.FC<StatsDataContainerProps> = ({
                 <div className="text-2xl pb-2">{statsData.companyName}</div>
 
                 <div className="pr-4 pb-2 font-semibold">
-                    <span className="text-4xl pr-2">
+                    <span className="text-4xl pr-1">
                         {statsData.marketPrice}
                     </span>{' '}
                     <span className="text-md font-normal">USD</span>
@@ -23,7 +23,7 @@ const StatsDataContainer: React.FC<StatsDataContainerProps> = ({
                                     ? color.downColor
                                     : color.upColor
                         }}
-                        className="ml-4 px-1.5 font-bold text-md rounded-md"
+                        className="ml-2 font-bold text-md rounded-md"
                     >
                         {statsData.marketChange.toFixed(2)} /{' '}
                         {statsData.marketChangePct}

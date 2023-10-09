@@ -2,6 +2,7 @@ import { StatsData } from './DataTypes';
 
 export interface SearchBarProps {
     className?: string;
+    inputSymbol?: string;
 }
 
 export interface SearchItemProps {
@@ -51,5 +52,5 @@ export interface ButtonProps {
 }
 
 export interface DownloadButtonProps extends ButtonProps {
-    filename: string
+    filename: string;
 }
