@@ -14,8 +14,8 @@ const ForecastTooltip: React.FC = () => {
 
     return (
         <div
-            className="absolute p-2 box-border text-left pointer-events-none rounded-md 
-            shadow-md antialiased bg-opacity-50 text-white bg-black text-sm z-10"
+            className="absolute p-2 py-1 box-border text-left pointer-events-none rounded-md 
+            shadow-md antialiased bg-opacity-80 text-white bg-black text-sm z-10"
             style={{ left: `${posX}px`, top: `${posY}px` }}
         >
             <p className="text-base tracking-wide text-slate-300 ">

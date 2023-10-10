@@ -6,6 +6,7 @@ import { StockDataItemProps } from '../types/ComponentTypes';
 import { OHLCFormatter } from '../utils/formattingUtils';
 import Image from 'next/image';
 import LoadingSpinner from './LoadingSpinner';
+import { FiTrendingUp, FiTrendingDown } from 'react-icons/fi';
 
 const StockDataItem: React.FC<StockDataItemProps> = ({ symbol }) => {
     const { loading, error, data } = useFinanceStatsAPI(symbol);
@@ -72,33 +73,24 @@ const StockDataItem: React.FC<StockDataItemProps> = ({ symbol }) => {
                     <div
                         className={`${
                             isMarketIncrease ? 'glowing-up' : 'glowing-down'
-                        } text-2xl font-bold text-white`}
+                        } text-3xl font-bold text-white`}
                     >
                         {OHLCFormatter(data.marketPrice)} USD
                     </div>
                     <div className="flex align-center">
-                        <div className="flex items-center pt-3">
-                            <Image
-                                src={
-                                    isMarketIncrease
-                                        ? '/images/stock-market-increase.png'
-                                        : '/images/stock-market-decrease.png'
-                                }
-                                alt={
-                                    isMarketIncrease
-                                        ? 'Stock Market Increase'
-                                        : 'Stock Market Decrease'
-                                }
-                                className="pb-1 pl-1 pr-3 h-5"
-                                width={35}
-                                height={18}
-                            />
+                        <div className="flex items-center pt-1">
+                            {isMarketIncrease ? (
+                                <FiTrendingUp className="text-green-500" />
+                            ) : (
+                                <FiTrendingDown className="text-red-500" />
+                            )}
+
                             <div
-                                className={
+                                className={`pl-2 ${
                                     isMarketIncrease
                                         ? 'text-green-500'
                                         : 'text-red-500'
-                                }
+                                }`}
                             >
                                 {data.marketChange.toFixed(2)}/
                                 {data.marketChangePct}

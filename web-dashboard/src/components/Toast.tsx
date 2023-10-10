@@ -26,17 +26,16 @@ const Toast: React.FC = () => {
 
     return (
         <div
-            className="fixed z-20 tracking-wide bottom-4 left-1/2 transform -translate-x-1/2 flex items-center p-2 
-        text-gray-500 bg-white rounded-md shadow dark:text-gray-400 dark:bg-gray-800 w-auto"
+            className="fixed z-20  bottom-4 left-1/2 transform -translate-x-1/2 flex items-center 
+            p-2 rounded-md shadowtext-gray-100 bg-gray-900 w-auto"
         >
-            <div className="mx-2 text-sm font-normal flex-1">
+            <div className="mx-2 font-thin tracking-wider flex-1">
                 {toastState.message}
             </div>
 
             <button
                 className="p-2 mr-1 rounded-md inline-flex items-center justify-center  
-                dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700 
-                hover:bg-gray-100 bg-white text-gray-400 hover:text-gray-900 "
+                hover:text-white hover:bg-gray-800"
                 onClick={() => dispatch(resetToastState())}
             >
                 <AiOutlineClose />

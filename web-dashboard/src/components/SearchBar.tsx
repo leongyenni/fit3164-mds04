@@ -5,11 +5,13 @@ import useStockTickerAPI from '../hooks/useStockTickerAPI';
 import { TickerData } from '../types/DataTypes';
 import { SearchBarProps } from '../types/ComponentTypes';
 import SearchItem from './SearchItem';
-import { useSelector } from 'react-redux';
-import { AppState } from '../redux/store';
+import { TbFaceIdError } from 'react-icons/tb';
 
-const Searchbar: React.FC<SearchBarProps> = ({ className }) => {
-    const [inputVal, setInputVal] = useState('');
+const Searchbar: React.FC<SearchBarProps> = ({
+    className,
+    inputSymbol = ''
+}) => {
+    const [inputVal, setInputVal] = useState(inputSymbol);
     const [open, setOpen] = useState(false);
     const tickerSymbols: TickerData[] = useStockTickerAPI(inputVal);
     const dropdownRef = useRef<HTMLDivElement | null>(null);
@@ -22,15 +24,14 @@ const Searchbar: React.FC<SearchBarProps> = ({ className }) => {
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && tickerSymbols.length === 0) {
-            // Prevent "Enter" key event when tickerSymbols.length is 0
             e.preventDefault();
         } else if (e.key === 'Enter') {
-            // Handle "Enter" key event when tickerSymbols.length > 0
+            e.preventDefault();
             const inputElement = e.target as HTMLInputElement;
             handleClickValue(inputElement.value.toUpperCase());
         }
     };
-    
+
     const handleClickValue = (tickerSymbol: string) => {
         setOpen(false);
         setInputVal(tickerSymbol);
@@ -76,16 +77,7 @@ const Searchbar: React.FC<SearchBarProps> = ({ className }) => {
                         onChange={(e) => {
                             handleChange(e.target.value.toUpperCase());
                         }}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                                e.preventDefault();
-                                const inputElement =
-                                    e.target as HTMLInputElement;
-                                handleClickValue(
-                                    inputElement.value.toUpperCase()
-                                );
-                            }
-                        }}
+                        onKeyDown={handleKeyDown}
                     />
                 </div>
                 {open && (
@@ -94,7 +86,10 @@ const Searchbar: React.FC<SearchBarProps> = ({ className }) => {
                         className="search-bar absolute top-3 mt-12 w-3/5 max-h-[240px] z-50 bg-slate-950 overflow-y-scroll rounded-lg shadow-md shadow-zinc-950"
                     >
                         {tickerSymbols.length === 0 && inputVal.length > 1 ? (
-                            <p className="text-white p-2">No results found.</p>
+                            <p className="text-white p-2 tracking-wider">
+                                <TbFaceIdError className="text-3xl inline-block pr-2" />
+                                No results found.
+                            </p>
                         ) : (
                             <ul>
                                 {tickerSymbols.map((tickerSymbol) => (
