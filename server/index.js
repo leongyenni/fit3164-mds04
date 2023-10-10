@@ -209,30 +209,6 @@ if (!isDev && cluster.isMaster) {
     });
 
     // N-BEATS-RevIN-Model
-    // app.post('/api/model', (req, res) => {
-    //     const historicalData = req.body.historicalData;
-    //     const forecastData = [];
-
-    //     const currentDir = path.dirname(__filename);
-
-    //     const python = spawn('python', [
-    //         currentDir + '\\nbeats_revin_model.py',
-    //         JSON.stringify(historicalData)
-    //     ]);
-
-    //     python.stdout.on('data', (data) => {
-    //         console.log('Pipe data from python script');
-    //         forecastData.push(JSON.parse(data));
-    //     });
-
-    //     python.on('close', (code) => {
-    //         console.log(`Child process close all stdio with code ${code}`);
-    //         console.log('Data: ', JSON.stringify(forecastData[0]));
-    //         res.set('Content-Type', 'application/json');
-    //         res.send(forecastData[0]);
-    //     });
-    // });    
-
     app.post('/api/model', async (req, res) => {
         const historicalData = req.body.historicalData;
         const forecastData = [];
@@ -245,37 +221,6 @@ if (!isDev && cluster.isMaster) {
             console.error('Error predicting with the model:', error.response ? error.response.data : error.message);
             res.status(500).json({ error: 'An error occurred' });
         }
-    });
-
-    app.get('/api/exactify', function (req, res) {
-        var song_indexes = [];
-        var { time, n_songs, songs_duration } = req.query;
-        console.log(
-            `[New Exactify Request]\nParams: { Time: ${time}, Num Songs: ${n_songs}, Song Durations: ${songs_duration} }`
-        );
-
-        // spawn new child process to call the python script
-        const python = spawn('python', [
-            './server/exact_playlist.py',
-            time,
-            n_songs,
-            songs_duration
-        ]);
-
-        // collect data from script
-        python.stdout.on('data', function (data) {
-            console.log('Pipe data from python script ...');
-            song_indexes.push(JSON.parse(data));
-        });
-
-        // in close event we are sure that stream from child process is closed
-        python.on('close', (code) => {
-            console.log(`child process close all stdio with code ${code}`);
-            // send data to browser
-            console.log('solution:', song_indexes);
-            res.set('Content-Type', 'application/json');
-            res.send(song_indexes);
-        });
     });
 
     app.listen(PORT, function () {

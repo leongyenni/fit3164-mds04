@@ -1,10 +1,8 @@
 from flask import Flask, request, jsonify
 import tensorflow as tf
-import numpy as np
 import pandas as pd
 from flask_cors import CORS
 import threading 
-import logging
 import time
 
 model_loaded = False
