@@ -23,6 +23,7 @@ export interface ForecastChartProps {
     historicalData: StockData[];
     forecastData: number[];
     startForecast: boolean;
+    dropdownValue: string;
 }
 
 export interface ChartLegendsProps {

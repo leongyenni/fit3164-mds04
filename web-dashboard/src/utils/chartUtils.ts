@@ -35,6 +35,23 @@ export const getForecastDate = (historicalDate: number) => {
     }
 };
 
+export const getForecastDate_WeekModel = (historicalDate: number): number[] => {
+    const dateObj = new Date(historicalDate * 1000);  // Convert to milliseconds
+    const resultDates: number[] = [];
+
+    while (resultDates.length < 7) {
+        dateObj.setDate(dateObj.getDate() + 1); // Increment by one day
+        if (dateObj.getUTCDay() !== 6 && dateObj.getUTCDay() !== 0) {
+            // If the date is not a Saturday (6) or a Sunday (0), add to result
+            const unixTimestamp = Math.floor(dateObj.getTime() / 1000);
+            resultDates.push(unixTimestamp);
+        }
+    }
+
+    return resultDates;
+};
+
+
 export const getHistoricalData = (
     historicalData: StockData[],
     marketState: string
