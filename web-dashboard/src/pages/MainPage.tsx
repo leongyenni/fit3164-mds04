@@ -34,7 +34,7 @@ export const MainPage: React.FC = () => {
         timeRangeData.timeRange
     );
 
-    const preHistoricalData = useTSFinanceAPI(tickerSymbol, '1h', '11d');
+    const preHistoricalData = useTSFinanceAPI(tickerSymbol, '1h', '15d');
     const statsData = useFinanceStatsAPI(tickerSymbol);
 
     const [forecastData, setForecastData] = useState<number[]>([]);

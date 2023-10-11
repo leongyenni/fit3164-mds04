@@ -10,7 +10,7 @@ model_loaded = False
 def load_model_background(): 
     global loaded_w_revin_model, model_loaded
     try:
-      loaded_w_revin_model = tf.keras.models.load_model("./nbeats_revin_model")
+      loaded_w_revin_model = tf.keras.models.load_model("./model_with_revin_winsize21")
       model_loaded = True
       print("Model loaded successfully.")
     except Exception as e:
@@ -31,7 +31,7 @@ def preprocess(df2):
     # Append the new date to the DataFrame with NaN values for all columns
     df2.loc[new_date] = [pd.NA] * len(df2.columns)
 
-    WINDOW_SIZE=7
+    WINDOW_SIZE=21
 
     # Make a copy of the stock historical data with block reward feature
     df_windowed2 = df2.copy()
