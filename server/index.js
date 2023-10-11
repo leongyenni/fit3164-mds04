@@ -208,7 +208,7 @@ if (!isDev && cluster.isMaster) {
         }
     });
 
-    // N-BEATS-RevIN-Model
+    // N-BEATS-RevIN-Model (Day)
     app.post('/api/model', async (req, res) => {
         const historicalData = req.body.historicalData;
         const forecastData = [];
@@ -222,6 +222,23 @@ if (!isDev && cluster.isMaster) {
             res.status(500).json({ error: 'An error occurred' });
         }
     });
+
+    // N-BEATS-RevIN-Model (Week)
+    app.post('/api/weekmodel', async (req, res) => {
+        const historicalData = req.body.historicalData; 
+        console.log(historicalData);
+        const forecastData = [];
+        try {
+            const response = await axios.post('http://127.0.0.1:7000/api/weekmodel', {historicalData_WeekModel: historicalData});
+            console.log(response.data.forecastData);
+            res.json(response.data.forecastData);
+            forecastData.push(response.data.forecastData);
+        } catch (error) {
+            console.error('Error predicting with the model:', error.response ? error.response.data : error.message);
+            res.status(500).json({ error: 'An error occurred' });
+        }
+    });
+    
 
     app.listen(PORT, function () {
         console.error(

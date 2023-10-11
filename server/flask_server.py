@@ -8,9 +8,10 @@ import time
 model_loaded = False
 
 def load_model_background(): 
-    global loaded_w_revin_model, model_loaded
+    global loaded_w_revin_model, week_loaded_w_revin_model, model_loaded
     try:
       loaded_w_revin_model = tf.keras.models.load_model("./model_with_revin_winsize21")
+      week_loaded_w_revin_model = tf.keras.models.load_model("./week_model_with_revin_winsize21")
       model_loaded = True
       print("Model loaded successfully.")
     except Exception as e:
@@ -71,7 +72,7 @@ app = Flask(__name__)
 CORS(app)
 
 @app.route('/api/model', methods=['POST'])
-def get_predictions():
+def get_day_predictions():
     global model_loaded
 
     while not model_loaded:
@@ -96,6 +97,33 @@ def get_predictions():
         return jsonify(prediction)
     else:
         return jsonify({"forecastData": "null"})
+    
+@app.route('/api/weekmodel', methods=['POST'])
+def get_week_predictions():
+    global model_loaded
+
+    while not model_loaded:
+        time.sleep(1)
+
+    # Retrieve the data from the request
+    data = request.json['historicalData_WeekModel']
+    df = pd.DataFrame(data)
+
+    X_test2 = preprocess(df)
+    week_model_w_revin_preds = make_preds(week_loaded_w_revin_model, X_test2)
+
+    week_model_w_revin_preds_lastcol = week_model_w_revin_preds[:, -1]
+    week_model_w_revin_preds_lastcol = tf.expand_dims(week_model_w_revin_preds_lastcol, axis=-1)
+    week_model_w_revin_preds_lastcol_seven = week_model_w_revin_preds_lastcol[-7:]
+    week_pred_list = week_model_w_revin_preds_lastcol_seven.numpy().tolist()
+
+    week_flattened_data = [item for sublist in week_pred_list for item in sublist]
+
+    if len(week_pred_list) > 0:
+        week_prediction = {"forecastData_WeekModel": week_flattened_data}
+        return jsonify(week_prediction)
+    else:
+        return jsonify({"forecastData_WeekModel": "null"})
 
 if __name__ == '__main__':
   model_loaded_th = threading.Thread(target=load_model_background)
