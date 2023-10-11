@@ -19,7 +19,7 @@ const ForecastTooltip: React.FC = () => {
             style={{ left: `${posX}px`, top: `${posY}px` }}
         >
             <p className="text-base tracking-wide text-slate-300 ">
-                {time} <span className="pl-2"> {close} USD</span>
+                {date} {time} <span className="pl-2"> {close} USD</span>
             </p>
         </div>
     );

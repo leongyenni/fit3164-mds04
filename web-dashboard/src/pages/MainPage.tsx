@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AppState } from '../redux/store';
+import { setChartState } from '../redux/chartSlice';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import useTSFinanceAPI from '../hooks/useTSFinanceAPI';
@@ -24,7 +25,6 @@ import ForecastContainer from '../components/ForecastContainer';
 import Toast from '../components/Toast';
 import ForecastChartTools from '../components/ForecastChartTools';
 import { StockData } from '../types/DataTypes';
-import { start } from 'repl';
 
 export const MainPage: React.FC = () => {
     const router = useRouter();
@@ -75,11 +75,15 @@ export const MainPage: React.FC = () => {
         'Hourly'
     );
 
+    const dispatch = useDispatch();
+
     useEffect(() => {
         setStartForecast(false);
         setStartForecast_WeekModel(false);
         setShowForecastContainer(false);
         setShowForecastContainer_WeekModel(false);
+        setDropdownValue('Hourly');
+        dispatch(setChartState({ isSideContainerOpen: false }));
     }, [tickerSymbol]);
 
     useEffect(() => {
@@ -103,14 +107,12 @@ export const MainPage: React.FC = () => {
     }, [startForecast_WeekModel]);
 
     useEffect(() => {
-        if (
-            dropdownValue == 'Hourly' &&
-            historicalData &&
-            historicalData_WeekModel
-        ) {
-            setDisplayHistData(historicalData);
-        } else {
-            setDisplayHistData(historicalData_WeekModel);
+        if (historicalData && historicalData_WeekModel) {
+            if (dropdownValue == 'Hourly') {
+                setDisplayHistData(historicalData);
+            } else {
+                setDisplayHistData(historicalData_WeekModel);
+            }
         }
 
         if (startForecast && dropdownValue == 'Hourly') {
@@ -132,9 +134,9 @@ export const MainPage: React.FC = () => {
         console.log(preHistoricalData_WeekModel);
         console.log(statsData);
         if (
-            preHistoricalData.data &&
-            preHistoricalData_WeekModel &&
-            statsData.data
+            !preHistoricalData.loading &&
+            !preHistoricalData_WeekModel.loading &&
+            !statsData.loading
         ) {
             const data = getHistoricalData(
                 preHistoricalData.data,
@@ -173,6 +175,7 @@ export const MainPage: React.FC = () => {
                 setForecastData(response.data);
                 setStartForecast(true);
                 // setIsLoadingForecast(false);
+                console.log('forecast hourly data');
                 console.log(response.data);
             })
             .catch((error) => {
@@ -188,7 +191,9 @@ export const MainPage: React.FC = () => {
             .then((response) => {
                 setForecastData_WeekModel(response.data);
                 setStartForecast_WeekModel(true);
+                setStartForecast(true);
                 setIsLoadingForecast(false);
+                console.log('forecast weekly data');
                 console.log(response.data);
             })
             .catch((error) => {
@@ -282,16 +287,20 @@ export const MainPage: React.FC = () => {
             </div>
 
             <div className="flex justify-center">
-                <select
-                    value={dropdownValue}
-                    onChange={(e) =>
-                        setDropdownValue(e.target.value as 'Hourly' | 'Daily')
-                    }
-                    className="text-black mt-4 border rounded px-2 py-1 w-48 text-center"
-                >
-                    <option value="Hourly">Day Prediction</option>
-                    <option value="Daily">Week Prediction</option>
-                </select>
+                {startForecast && (
+                    <select
+                        value={dropdownValue}
+                        onChange={(e) =>
+                            setDropdownValue(
+                                e.target.value as 'Hourly' | 'Daily'
+                            )
+                        }
+                        className="text-black mt-4 border rounded px-2 py-1 w-48 text-center"
+                    >
+                        <option value="Hourly">Day Prediction</option>
+                        <option value="Daily">Week Prediction</option>
+                    </select>
+                )}
             </div>
 
             <div className="mt-5 relative">
@@ -382,7 +391,7 @@ export const MainPage: React.FC = () => {
                                   }`}
                         </div>
                     )}
-                {(showForecastContainer) && (
+                {showForecastContainer && (
                     <ForecastContainer
                         historicalData={displayHistData.slice(-7)}
                         forecastData={displayForecastData}

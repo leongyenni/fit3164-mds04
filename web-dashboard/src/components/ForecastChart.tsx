@@ -8,7 +8,10 @@ import { currencyFormatter, OHLCFormatter } from '../utils/formattingUtils';
 import { setForecastData } from '../redux/forecastDataSlice';
 import ForecastTooltip from './ForecastTooltip';
 import { UTCTimestamp } from '../types/DataTypes';
-import { getForecastDate, getForecastDate_WeekModel } from '../utils/chartUtils';
+import {
+    getForecastDate,
+    getForecastDate_WeekModel
+} from '../utils/chartUtils';
 
 export const ForecastChart: React.FC<ForecastChartProps> = ({
     historicalData,
@@ -30,7 +33,6 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
                 });
             }
         };
-
 
         const chart = createChart(
             document.getElementById('forecast-chart-div')!,
@@ -101,60 +103,65 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
             lineWidth: 1
         });
 
+        const forecastWithTimestamps =
+            dropdownValue === 'Hourly'
+                ? (() => {
+                      console.log(historicalData[historicalData.length]);
+                      const lastHistoricalDate = new Date(
+                          historicalData[historicalData.length - 1].date * 1000
+                      );
 
-        const forecastWithTimestamps = dropdownValue === 'Hourly'
-        ? (() => {
+                      console.log(
+                          historicalData[historicalData.length - 1]
+                              .date as UTCTimestamp
+                      );
+                      console.log(lastHistoricalDate);
+                      const startForecastDateUTC = new Date(
+                          Date.UTC(
+                              lastHistoricalDate.getUTCFullYear(),
+                              lastHistoricalDate.getUTCMonth(),
+                              lastHistoricalDate.getUTCDate() + 1,
+                              9,
+                              30
+                          )
+                      );
+                      let startForecastTimestamp = Math.floor(
+                          startForecastDateUTC.getTime() / 1000
+                      );
 
-            console.log(historicalData[historicalData.length]);
-            const lastHistoricalDate = new Date(
-                historicalData[historicalData.length - 1].date * 1000
-            );
-    
-            console.log(historicalData[historicalData.length-1].date as UTCTimestamp);
-            console.log(lastHistoricalDate);
-            const startForecastDateUTC = new Date(
-                Date.UTC(
-                    lastHistoricalDate.getUTCFullYear(),
-                    lastHistoricalDate.getUTCMonth(),
-                    lastHistoricalDate.getUTCDate() + 1,
-                    9,
-                    30
-                )
-            );
-            let startForecastTimestamp = Math.floor(
-                startForecastDateUTC.getTime() / 1000
-            );
+                      return forecastData.map((value, index) => {
+                          const currentTimestamp =
+                              startForecastTimestamp + index * 3600;
+                          console.log(startForecastTimestamp);
+                          return {
+                              date: currentTimestamp,
+                              close: value
+                          };
+                      });
+                  })()
+                : (() => {
+                      const forecastDates = getForecastDate_WeekModel(
+                          historicalData[historicalData.length - 1].date
+                      );
+                      return forecastData.map((value, index) => {
+                          console.log(forecastDates[index]);
+                          return {
+                              date: forecastDates[index],
+                              close: value
+                          };
+                      });
+                  })();
 
-            return forecastData.map((value, index) => {
-                const currentTimestamp = startForecastTimestamp + index * 3600;
-                console.log(startForecastTimestamp);
-                return {
-                    date: currentTimestamp,
-                    close: value
-                };
-            });
-        })()
-        : (() => {
-            const forecastDates = getForecastDate_WeekModel(historicalData[historicalData.length - 1].date);
-            return forecastData.map((value, index) => {
-                console.log(forecastDates[index]);
-                return {
-                    date: forecastDates[index],
-                    close: value
-                };
-            });
+        if (startForecast) {
+            areaSeriesHist.setData(
+                historicalData.map((d) => {
+                    return {
+                        time: d.date as UTCTimestamp,
+                        value: d.close
+                    };
+                })
+            );
         }
-        )();
-
-
-        areaSeriesHist.setData(
-            historicalData.map((d) => {
-                return {
-                    time: d.date as UTCTimestamp,
-                    value: d.close
-                };
-            })
-        );
 
         chart.timeScale().fitContent();
 
@@ -235,7 +242,7 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
                 chart.remove();
             }
         };
-    }, [forecastData]);
+    }, [startForecast, forecastData]);
 
     return (
         <div>

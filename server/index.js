@@ -6,6 +6,7 @@ const path = require('path');
 const cluster = require('cluster');
 const numCPUs = require('os').cpus().length;
 const { spawn } = require('child_process');
+const fs = require('fs').promises;
 
 const isDev = process.env.NODE_ENV !== 'production';
 const PORT = process.env.PORT || 5000;
@@ -75,6 +76,17 @@ if (!isDev && cluster.isMaster) {
     });
 
     app.get('/api/stock-tickers', async (req, res) => {
+        const formatData = (tickerData) => {
+            return tickerData.map((ticker) => {
+                return {
+                    symbol: ticker.symbol,
+                    company_name: ticker.company_name,
+                    netchange: ticker.netchange,
+                    pctchange: ticker.pctchange
+                };
+            });
+        };
+
         const group = (tickerSymbols) => {
             const groupedSymbols = {};
 
@@ -90,10 +102,12 @@ if (!isDev && cluster.isMaster) {
         };
 
         try {
-            const url =
-                'https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=25&offset=0&download=true';
-            const response = await axios.get(url);
-            const result = response.data;
+            // const url =
+            //     'https://api.nasdaq.com/api/screener/stocks?tableonly=true&offset=0&download=true';
+            // const response = await axios.get(url);
+            // const result = response.data;
+            const localData = await fs.readFile('./server/stocks.json', 'utf8');
+            const result = JSON.parse(localData);
             const tickerSymbols = result.data.rows
                 .flatMap((ticker) => {
                     if (String(ticker.country).startsWith('United States')) {
@@ -119,6 +133,44 @@ if (!isDev && cluster.isMaster) {
         } catch (error) {
             console.log('Error fetching stock tickers: ', error);
             res.status(500).json({ error: 'An error occurred' });
+
+            // try {
+            //     const localData = await fs.readFile('./server/stocks.json', 'utf8');
+            //     const result = JSON.parse(localData);
+            //     console.log(result[0]);
+            //     const tickerSymbols = result.data.rows
+            //         .flatMap((ticker) => {
+            //             if (
+            //                 String(ticker.country).startsWith('United States')
+            //             ) {
+            //                 return {
+            //                     symbol: String(ticker.symbol).replace(
+            //                         '^',
+            //                         '-P'
+            //                     ),
+            //                     company_name: ticker.name
+            //                         .replace(
+            //                             /(Inc\.|Inc|Incorporated|Corporation|Corp|Bancorp|Company|Trust(?![A-Za-z0-9])|Ltd\.|ltd|Limited|Co\.).*/,
+            //                             '$1'
+            //                         )
+            //                         .replace(/Common.*|Ordinary.*/, '')
+            //                         .trim(),
+            //                     netchange: parseFloat(ticker.netchange),
+            //                     pctchange: ticker.pctchange
+            //                 };
+            //             }
+            //             return null;
+            //         })
+            //         .filter(Boolean);
+
+            //     res.set('Content-Type', 'application/json');
+            //     res.json(formatData(tickerSymbols));
+            //     console.log(formatData(tickerSymbols));
+
+            // } catch (localError) {
+            //     console.error('Error reading local JSON file:', localError);
+            //     throw localError;
+            // }
         }
     });
 
@@ -213,32 +265,43 @@ if (!isDev && cluster.isMaster) {
         const historicalData = req.body.historicalData;
         const forecastData = [];
         try {
-            const response = await axios.post('http://127.0.0.1:7000/api/model', {historicalData: historicalData});
-            console.log(response.data.forecastData)
+            const response = await axios.post(
+                'http://127.0.0.1:7000/api/model',
+                { historicalData: historicalData }
+            );
+            console.log(response.data.forecastData);
             res.json(response.data.forecastData);
             forecastData.push(response.data.forecastData);
         } catch (error) {
-            console.error('Error predicting with the model:', error.response ? error.response.data : error.message);
+            console.error(
+                'Error predicting with the model:',
+                error.response ? error.response.data : error.message
+            );
             res.status(500).json({ error: 'An error occurred' });
         }
     });
 
     // N-BEATS-RevIN-Model (Week)
     app.post('/api/weekmodel', async (req, res) => {
-        const historicalData = req.body.historicalData; 
-        console.log(historicalData);
+        const historicalData = req.body.historicalData;
+        console.log('weekly historical data: ', historicalData);
         const forecastData = [];
         try {
-            const response = await axios.post('http://127.0.0.1:7000/api/weekmodel', {historicalData_WeekModel: historicalData});
-            console.log(response.data.forecastData);
-            res.json(response.data.forecastData);
-            forecastData.push(response.data.forecastData);
+            const response = await axios.post(
+                'http://127.0.0.1:7000/api/weekmodel',
+                { historicalData_WeekModel: historicalData }
+            );
+            console.log(response.data.forecastData_WeekModel);
+            res.json(response.data.forecastData_WeekModel);
+            forecastData.push(response.data.forecastData_WeekModel);
         } catch (error) {
-            console.error('Error predicting with the model:', error.response ? error.response.data : error.message);
+            console.error(
+                'Error predicting with the model:',
+                error.response ? error.response.data : error.message
+            );
             res.status(500).json({ error: 'An error occurred' });
         }
     });
-    
 
     app.listen(PORT, function () {
         console.error(

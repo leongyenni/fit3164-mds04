@@ -27,9 +27,9 @@ const Toast: React.FC = () => {
     return (
         <div
             className="fixed z-20  bottom-4 left-1/2 transform -translate-x-1/2 flex items-center 
-            p-2 rounded-md shadowtext-gray-100 bg-gray-900 w-auto"
+            p-2 rounded-md shadow text-black bg-gray-500 w-auto"
         >
-            <div className="mx-2 font-thin tracking-wider flex-1">
+            <div className="mx-2 tracking-wider flex-1">
                 {toastState.message}
             </div>
 
