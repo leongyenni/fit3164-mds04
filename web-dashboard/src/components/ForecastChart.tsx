@@ -98,9 +98,13 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
             lineWidth: 1
         });
 
+        // console.log(historicalData[historicalData.length]);
         const lastHistoricalDate = new Date(
             historicalData[historicalData.length - 1].date * 1000
         );
+
+        console.log(historicalData[historicalData.length-1].date as UTCTimestamp);
+        console.log(lastHistoricalDate);
         const startForecastDateUTC = new Date(
             Date.UTC(
                 lastHistoricalDate.getUTCFullYear(),
@@ -116,11 +120,15 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
 
         const forecastWithTimestamps = forecastData.map((value, index) => {
             const currentTimestamp = startForecastTimestamp + index * 3600;
+
+            console.log(startForecastTimestamp);
             return {
                 date: currentTimestamp,
                 close: value
             };
         });
+
+
 
         areaSeriesHist.setData(
             historicalData.map((d) => {
@@ -151,6 +159,8 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
                         .date as UTCTimestamp,
                     value: forecastWithTimestamps[currentIndex].close as number
                 };
+
+                console.log(currentPoint);
 
                 chart.timeScale().fitContent();
                 areaSeriesForecast.update(currentPoint);
@@ -210,7 +220,7 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
                 chart.remove();
             }
         };
-    }, [startForecast]);
+    }, [startForecast, historicalData, forecastData]);
 
     return (
         <div>
