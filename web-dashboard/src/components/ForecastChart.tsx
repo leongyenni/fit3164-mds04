@@ -31,6 +31,7 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
             }
         };
 
+
         const chart = createChart(
             document.getElementById('forecast-chart-div')!,
             {
@@ -99,7 +100,6 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
             bottomColor: 'rgba(255, 255, 255, 0.1)',
             lineWidth: 1
         });
-
 
 
         const forecastWithTimestamps = dropdownValue === 'Hourly'
@@ -177,8 +177,6 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
                     value: forecastWithTimestamps[currentIndex].close as number
                 };
 
-                console.log(currentPoint);
-
                 chart.timeScale().fitContent();
                 areaSeriesForecast.update(currentPoint);
                 currentIndex++;
@@ -237,7 +235,7 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
                 chart.remove();
             }
         };
-    }, [historicalData]);
+    }, [forecastData]);
 
     return (
         <div>

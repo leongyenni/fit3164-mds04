@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { AppState } from '../redux/store';
 import { ChartLegendsProps } from '../types/ComponentTypes';
 import { dateFormatter } from '../utils/formattingUtils';
+import { color } from '../styles/colors';
 
 const ChartLegends: React.FC<ChartLegendsProps> = ({ statsData }) => {
     const stockData = useSelector((state: AppState) => state.stockData);
@@ -10,11 +11,23 @@ const ChartLegends: React.FC<ChartLegendsProps> = ({ statsData }) => {
     return (
         <div className="flex justify-between cursor-default">
             <div className="flex-1 text-base tracking-wider">
-                <span className="text-base font-medium">
+                <span className="text-2xl font-medium">
                     {statsData.companyName}
                 </span>
 
-                <span className="px-2">
+                <span
+                    className="mx-2 px-1 rounded-md text-sm"
+                    style={{
+                        color:
+                            statsData.marketChange < 0
+                                ? color.downColor
+                                : color.upColor,
+                        backgroundColor:
+                            statsData.marketChange < 0
+                                ? color.downBgColor
+                                : color.upBgColor
+                    }}
+                >
                     {statsData.marketChange.toFixed(2)}/
                     {statsData.marketChangePct}
                 </span>
@@ -60,7 +73,7 @@ const ChartLegends: React.FC<ChartLegendsProps> = ({ statsData }) => {
                     {stockData.volume}
                 </span>
             </div>
-            <div className="text-base text-slate-400 mr-6 align-bottom">
+            <div className="text-base text-slate-400 mr-6">
                 Closed: {dateFormatter(statsData.closingTime)} (UTC - 4)
             </div>
         </div>

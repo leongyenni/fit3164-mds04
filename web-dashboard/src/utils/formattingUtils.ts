@@ -17,6 +17,16 @@ export const volumeFormatter = (volume: number) => {
     }
 };
 
+export const marketCapFormatter = (marketCap: number) => {
+    if (marketCap >= 1e9) {
+        return (marketCap / 1e9).toFixed(2) + 'B';
+    } else if (marketCap >= 1e6) {
+        return (marketCap / 1e6).toFixed(2) + 'M';
+    } else {
+        return marketCap;
+    }
+};
+
 export const dateFormatter = (timestamp: number) => {
     const months = [
         'Jan',
