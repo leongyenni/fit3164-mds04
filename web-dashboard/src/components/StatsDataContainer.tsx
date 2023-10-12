@@ -11,7 +11,7 @@ const StatsDataContainer: React.FC<StatsDataContainerProps> = ({
         <div className="h-auto w-80 p-2 cursor-default border-gray-800 border-l-2 tracking-wide">
             <div className="m-2 pb-4">
                 <div className="text-4xl pb-2 font-bold">{tickerSymbol}</div>
-                <div className="text-2xl pb-2 font-thin">{statsData.companyName}</div>
+                <div className="text-2xl pb-8 font-thin">{statsData.companyName}</div>
 
                 <div className="pr-4 pb-2 font-semibold">
                     <span className="text-4xl pr-1">

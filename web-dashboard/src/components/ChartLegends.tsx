@@ -32,7 +32,7 @@ const ChartLegends: React.FC<ChartLegendsProps> = ({ statsData }) => {
                     {statsData.marketChangePct}
                 </span> */}
 
-                <span className="font-medium pl-3">O </span>
+                <span className="font-medium pl-14">O </span>
                 <span
                     style={{
                         color: stockData.colour
