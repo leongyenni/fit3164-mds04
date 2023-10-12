@@ -163,6 +163,8 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
             );
         }
 
+        console.log('forecast data: ', forecastData);
+
         chart.timeScale().fitContent();
 
         let currentIndex = 0;

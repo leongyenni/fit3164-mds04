@@ -173,7 +173,8 @@ export const MainPage: React.FC = () => {
             )
             .then((response) => {
                 setForecastData(response.data);
-                setStartForecast(true);
+                setDisplayForecastData(response.data);
+
                 // setIsLoadingForecast(false);
                 console.log('forecast hourly data');
                 console.log(response.data);
@@ -190,8 +191,8 @@ export const MainPage: React.FC = () => {
             )
             .then((response) => {
                 setForecastData_WeekModel(response.data);
-                setStartForecast_WeekModel(true);
                 setStartForecast(true);
+                setStartForecast_WeekModel(true);
                 setIsLoadingForecast(false);
                 console.log('forecast weekly data');
                 console.log(response.data);
@@ -286,7 +287,7 @@ export const MainPage: React.FC = () => {
                 />
             </div>
 
-            <div className="flex justify-center">
+            <div className="flex justify-end mt-5">
                 {startForecast && (
                     <select
                         value={dropdownValue}
@@ -297,18 +298,22 @@ export const MainPage: React.FC = () => {
                         }
                         className="text-black mt-4 border rounded px-2 py-1 w-48 text-center"
                     >
-                        <option value="Hourly">Day Prediction</option>
-                        <option value="Daily">Week Prediction</option>
+                        <option value="Hourly" className="rounded-sm">
+                            Day Prediction
+                        </option>
+                        <option value="Daily" className="rounded-sm">
+                            Week Prediction
+                        </option>
                     </select>
                 )}
             </div>
 
             <div className="mt-5 relative">
-                {!startForecast && (
+                {!startForecast && !startForecast_WeekModel && (
                     <div className="absolute inset-0 flex items-center justify-center z-10 bg-slate-900 rounded-md bg-opacity-90">
                         {isLoadingForecast ? (
                             <div className="bg-opacity-75 bg-black text-white p-4 rounded-lg">
-                                Loading Forecast...
+                                Forecasting...
                             </div>
                         ) : (
                             <button
