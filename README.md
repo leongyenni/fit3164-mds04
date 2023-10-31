@@ -6,7 +6,7 @@ Our project is motivated by the application of cutting-edge meta-learning models
 Meta-Learning Model Implemented:
 N-BEATS (Neural Basis Expansion Analysis for Time Series Forecasting) Model + RevIN (Reversible Instance Normalization and Denormalization) Layers
 
-## Technologies & Libraries & Platforms Used:
+## Technologies, Libraries & Platforms Used:
 ### Technologies:
 - Python (Model)
 - Next.js
