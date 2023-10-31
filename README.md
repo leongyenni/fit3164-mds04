@@ -25,6 +25,12 @@ N-BEATS (Neural Basis Expansion Analysis for Time Series Forecasting) Model + Re
 - VS Code
 - Google Colab
 
+## Dashboard Preview
+### Landing Page
+
+### Main Page
+
+
 ## Steps to run the code
 #### Software:
 1. Clone this GitHub repository or download it as a zip file.
