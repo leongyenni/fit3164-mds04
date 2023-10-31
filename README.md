@@ -8,9 +8,10 @@ N-BEATS (Neural Basis Expansion Analysis for Time Series Forecasting) Model + Re
 
 ## Technologies & Libraries & Platforms Used:
 ### Technologies:
-- Python (Model Training)
-- React.js
+- Python (Model)
+- Next.js
 - TypeScript
+- Tailwind CSS
 - Express.js (Back-end Server)
 - Flask (Back-end Server)
 
