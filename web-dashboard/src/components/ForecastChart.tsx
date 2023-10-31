@@ -106,16 +106,11 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
         const forecastWithTimestamps =
             dropdownValue === 'Hourly'
                 ? (() => {
-                      console.log(historicalData[historicalData.length]);
+
                       const lastHistoricalDate = new Date(
                           historicalData[historicalData.length - 1].date * 1000
                       );
 
-                      console.log(
-                          historicalData[historicalData.length - 1]
-                              .date as UTCTimestamp
-                      );
-                      console.log(lastHistoricalDate);
                       const startForecastDateUTC = new Date(
                           Date.UTC(
                               lastHistoricalDate.getUTCFullYear(),
@@ -132,7 +127,6 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
                       return forecastData.map((value, index) => {
                           const currentTimestamp =
                               startForecastTimestamp + index * 3600;
-                          console.log(startForecastTimestamp);
                           return {
                               date: currentTimestamp,
                               close: value
@@ -144,7 +138,6 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
                           historicalData[historicalData.length - 1].date
                       );
                       return forecastData.map((value, index) => {
-                          console.log(forecastDates[index]);
                           return {
                               date: forecastDates[index],
                               close: value
@@ -162,9 +155,7 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({
                 })
             );
         }
-
-        console.log('forecast data: ', forecastData);
-
+        
         chart.timeScale().fitContent();
 
         let currentIndex = 0;

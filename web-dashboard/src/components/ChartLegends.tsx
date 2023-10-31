@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { AppState } from '../redux/store';
 import { ChartLegendsProps } from '../types/ComponentTypes';
 import { dateFormatter } from '../utils/formattingUtils';
-import { color } from '../styles/colors';
 
 const ChartLegends: React.FC<ChartLegendsProps> = ({ statsData }) => {
     const stockData = useSelector((state: AppState) => state.stockData);
@@ -14,23 +13,6 @@ const ChartLegends: React.FC<ChartLegendsProps> = ({ statsData }) => {
                 <span className="text-2xl font-medium">
                     {statsData.companyName}
                 </span>
-
-                {/* <span
-                    className="mx-2 px-1 pb-0 mb-0 rounded-md text-sm"
-                    style={{
-                        color:
-                            statsData.marketChange < 0
-                                ? color.downColor
-                                : color.upColor,
-                        backgroundColor:
-                            statsData.marketChange < 0
-                                ? color.downBgColor
-                                : color.upBgColor
-                    }}
-                >
-                    {statsData.marketChange.toFixed(2)}/
-                    {statsData.marketChangePct}
-                </span> */}
 
                 <span className="font-medium pl-14">O </span>
                 <span

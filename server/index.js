@@ -38,6 +38,7 @@ if (!isDev && cluster.isMaster) {
         res.send('{"message":"Hello from the custom server!"}');
     });
 
+    // Get OHLC and volume data
     app.get('/api/stock-data/:symbol', async (req, res) => {
         const { symbol } = req.params;
 
@@ -75,6 +76,7 @@ if (!isDev && cluster.isMaster) {
         }
     });
 
+    // Get a stock ticker symbol lists
     app.get('/api/stock-tickers', async (req, res) => {
         const formatData = (tickerData) => {
             return tickerData.map((ticker) => {
@@ -136,6 +138,7 @@ if (!isDev && cluster.isMaster) {
         }
     });
 
+    // Get stock data within the input time range
     app.get('/api/time-series-stock-data/:symbol', async (req, res) => {
         const { symbol } = req.params;
         const { interval, range } = req.query;
@@ -177,6 +180,7 @@ if (!isDev && cluster.isMaster) {
         }
     });
 
+    // Get the key statistics of a stock company
     app.get('/api/stock-ticker-stats/:symbol', async (req, res) => {
         const { symbol } = req.params;
         const url = `https://query1.finance.yahoo.com/v7/finance/options/${symbol}`;

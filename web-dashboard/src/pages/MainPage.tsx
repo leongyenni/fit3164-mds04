@@ -99,9 +99,6 @@ export const MainPage: React.FC = () => {
     }, [dropdownValue, startForecast, historicalData, historicalData_WeekModel]);
 
     useEffect(() => {
-        console.log(preHistoricalData);
-        console.log(preHistoricalData_WeekModel);
-        console.log(statsData);
         if (!preHistoricalData.loading && !preHistoricalData_WeekModel.loading && !statsData.loading) {
             const data = getHistoricalData(preHistoricalData.data, statsData.data!.marketState);
             const data_WeekModel = getHistoricalData(preHistoricalData_WeekModel.data, statsData.data!.marketState);
@@ -109,15 +106,15 @@ export const MainPage: React.FC = () => {
             setHistoricalData_WeekModel(data_WeekModel);
             setDisplayHistData(data);
         }
-
-        console.log('set historical data');
     }, [preHistoricalData.data, preHistoricalData_WeekModel.data, statsData.data]);
 
     const handleForecast = () => {
         setIsLoadingForecast(true);
 
         axios
-            .post('http://localhost:5000/api/model', { historicalData: historicalData }, { headers: { 'Content-Type': 'application/json' } })
+            .post('http://localhost:5000/api/model', 
+            { historicalData: historicalData }, 
+            { headers: { 'Content-Type': 'application/json' } })
             .then((response) => {
                 setForecastData(response.data);
                 setDisplayForecastData(response.data);
@@ -128,7 +125,9 @@ export const MainPage: React.FC = () => {
             });
 
         axios
-            .post('http://localhost:5000/api/weekmodel', { historicalData: historicalData_WeekModel }, { headers: { 'Content-Type': 'application/json' } })
+            .post('http://localhost:5000/api/weekmodel', 
+            { historicalData: historicalData_WeekModel }, 
+            { headers: { 'Content-Type': 'application/json' } })
             .then((response) => {
                 setForecastData_WeekModel(response.data);
                 setStartForecast(true);

@@ -34,7 +34,7 @@ def preprocess(df2):
 
     WINDOW_SIZE=21
 
-    # Make a copy of the stock historical data with block reward feature
+    # Make a copy of the stock historical data 
     df_windowed2 = df2.copy()
 
     # Add windowed columns

@@ -17,12 +17,6 @@ const ChartTools: React.FC = () => {
             </div>
 
             <div>
-                {/* <ToolButton
-                    icon={<VscAdd />}
-                    onClick={() => {}}
-                    tooltip="Add indicator"
-                /> */}
-
                 <ResetButton />
                 <ScreenshotButton elementId="chart-screenshot" />
                 <DownloadButton

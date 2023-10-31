@@ -22,11 +22,6 @@ const useStockTickerAPI = (letter: string = ''): TickerData[] => {
 
     useEffect(() => {
         fetchStockTickers();
-        if (tickers) {
-            console.log(tickers[0]);
-        } else {
-            console.log('fetching data');
-        }
     }, []);
 
     useMemo(() => {

@@ -68,30 +68,18 @@ export const getHistoricalData = (
         );
         return lastTenDaysData;
     } else {
-        console.log(historicalData);
-
         const firstDate = new Date(historicalData[0].date * 1000);
         const startDate = new Date(firstDate);
 
         startDate.setDate(firstDate.getDate() + 1);
         startDate.setHours(0, 0, 0, 0);
 
-        console.log(firstDate.getDate(), firstDate.getMonth());
-        console.log(startDate.getDate(), startDate.getMonth());
-
         const startTimestamp = startDate.getTime() / 1000;
-
-        console.log(firstDate);
-        console.log(startDate);
-
-        console.log(historicalData[0].date);
-        console.log(startTimestamp);
 
         const firstTenDaysData = historicalData.filter(
             (data) => data.date > startTimestamp
         );
 
-        console.log(firstTenDaysData);
         return firstTenDaysData;
     }
 };

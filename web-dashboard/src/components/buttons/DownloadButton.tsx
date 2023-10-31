@@ -3,8 +3,7 @@ import html2canvas from 'html2canvas';
 import { saveAs } from 'file-saver';
 import { PiDownloadSimpleThin } from 'react-icons/pi';
 import { setToastState } from '../../redux/toastSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppState } from '../../redux/store';
+import { useDispatch } from 'react-redux';
 import ToolButton from './ToolButton';
 import { DownloadButtonProps } from '../../types/ComponentTypes';
 

@@ -28,8 +28,6 @@ const ForecastContainer: React.FC<Props> = ({
         historicalData?.reduce((acc, data) => acc + data.close, 0) /
         historicalData.length;
 
-    console.log(maxForecast, maxHistorical);
-
     const maxDiff = maxForecast - maxHistorical;
     const avgDiff = averageForecast - averageHistorical;
     const minDiff = minForecast - minHistorical;

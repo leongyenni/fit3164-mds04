@@ -18,8 +18,6 @@ const ChartSideMenu: React.FC<ChartSideMenuProps> = ({ statsData, tickerSymbol }
         );
     };
 
-    console.log(chartState.isSideContainerOpen);
-
     return (
         <div className="flex w-auto">
             {chartState.isSideContainerOpen && (
