@@ -30,7 +30,7 @@ N-BEATS (Neural Basis Expansion Analysis for Time Series Forecasting) Model + Re
 ![landing-page](web-dashboard-image/landing-page.png)
 
 ### Main Page
-![main-page](web-dashboard-image/main_page.jpg)
+![main-page](web-dashboard-image/main-page.jpg)
 
 ## Steps to run the code
 #### Software:
