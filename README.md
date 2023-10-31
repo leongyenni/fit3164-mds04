@@ -39,4 +39,4 @@ N-BEATS (Neural Basis Expansion Analysis for Time Series Forecasting) Model + Re
 2. Refer to Section 2 - Technical Guides in the User Guides document.
 
 #### Model Training Colab Files:
-1. Open the colab notebook files in the nbeats_revin_model_training_colab folder through Google Colab.
+1. Open the colab notebook files in the model-training-notebooks folder through Google Colab.
