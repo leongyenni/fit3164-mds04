@@ -8,11 +8,7 @@ import useTSFinanceAPI from '../hooks/useTSFinanceAPI';
 import useFinanceStatsAPI from '../hooks/useFinanceStatsAPI';
 import { color } from '../styles/colors';
 import { dateFormatter } from '../utils/formattingUtils';
-import {
-    getForecastDate,
-    getHistoricalData,
-    getForecastDate_WeekModel
-} from '../utils/chartUtils';
+import { getForecastDate, getHistoricalData, getForecastDate_WeekModel } from '../utils/chartUtils';
 import { Chart } from '../components/Chart';
 import ChartLegends from '../components/ChartLegends';
 import { ForecastChart } from '../components/ForecastChart';
@@ -33,47 +29,27 @@ export const MainPage: React.FC = () => {
 
     const timeRangeData = useSelector((state: AppState) => state.timeRangeData);
 
-    const tickerData = useTSFinanceAPI(
-        tickerSymbol,
-        timeRangeData.timeInterval,
-        timeRangeData.timeRange
-    );
+    const tickerData = useTSFinanceAPI(tickerSymbol, timeRangeData.timeInterval, timeRangeData.timeRange);
 
     const preHistoricalData = useTSFinanceAPI(tickerSymbol, '1h', '15d');
-    const preHistoricalData_WeekModel = useTSFinanceAPI(
-        tickerSymbol,
-        '1d',
-        '75d'
-    );
+    const preHistoricalData_WeekModel = useTSFinanceAPI(tickerSymbol, '1d', '75d');
     const statsData = useFinanceStatsAPI(tickerSymbol);
 
     const [forecastData, setForecastData] = useState<number[]>([]);
     const [historicalData, setHistoricalData] = useState<StockData[]>([]);
-    const [forecastData_WeekModel, setForecastData_WeekModel] = useState<
-        number[]
-    >([]);
-    const [historicalData_WeekModel, setHistoricalData_WeekModel] = useState<
-        StockData[]
-    >([]);
+    const [forecastData_WeekModel, setForecastData_WeekModel] = useState<number[]>([]);
+    const [historicalData_WeekModel, setHistoricalData_WeekModel] = useState<StockData[]>([]);
 
     const [displayHistData, setDisplayHistData] = useState<StockData[]>([]);
-    const [displayForecastData, setDisplayForecastData] = useState<number[]>(
-        []
-    );
+    const [displayForecastData, setDisplayForecastData] = useState<number[]>([]);
 
     const [startForecast, setStartForecast] = useState(false);
-    const [startForecast_WeekModel, setStartForecast_WeekModel] =
-        useState(false);
+    const [startForecast_WeekModel, setStartForecast_WeekModel] = useState(false);
     const [isLoadingForecast, setIsLoadingForecast] = useState(false);
     const [showForecastContainer, setShowForecastContainer] = useState(false);
-    const [
-        showForecastContainer_WeekModel,
-        setShowForecastContainer_WeekModel
-    ] = useState(false);
+    const [showForecastContainer_WeekModel, setShowForecastContainer_WeekModel] = useState(false);
 
-    const [dropdownValue, setDropdownValue] = useState<'Hourly' | 'Daily'>(
-        'Hourly'
-    );
+    const [dropdownValue, setDropdownValue] = useState<'Hourly' | 'Daily'>('Hourly');
 
     const dispatch = useDispatch();
 
@@ -117,112 +93,59 @@ export const MainPage: React.FC = () => {
 
         if (startForecast && dropdownValue == 'Hourly') {
             setDisplayForecastData(forecastData);
-            console.log(forecastData);
         } else if (startForecast && dropdownValue == 'Daily') {
             setDisplayForecastData(forecastData_WeekModel);
-            console.log(forecastData_WeekModel);
         }
-    }, [
-        dropdownValue,
-        startForecast,
-        historicalData,
-        historicalData_WeekModel
-    ]);
+    }, [dropdownValue, startForecast, historicalData, historicalData_WeekModel]);
 
     useEffect(() => {
         console.log(preHistoricalData);
         console.log(preHistoricalData_WeekModel);
         console.log(statsData);
-        if (
-            !preHistoricalData.loading &&
-            !preHistoricalData_WeekModel.loading &&
-            !statsData.loading
-        ) {
-            const data = getHistoricalData(
-                preHistoricalData.data,
-                statsData.data!.marketState
-            );
-            const data_WeekModel = getHistoricalData(
-                preHistoricalData_WeekModel.data,
-                statsData.data!.marketState
-            );
+        if (!preHistoricalData.loading && !preHistoricalData_WeekModel.loading && !statsData.loading) {
+            const data = getHistoricalData(preHistoricalData.data, statsData.data!.marketState);
+            const data_WeekModel = getHistoricalData(preHistoricalData_WeekModel.data, statsData.data!.marketState);
             setHistoricalData(data);
             setHistoricalData_WeekModel(data_WeekModel);
             setDisplayHistData(data);
-            console.log(data);
-            console.log(data_WeekModel);
-            console.log(historicalData);
-            console.log(historicalData_WeekModel);
         }
 
         console.log('set historical data');
-    }, [
-        preHistoricalData.data,
-        preHistoricalData_WeekModel.data,
-        statsData.data
-    ]);
+    }, [preHistoricalData.data, preHistoricalData_WeekModel.data, statsData.data]);
 
     const handleForecast = () => {
         setIsLoadingForecast(true);
 
         axios
-            .post(
-                'http://localhost:5000/api/model',
-                { historicalData: historicalData },
-                { headers: { 'Content-Type': 'application/json' } }
-            )
+            .post('http://localhost:5000/api/model', { historicalData: historicalData }, { headers: { 'Content-Type': 'application/json' } })
             .then((response) => {
                 setForecastData(response.data);
                 setDisplayForecastData(response.data);
 
-                // setIsLoadingForecast(false);
-                console.log('forecast hourly data');
-                console.log(response.data);
             })
             .catch((error) => {
                 console.error('Error:', error);
             });
 
         axios
-            .post(
-                'http://localhost:5000/api/weekmodel',
-                { historicalData: historicalData_WeekModel },
-                { headers: { 'Content-Type': 'application/json' } }
-            )
+            .post('http://localhost:5000/api/weekmodel', { historicalData: historicalData_WeekModel }, { headers: { 'Content-Type': 'application/json' } })
             .then((response) => {
                 setForecastData_WeekModel(response.data);
                 setStartForecast(true);
                 setStartForecast_WeekModel(true);
                 setIsLoadingForecast(false);
-                console.log('forecast weekly data');
-                console.log(response.data);
             })
             .catch((error) => {
                 console.error('Error:', error);
             });
     };
 
-    if (
-        tickerData.loading ||
-        preHistoricalData.loading ||
-        preHistoricalData_WeekModel.loading ||
-        statsData.loading ||
-        historicalData.length <= 1 ||
-        historicalData_WeekModel.length <= 1
-    ) {
-        console.log(tickerData);
-        console.log(preHistoricalData);
-        console.log(preHistoricalData_WeekModel);
-        console.log(statsData);
-        console.log(historicalData);
-        console.log(historicalData_WeekModel);
+    if (tickerData.loading || preHistoricalData.loading || preHistoricalData_WeekModel.loading || statsData.loading || historicalData.length <= 1 || historicalData_WeekModel.length <= 1) {
 
         return (
             <div className="flex items-center justify-center h-screen">
                 <LoadingSpinner />
-                <div className="ml-3 text-gray-400 text-2xl animate-pulse ">
-                    Loading data...
-                </div>
+                <div className="ml-3 text-gray-400 text-2xl animate-pulse ">Loading data...</div>
             </div>
         );
     }
@@ -240,64 +163,28 @@ export const MainPage: React.FC = () => {
         return <div>Error</div>;
     }
 
-    // if (preHistoricalData.data && statsData.data) {
-    //     setHistoricalData(
-    //         getHistoricalData(
-    //             preHistoricalData.data,
-    //             statsData.data.marketState
-    //         )
-    //     );
-    // }
-
-    console.log(preHistoricalData.data);
-    console.log(preHistoricalData_WeekModel);
-    console.log(historicalData);
-    console.log(historicalData_WeekModel);
-
     return (
         <div id="main-page">
             <Header />
 
             <div className="flex" id="chart-whole">
-                <div
-                    id="chart-fullscreen"
-                    className="flex-1 w-auto pb-2"
-                    style={{ backgroundColor: color.backgroundColor }}
-                >
-                    <div
-                        id="chart-screenshot"
-                        className="pl-4"
-                        style={{ backgroundColor: color.backgroundColor }}
-                    >
+                <div id="chart-fullscreen" className="flex-1 w-auto pb-2" style={{ backgroundColor: color.backgroundColor }}>
+                    <div id="chart-screenshot" className="pl-4" style={{ backgroundColor: color.backgroundColor }}>
                         <ChartLegends statsData={statsData.data} />
                         <div className="pt-3" id="chart-div">
-                            <Chart
-                                data={tickerData.data}
-                                timeInterval={timeRangeData.timeInterval}
-                            />
+                            <Chart data={tickerData.data} timeInterval={timeRangeData.timeInterval} />
                         </div>
                     </div>
 
                     <hr className="border-t border-gray-800" />
                     <ChartTools />
                 </div>
-                <ChartSideMenu
-                    statsData={statsData.data}
-                    tickerSymbol={tickerSymbol}
-                />
+                <ChartSideMenu statsData={statsData.data} tickerSymbol={tickerSymbol} />
             </div>
 
             <div className="flex justify-end mt-5">
                 {startForecast && (
-                    <select
-                        value={dropdownValue}
-                        onChange={(e) =>
-                            setDropdownValue(
-                                e.target.value as 'Hourly' | 'Daily'
-                            )
-                        }
-                        className="text-black mt-4 border rounded px-2 py-1 w-48 text-center"
-                    >
+                    <select value={dropdownValue} onChange={(e) => setDropdownValue(e.target.value as 'Hourly' | 'Daily')} className="text-black mt-4 border rounded px-2 py-1 w-48 text-center">
                         <option value="Hourly" className="rounded-sm">
                             Day Prediction
                         </option>
@@ -312,96 +199,41 @@ export const MainPage: React.FC = () => {
                 {!startForecast && !startForecast_WeekModel && (
                     <div className="absolute inset-0 flex items-center justify-center z-10 bg-slate-900 rounded-md bg-opacity-90">
                         {isLoadingForecast ? (
-                            <div className="bg-opacity-75 bg-black text-white p-4 rounded-lg">
-                                Forecasting...
-                            </div>
+                            <div className="bg-opacity-75 bg-black text-white p-4 rounded-lg">Forecasting...</div>
                         ) : (
-                            <button
-                                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 hover:scale-105 focus:outline-none"
-                                onClick={() => handleForecast()}
-                            >
+                            <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 hover:scale-105 focus:outline-none" onClick={() => handleForecast()}>
                                 Start Forecast
                             </button>
                         )}
                     </div>
                 )}
 
-                <div
-                    style={{ backgroundColor: color.backgroundColor }}
-                    id="forecast-chart-fullscreen"
-                >
-                    <div
-                        className="p-4 rounded-t-md"
-                        style={{ backgroundColor: color.backgroundColor2 }}
-                    >
-                        <div
-                            className={`grid mb-5 ${
-                                startForecast || startForecast_WeekModel
-                                    ? 'grid-cols-2'
-                                    : ''
-                            } text-center text-xl font-medium tracking-wider`}
-                        >
+                <div style={{ backgroundColor: color.backgroundColor }} id="forecast-chart-fullscreen">
+                    <div className="p-4 rounded-t-md" style={{ backgroundColor: color.backgroundColor2 }}>
+                        <div className={`grid mb-5 ${startForecast || startForecast_WeekModel ? 'grid-cols-2' : ''} text-center text-xl font-medium tracking-wider`}>
                             <div>Historical closing price </div>
-                            {startForecast && (
-                                <div>Forecasted closing price </div>
-                            )}
+                            {startForecast && <div>Forecasted closing price </div>}
                         </div>
 
                         <div id="forecast-chart-div">
-                            <ForecastChart
-                                historicalData={displayHistData.slice(-8)}
-                                forecastData={displayForecastData}
-                                startForecast={startForecast}
-                                dropdownValue={dropdownValue}
-                            />
+                            <ForecastChart historicalData={displayHistData.slice(-8)} forecastData={displayForecastData} startForecast={startForecast} dropdownValue={dropdownValue} />
                         </div>
                     </div>
                 </div>
                 <ForecastChartTools />
             </div>
             <div className="my-5 align-center">
-                {(showForecastContainer || showForecastContainer_WeekModel) &&
-                    historicalData &&
-                    historicalData_WeekModel && (
-                        <div className="text-2xl tracking-wide mt-10 text-center">
-                            Forecasted closing price:
-                            {dropdownValue === 'Hourly'
-                                ? ` ${
-                                      dateFormatter(
-                                          getForecastDate(
-                                              historicalData[
-                                                  historicalData.length - 1
-                                              ].date
-                                          )
-                                      )[0]
-                                  }`
-                                : ` ${
-                                      dateFormatter(
-                                          getForecastDate_WeekModel(
-                                              historicalData_WeekModel[
-                                                  historicalData_WeekModel.length -
-                                                      1
-                                              ].date
-                                          )[0]
-                                      )[0]
-                                  } to ${
-                                      dateFormatter(
-                                          getForecastDate_WeekModel(
-                                              historicalData_WeekModel[
-                                                  historicalData_WeekModel.length -
-                                                      1
-                                              ].date
-                                          )[6]
-                                      )[0]
-                                  }`}
-                        </div>
-                    )}
-                {showForecastContainer && (
-                    <ForecastContainer
-                        historicalData={displayHistData.slice(-7)}
-                        forecastData={displayForecastData}
-                    />
+                {(showForecastContainer || showForecastContainer_WeekModel) && historicalData && historicalData_WeekModel && (
+                    <div className="text-2xl tracking-wide mt-10 text-center">
+                        Forecasted closing price:
+                        {dropdownValue === 'Hourly'
+                            ? ` ${dateFormatter(getForecastDate(historicalData[historicalData.length - 1].date))[0]}`
+                            : ` ${dateFormatter(getForecastDate_WeekModel(historicalData_WeekModel[historicalData_WeekModel.length - 1].date)[0])[0]} to ${
+                                  dateFormatter(getForecastDate_WeekModel(historicalData_WeekModel[historicalData_WeekModel.length - 1].date)[6])[0]
+                              }`}
+                    </div>
                 )}
+                {showForecastContainer && <ForecastContainer historicalData={displayHistData.slice(-7)} forecastData={displayForecastData} />}
             </div>
 
             <Toast />

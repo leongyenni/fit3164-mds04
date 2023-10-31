@@ -133,44 +133,6 @@ if (!isDev && cluster.isMaster) {
         } catch (error) {
             console.log('Error fetching stock tickers: ', error);
             res.status(500).json({ error: 'An error occurred' });
-
-            // try {
-            //     const localData = await fs.readFile('./server/stocks.json', 'utf8');
-            //     const result = JSON.parse(localData);
-            //     console.log(result[0]);
-            //     const tickerSymbols = result.data.rows
-            //         .flatMap((ticker) => {
-            //             if (
-            //                 String(ticker.country).startsWith('United States')
-            //             ) {
-            //                 return {
-            //                     symbol: String(ticker.symbol).replace(
-            //                         '^',
-            //                         '-P'
-            //                     ),
-            //                     company_name: ticker.name
-            //                         .replace(
-            //                             /(Inc\.|Inc|Incorporated|Corporation|Corp|Bancorp|Company|Trust(?![A-Za-z0-9])|Ltd\.|ltd|Limited|Co\.).*/,
-            //                             '$1'
-            //                         )
-            //                         .replace(/Common.*|Ordinary.*/, '')
-            //                         .trim(),
-            //                     netchange: parseFloat(ticker.netchange),
-            //                     pctchange: ticker.pctchange
-            //                 };
-            //             }
-            //             return null;
-            //         })
-            //         .filter(Boolean);
-
-            //     res.set('Content-Type', 'application/json');
-            //     res.json(formatData(tickerSymbols));
-            //     console.log(formatData(tickerSymbols));
-
-            // } catch (localError) {
-            //     console.error('Error reading local JSON file:', localError);
-            //     throw localError;
-            // }
         }
     });
 
@@ -202,7 +164,6 @@ if (!isDev && cluster.isMaster) {
                     high: parseFloat(jsonData.high[index]) ?? 0,
                     low: parseFloat(jsonData.low[index]) ?? 0,
                     close: parseFloat(jsonData.close[index]) ?? 0,
-                    // adjClose: result.indicators.adjclose[0].adjclose[index],
                     adjClose: parseFloat(jsonData.close[index]) ?? 0,
                     volume: parseFloat(jsonData.volume[index]) ?? 0
                 };
